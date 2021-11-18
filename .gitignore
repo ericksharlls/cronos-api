@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,java-web,macos,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,java-web,macos,eclipse
 
+### application-development.properties  ###
+*.properties
+
 ### VS Code ###
 .vscode*
 !.vscode/settings.json

@@ -38,7 +38,7 @@ public class PredioController {
     public List<Predio> listar() {
         return predioRepository.findAll();
     }
-    
+        
     @GetMapping("/{predioId}")
     public ResponseEntity<Predio> buscar(@PathVariable Long predioId) {
         Optional<Predio> predio = predioRepository.findById(predioId);
