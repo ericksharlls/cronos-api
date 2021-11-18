@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
 import br.ufrn.ct.cronos.domain.service.CadastroPeriodoService;
 
 @RestController
-@RequestMapping(value = "/periodos")
+@RequestMapping(value = "/periodos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PeriodoController {
 
 	@Autowired
@@ -36,9 +37,9 @@ public class PeriodoController {
 		return periodoRepository.findAll();
 	}
 
-	@GetMapping("/{id_periodo}")
-	public ResponseEntity<Periodo> buscarPorId(@PathVariable Long id_periodo) {
-		Optional<Periodo> periodo = periodoRepository.findById(id_periodo);
+	@GetMapping("/{idPeriodo}")
+	public ResponseEntity<Periodo> buscarPorId(@PathVariable Long idPeriodo) {
+		Optional<Periodo> periodo = periodoRepository.findById(idPeriodo);
 
 		if (!(periodo.isEmpty())) {
 			return ResponseEntity.ok(periodo.get());
@@ -53,26 +54,26 @@ public class PeriodoController {
 		return periodoService.cadastrar(periodo);
 	}
 
-	@PutMapping("/{id_periodo}")
-	public ResponseEntity<Periodo> atualizar(@PathVariable Long id_periodo, @Valid @RequestBody Periodo periodo) {
-		if (!periodoRepository.existsById(id_periodo)) {
+	@PutMapping("/{idPeriodo}")
+	public ResponseEntity<Periodo> atualizar(@PathVariable Long idPeriodo, @Valid @RequestBody Periodo periodo) {
+		if (!periodoRepository.existsById(idPeriodo)) {
 			return ResponseEntity.notFound().build();
 		}
 		// no corpo da requisicao o id nao e passado, por isso o id e setado para forcar
 		// a atualizacao
-		periodo.setId_periodo(id_periodo);
+		periodo.setIdPeriodo(idPeriodo);
 		periodo = periodoService.cadastrar(periodo);
-
+			
 		return ResponseEntity.ok(periodo);
 	}
 
-	@DeleteMapping("/{id_periodo}")
-	public ResponseEntity<?> deletar(@PathVariable Long id_periodo) {
-		if (!periodoRepository.existsById(id_periodo)) {
+	@DeleteMapping("/{idPeriodo}")
+	public ResponseEntity<?> deletar(@PathVariable Long idPeriodo) {
+		if (!periodoRepository.existsById(idPeriodo)) {
 			return ResponseEntity.notFound().build();
 		}
 		
-		periodoService.deletar(id_periodo);
+		periodoService.deletar(idPeriodo);
 		
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}

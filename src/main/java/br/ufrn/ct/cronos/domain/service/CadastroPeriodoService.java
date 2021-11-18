@@ -15,8 +15,8 @@ public class CadastroPeriodoService {
 		return periodoRepository.save(periodo); 
 	}
 	
-	public void deletar(Long id_periodo) {
-		periodoRepository.deleteById(id_periodo);
+	public void deletar(Long idPeriodo) {
+		periodoRepository.deleteById(idPeriodo);
 	}
 	
 }
