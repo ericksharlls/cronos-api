@@ -2,6 +2,9 @@ package br.ufrn.ct.cronos.domain.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import br.ufrn.ct.cronos.domain.model.Predio;
 
 // Interface criada para representar queries customizadas do Repositório de Prédio
@@ -9,9 +12,12 @@ import br.ufrn.ct.cronos.domain.model.Predio;
 public interface CustomizedPredioRepository {
 
     // Sua implementação é com JPQL
-    List<Predio> find(String nome, String descricao);
+    List<Predio> findComJPQL(String nome, String descricao);
 
     // Sua implementação é com Criteria API
-    List<Predio> buscar(String nome, String descricao);
+    List<Predio> findComCriteria(String nome, String descricao);
+
+    // Paginação sendo implementada com Criteria API
+    public Page<Predio> findPaginadoComCriteria(String nome, String descricao, Pageable pageable);
     
 }

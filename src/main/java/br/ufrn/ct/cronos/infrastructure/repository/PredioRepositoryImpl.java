@@ -16,6 +16,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.repository.PredioRepository;
@@ -32,19 +36,20 @@ public class PredioRepositoryImpl implements CustomizedPredioRepository {
     // Se não colocar o @Lazy dá erro de referência circular (uma coisa q depende de outra coisa, 
     // e essa outra coisa depende dela mesmo). 
     // Colocando o @Lazy, só vai instanciar essa dependencia quando for preciso.
-    // O Spring vai tentar resolver a dependencia "PredioRepository", e vai tentar instanciar 
-    // sua implementação "PredioRepositoryImpl", ocasionando o erro (sem o uso da anotação @Lazy)
     @Autowired @Lazy
 	private PredioRepository predioRepository;
 
     @Override
-    public List<Predio> find(String nome, String descricao) {
+    public List<Predio> findComJPQL(String nome, String descricao) {
+        // é melhor concatenar String com StringBuilder
         var jpql = new StringBuilder();
 
 		jpql.append("from Predio where 0 = 0 ");
 		
 		var parametros = new HashMap<String, Object>();
 		
+        // StringUtils.hasLength() => verifica se a string passada não tá nula,
+        // e se não tá vazia (se o tamanho da string é maior q zero)
 		if (StringUtils.hasText(nome)) {
 			jpql.append("and nome like :nome ");
 			parametros.put("nome", "%" + nome + "%");
@@ -68,7 +73,7 @@ public class PredioRepositoryImpl implements CustomizedPredioRepository {
     }
 
     @Override
-    public List<Predio> buscar(String nome, String descricao) {
+    public List<Predio> findComCriteria(String nome, String descricao) {
         // CriteriaBuilder é uma fábrica pra construir elementos necessários para fazer consulta, 
         // como os critérios e a propria CriteriaQuery
         CriteriaBuilder builder = manager.getCriteriaBuilder();
@@ -98,6 +103,49 @@ public class PredioRepositoryImpl implements CustomizedPredioRepository {
 
 		TypedQuery<Predio> query = manager.createQuery(criteria);
 		return query.getResultList();
+    }
+
+    @Override
+    public Page<Predio> findPaginadoComCriteria(String nome, String descricao, Pageable pageable) {
+        var builder = manager.getCriteriaBuilder();
+			
+		var criteria = builder.createQuery(Predio.class);
+		var root = criteria.from(Predio.class);
+
+		var predicates = new ArrayList<Predicate>();
+			
+		if (StringUtils.hasText(nome)) {
+			predicates.add(builder.like(root.get("nome"), "%" + nome + "%"));
+		}
+        if (StringUtils.hasText(descricao)) {
+			predicates.add(builder.like(root.get("descricao"), "%" + descricao + "%"));
+		}
+        // Adicionando ordenação
+        criteria.orderBy(QueryUtils.toOrders(pageable.getSort(), root, builder));
+        
+        criteria.where(predicates.toArray(new Predicate[0]));
+
+		var query = manager.createQuery(criteria);
+		query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+		query.setMaxResults(pageable.getPageSize());
+		List<Predio> predios = query.getResultList();
+
+                //alterei esta linha, para não só passar a lista de prédios, bem como a interface pageable e a chamada a um método que criei, para retornar os totais para a entidade Restaurante.
+		Page<Predio> prediosPage = new PageImpl<>(predios, 
+                pageable, 
+                getTotalCountCriteria(builder, predicates.toArray(new Predicate[0])));
+
+		return prediosPage;
+    }
+
+    private Long getTotalCountCriteria(CriteriaBuilder criteriaBuilder, Predicate... predicateArray) {
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Predio> root = criteriaQuery.from(Predio.class);
+
+        criteriaQuery.select(criteriaBuilder.count(root));
+        criteriaQuery.where(predicateArray);
+
+        return manager.createQuery(criteriaQuery).getSingleResult();
     }
     
 }

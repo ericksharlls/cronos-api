@@ -95,4 +95,10 @@ public class PredioController {
         return prediosPage;
 	}
 
+    @GetMapping("/por-nome-e-descricao")
+	public Page<Predio> prediosPorNomeDescricao(String nome, String descricao, @PageableDefault(size = 10) Pageable pageable) {
+        
+        return predioRepository.consultarPorNomeDescricao(nome, descricao, pageable);
+	}
+
 }
