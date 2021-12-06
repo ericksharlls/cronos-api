@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +81,18 @@ public class PredioController {
             return ResponseEntity.notFound().build();
         } catch (EntidadeEmUsoException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-        
+        }   
     }
+
+    @GetMapping("/por-nome")
+	public Page<Predio> prediosPorNomee(String nome, @PageableDefault(size = 10) Pageable pageable) {
+        // Criar uma implementação de Page para retorno.. 3 parâmetros são recebidos
+        Page<Predio> prediosPage = new PageImpl<>(
+                predioRepository.findByNomeContaining(nome, pageable).getContent(), 
+                pageable,
+                predioRepository.findByNomeContaining(nome, pageable).getTotalElements()
+            );
+        return prediosPage;
+	}
 
 }
