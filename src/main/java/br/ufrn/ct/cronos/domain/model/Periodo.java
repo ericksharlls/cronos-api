@@ -1,6 +1,6 @@
 package br.ufrn.ct.cronos.domain.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,11 +40,11 @@ public class Periodo {
 	
 	@NotNull
 	@Column(name="data_inicio_periodo")
-	private Date dataInicio;
+	private LocalDate dataInicio;
 	
 	@NotNull
 	@Column(name="data_termino_periodo")
-	private Date dataTermino;
+	private LocalDate dataTermino;
 	
 	@NotNull
 	@Column(name="is_periodo_letivo")
