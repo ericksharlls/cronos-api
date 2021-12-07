@@ -39,8 +39,18 @@ public class PredioController {
     private CadastroPredioService cadastroPredio;
 
     @GetMapping
-    public List<Predio> listar() {
-        return predioRepository.findAll();
+    public Page<Predio> listar(@PageableDefault(size = 10) Pageable pageable) {
+        // Criar uma implementação de Page para retorno.. 3 parâmetros são recebidos
+        Page<Predio> prediosPage = new PageImpl<>(
+                //1 Parâmetro é a lista q vem do banco.. (O método findAll retorna um objeto Page)
+                predioRepository.findAll(pageable).getContent(), 
+                //2 Parâmetro é um objeto pageable com as informações setadas do cliente (exs: size, page, sort)
+                pageable,
+                //3 Parâmetro: total de elementos da lista
+                predioRepository.findAll(pageable).getTotalElements()
+            );
+		
+		return prediosPage;
     }
         
     @GetMapping("/{predioId}")
@@ -85,8 +95,7 @@ public class PredioController {
     }
 
     @GetMapping("/por-nome")
-	public Page<Predio> prediosPorNomee(String nome, @PageableDefault(size = 10) Pageable pageable) {
-        // Criar uma implementação de Page para retorno.. 3 parâmetros são recebidos
+	public Page<Predio> prediosPorNome(String nome, @PageableDefault(size = 10) Pageable pageable) {
         Page<Predio> prediosPage = new PageImpl<>(
                 predioRepository.findByNomeContaining(nome, pageable).getContent(), 
                 pageable,
@@ -95,10 +104,33 @@ public class PredioController {
         return prediosPage;
 	}
 
+    /*@GetMapping("/por-nome-e-descricao")
+	public Page<Predio> prediosPorNomeDescricao(String nome, String descricao, @PageableDefault(size = 10) Pageable pageable) {
+        // Criar uma implementação de Page para retorno.. 3 parâmetros são recebidos
+        Page<Predio> prediosPage = new PageImpl<>(
+                predioRepository.findByNomeContainingAndDescricaoContaining(nome, descricao, pageable).getContent(), 
+                pageable,
+                predioRepository.findByNomeContainingAndDescricaoContaining(nome, descricao, pageable).getTotalElements()
+            );
+        return prediosPage;
+	}*/
+
+    /*
     @GetMapping("/por-nome-e-descricao")
 	public Page<Predio> prediosPorNomeDescricao(String nome, String descricao, @PageableDefault(size = 10) Pageable pageable) {
-        
         return predioRepository.consultarPorNomeDescricao(nome, descricao, pageable);
+	}
+    */
+    
+    /*
+    @GetMapping("/por-nome-e-descricao")
+	public List<Predio> prediosPorNomeDescricao(String nome, String descricao) {
+        return predioRepository.findComJPQL(nome, descricao);
+	}*/
+
+    @GetMapping("/por-nome-e-descricao")
+	public Page<Predio> prediosPorNomeDescricao(String nome, String descricao, @PageableDefault(size = 10) Pageable pageable) {
+        return predioRepository.findPaginadoComCriteria(nome, descricao, pageable);
 	}
 
 }

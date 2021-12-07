@@ -56,7 +56,7 @@ public class PredioRepositoryImpl implements CustomizedPredioRepository {
 		}
 
         if (StringUtils.hasText(descricao)) {
-			jpql.append("and nome like :descricao ");
+			jpql.append("and descricao like :descricao ");
 			parametros.put("descricao", "%" + descricao + "%");
 		}
         
@@ -130,7 +130,6 @@ public class PredioRepositoryImpl implements CustomizedPredioRepository {
 		query.setMaxResults(pageable.getPageSize());
 		List<Predio> predios = query.getResultList();
 
-                //alterei esta linha, para não só passar a lista de prédios, bem como a interface pageable e a chamada a um método que criei, para retornar os totais para a entidade Restaurante.
 		Page<Predio> prediosPage = new PageImpl<>(predios, 
                 pageable, 
                 getTotalCountCriteria(builder, predicates.toArray(new Predicate[0])));

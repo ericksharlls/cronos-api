@@ -1,6 +1,8 @@
 
 CREATE DATABASE db_cronos DEFAULT CHARACTER SET utf8;
 
+USE db_cronos;
+
 -- -----------------------------------------------------
 -- TABELA 'predio'
 -- -----------------------------------------------------

@@ -19,9 +19,8 @@ public interface PredioRepository extends JpaRepository<Predio, Long>, Customize
     Page<Predio> findByNomeContainingAndDescricaoContaining(String nome, String descricao, Pageable pageable);
 
     // Usando anotação @Query do Spring Data JPA e fazendo paginação
-    // O valor do atributo "nome" não pode chegar nulo aqui
     @Query(value = "from Predio p where p.nome like %:nome% AND p.descricao like %:descricao%", 
          countQuery = "select count(p.id) from Predio p where p.nome like %:nome% AND p.descricao like %:descricao%")
-    Page<Predio> consultarPorNomeDescricao(@Param("nome") String nome, @Param("nome") String descricao, Pageable pageable);
+    Page<Predio> consultarPorNomeDescricao(@Param("nome") String nome, @Param("descricao") String descricao, Pageable pageable);
     
 }
