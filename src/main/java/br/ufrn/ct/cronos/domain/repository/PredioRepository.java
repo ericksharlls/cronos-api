@@ -11,10 +11,14 @@ import br.ufrn.ct.cronos.domain.model.Predio;
 
 @Repository
 public interface PredioRepository extends JpaRepository<Predio, Long>, CustomizedPredioRepository {
-
+    
     // Usando recurso de Query Methods do Spring Data JPA e fazendo paginação
     // O valor do atributo "nome" não pode chegar nulo aqui
     Page<Predio> findByNomeContaining(String nome, Pageable pageable);
+
+    @Query(value = "FROM Predio p WHERE :nome is null OR p.nome like %:nome%",
+        countQuery = "select count(p.id) FROM Predio p where :nome is null OR p.nome like %:nome%")
+    Page<Predio> findByNome(@Param("nome") String nome, Pageable pageable);
 
     Page<Predio> findByNomeContainingAndDescricaoContaining(String nome, String descricao, Pageable pageable);
 

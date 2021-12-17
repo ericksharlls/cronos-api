@@ -1,6 +1,5 @@
 package br.ufrn.ct.cronos.api.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -97,9 +96,9 @@ public class PredioController {
     @GetMapping("/por-nome")
 	public Page<Predio> prediosPorNome(String nome, @PageableDefault(size = 10) Pageable pageable) {
         Page<Predio> prediosPage = new PageImpl<>(
-                predioRepository.findByNomeContaining(nome, pageable).getContent(), 
+                predioRepository.findByNome(nome, pageable).getContent(), 
                 pageable,
-                predioRepository.findByNomeContaining(nome, pageable).getTotalElements()
+                predioRepository.findByNome(nome, pageable).getTotalElements()
             );
         return prediosPage;
 	}

@@ -22,10 +22,10 @@ public class Predio {
     @Column(name = "id_predio")
     private Long id;
 
-    @Column(name = "nome_predio", length = 50)
+    @Column(name = "nome_predio")
     private String nome;
 
-    @Column(name = "descricao_predio", length = 100)
+    @Column(name = "descricao_predio")
     private String descricao;
 
 }
