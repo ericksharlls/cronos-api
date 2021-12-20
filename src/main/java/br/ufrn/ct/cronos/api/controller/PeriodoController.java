@@ -6,6 +6,10 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +36,25 @@ public class PeriodoController {
 	@Autowired
 	private CadastroPeriodoService periodoService;
 
+    @GetMapping("/por-nome")
+	public Page<Periodo> periodosPorNome(String nome, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Periodo> periodosPage = new PageImpl<>(
+                periodoRepository.findByNome(nome, pageable).getContent(), 
+                pageable,
+                periodoRepository.findByNome(nome, pageable).getTotalElements()
+            );
+        
+        return periodosPage;
+	}
+	
 	@GetMapping
 	public List<Periodo> listar() {
 		return periodoRepository.findAll();
 	}
 
 	@GetMapping("/{idPeriodo}")
-	public ResponseEntity<Periodo> buscarPorId(@PathVariable Long idPeriodo) {
-		Optional<Periodo> periodo = periodoRepository.findById(idPeriodo);
+	public ResponseEntity<Periodo> buscarPorId(@PathVariable Long id) {
+		Optional<Periodo> periodo = periodoRepository.findById(id);
 
 		if (!(periodo.isEmpty())) {
 			return ResponseEntity.ok(periodo.get());
@@ -55,25 +70,25 @@ public class PeriodoController {
 	}
 
 	@PutMapping("/{idPeriodo}")
-	public ResponseEntity<Periodo> atualizar(@PathVariable Long idPeriodo, @Valid @RequestBody Periodo periodo) {
-		if (!periodoRepository.existsById(idPeriodo)) {
+	public ResponseEntity<Periodo> atualizar(@PathVariable Long id, @Valid @RequestBody Periodo periodo) {
+		if (!periodoRepository.existsById(id)) {
 			return ResponseEntity.notFound().build();
 		}
 		// no corpo da requisicao o id nao e passado, por isso o id e setado para forcar
 		// a atualizacao
-		periodo.setIdPeriodo(idPeriodo);
+		periodo.setId(id);
 		periodo = periodoService.cadastrar(periodo);
 			
 		return ResponseEntity.ok(periodo);
 	}
 
-	@DeleteMapping("/{idPeriodo}")
-	public ResponseEntity<?> deletar(@PathVariable Long idPeriodo) {
-		if (!periodoRepository.existsById(idPeriodo)) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deletar(@PathVariable Long id) {
+		if (!periodoRepository.existsById(id)) {
 			return ResponseEntity.notFound().build();
 		}
 		
-		periodoService.deletar(idPeriodo);
+		periodoService.deletar(id);
 		
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}

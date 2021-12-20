@@ -25,7 +25,7 @@ public class Periodo {
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idPeriodo;
+	private Long id;
 	
 	@NotBlank
 	@Size(max = 30)
@@ -57,6 +57,5 @@ public class Periodo {
 	@NotNull
 	@Column(name="numero_periodo")
 	private Short periodo;
-
 
 }
