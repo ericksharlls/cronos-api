@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +41,17 @@ public class PerfilSalaTurmaController{
 	@GetMapping
 	public List<PerfilSalaTurma> listar(){
 		return perfilSalaTurmaRepository.findAll();
+	}
+	
+	@GetMapping("/por-nome")
+	public Page<PerfilSalaTurma> listar(String nome,@PageableDefault(size = 10) Pageable pageable){
+		
+		Page<PerfilSalaTurma> perfilSalaTurmaPage = new PageImpl<>(
+				perfilSalaTurmaRepository.findByNome(nome, pageable).getContent(),
+				pageable,
+				perfilSalaTurmaRepository.findByNome(nome, pageable).getTotalElements()
+				);
+		return perfilSalaTurmaPage;
 	}
 	
 	@GetMapping("/{perfilSalaTurmaId}")
