@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 
 @Repository
-public interface PerfilSalaTurmaRepository extends JpaRepository<PerfilSalaTurma, Long>,CustomizedPerfilSalaTurmaRepository {
+public interface PerfilSalaTurmaRepository extends JpaRepository<PerfilSalaTurma, Long>{
     
 	@Query(value = "FROM PerfilSalaTurma pst WHERE :nome is null OR pst.nome like %:nome%",
-			countQuery = "SELECT count(pst.id) FROM PerfilSalaTurma pst WHERE :nome is null OR pst.nome like %:nome%")
+			countQuery = "SELECT count(pst.id) FROM PerfilSalaTurma pst WHERE :nome is null OR pst.nome like%:nome%")
 	Page<PerfilSalaTurma> findByNome(@Param("nome") String nome,Pageable pageable);
 }
