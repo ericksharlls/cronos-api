@@ -28,7 +28,8 @@ public class Periodo {
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idPeriodo;
+	@Column(name = "id_periodo")
+	private Long id;
 	
 	@NotBlankAndSizeForString(max = 30)
 	@Column(name="nome_periodo")

@@ -1,6 +1,7 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,19 +22,18 @@ public class PeriodoRepositoryImpl implements CustomizedPeriodoRepository{
 	public Boolean verificarIntervaloDatasJaExiste(LocalDate dataInicio, LocalDate dataTermino) {
 		
 		String jpql = 
-				" SELECT "
-				+ " COUNT(p.id) "
-				+ " FROM Periodo p "
-				+ " WHERE :dataInicio BETWEEN p.dataInicio AND p.dataTermino "
-				+ " AND :dataTermino BETWEEN p.dataInicio AND p.dataTermino ";
+				" SELECT COUNT(p.id) FROM Periodo p WHERE "
+				+ ":dataInicio BETWEEN p.dataInicio AND p.dataTermino "
+				+ " OR "
+				+ ":dataTermino BETWEEN p.dataInicio AND p.dataTermino";
 	    
-		TypedQuery<?> query = manager
-					.createQuery(jpql, Periodo.class);
+		TypedQuery<Long> query = manager
+					.createQuery(jpql, Long.class);
 		
 		query.setParameter("dataInicio", dataInicio);
 		query.setParameter("dataTermino", dataTermino);
 		
-		Integer contador = (Integer) query.getSingleResult();
+		Long contador = (Long) query.getSingleResult();
 		
 		if (contador > 0) {
 			return true;
@@ -41,5 +41,22 @@ public class PeriodoRepositoryImpl implements CustomizedPeriodoRepository{
 				
 		return false;
 	}
+
+	@Override
+   public List<Periodo> findByIntervalo(LocalDate dataInicio, LocalDate dataTermino) {
+		String jpql =
+	  			"SELECT p from Periodo p WHERE "
+	  			+ "p.dataInicio BETWEEN :dataInicio AND :dataTermino "
+				+ " OR "
+         		+ "p.dataTermino BETWEEN :dataInicio AND :dataTermino";
+		
+		TypedQuery<Periodo> query = manager
+				 .createQuery(jpql, Periodo.class);
+	 
+		query.setParameter("dataInicio", dataInicio);
+		query.setParameter("dataTermino", dataTermino);
+
+		return query.getResultList();
+   }
 	
 }

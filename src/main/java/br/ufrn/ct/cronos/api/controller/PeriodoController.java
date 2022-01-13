@@ -67,7 +67,7 @@ public class PeriodoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public PeriodoModel cadastrar(@Valid @RequestBody PeriodoInput periodoInput) {
 		Periodo periodo = periodoInputDisassembler.toDomainObject(periodoInput);
-		periodo = periodoService.salvar(periodo);
+		periodo = periodoService.cadastrar(periodo);
 		
 		return periodoModelAssembler.toModel(periodo);
 	}
@@ -77,7 +77,7 @@ public class PeriodoController {
         Periodo periodoAtual = periodoService.buscar(periodoId);
 		
         periodoInputDisassembler.copyToDomainObject(periodoInput, periodoAtual);
-        periodoAtual = periodoService.salvar(periodoAtual);
+        periodoAtual = periodoService.atualizar(periodoAtual);
 		
         return periodoModelAssembler.toModel(periodoAtual);
     }
