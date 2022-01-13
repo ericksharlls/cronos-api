@@ -6,13 +6,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.EntidadeNaoEncontradaException;
+import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
 
 @Service
 public class PerfilSalaTurmaService {
 	
+    private static final String MSG_PERFIL_SALA_TURMA_EM_USO 
+        = "O perfil sala turma de id %d não pode ser removido, pois está em uso.";
+
 	@Autowired
 	private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
 	
@@ -24,14 +27,17 @@ public class PerfilSalaTurmaService {
         try {
         	perfilSalaTurmaRepository.deleteById(perfilSalaTurmaId);   
         } catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(
-                String.format("Não existe um cadastro de um perfil sala turma com id %d", perfilSalaTurmaId)
-            );
+            throw new PerfilSalaTurmaNaoEncontradoException(perfilSalaTurmaId);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                String.format("O perfil sala turma de id %d não pode ser removido, pois está em uso", perfilSalaTurmaId)
+                String.format(MSG_PERFIL_SALA_TURMA_EM_USO, perfilSalaTurmaId)
             );
         }
     }
+
+    public PerfilSalaTurma buscar(Long perfilSalaTurmaId) {
+		return perfilSalaTurmaRepository.findById(perfilSalaTurmaId)
+			.orElseThrow(() -> new PerfilSalaTurmaNaoEncontradoException(perfilSalaTurmaId));
+	}
 
 }

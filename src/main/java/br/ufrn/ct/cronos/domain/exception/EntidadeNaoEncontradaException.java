@@ -1,11 +1,11 @@
 package br.ufrn.ct.cronos.domain.exception;
 
-public class EntidadeNaoEncontradaException extends RuntimeException {
-    
-    private static final long serialVersionUID = 1L;
+public abstract class EntidadeNaoEncontradaException extends NegocioException {
 
-    public EntidadeNaoEncontradaException(String mensagem) {
-        super(mensagem);
-    }
+	private static final long serialVersionUID = 1L;
 
+	public EntidadeNaoEncontradaException(String mensagem) {
+		super(mensagem);
+	}
+	
 }

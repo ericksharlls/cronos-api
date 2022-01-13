@@ -6,13 +6,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.EntidadeNaoEncontradaException;
+import br.ufrn.ct.cronos.domain.exception.PredioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 
 @Service
 public class CadastroPredioService {
     
+    private static final String MSG_PREDIO_EM_USO 
+        = "Prédio de id %d não pode ser removido, pois está em uso.";
+
     @Autowired
     private PredioRepository predioRepository;
 
@@ -24,14 +27,17 @@ public class CadastroPredioService {
         try {
             predioRepository.deleteById(predioId);   
         } catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(
-                String.format("Não existe um cadastro de Prédio com id %d", predioId)
-            );
+            throw new PredioNaoEncontradoException(predioId);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                String.format("Prédio de id %d não pode ser removido, pois está em uso", predioId)
+                String.format(MSG_PREDIO_EM_USO, predioId)
             );
         }
     }
+
+    public Predio buscar(Long predioId) {
+		return predioRepository.findById(predioId)
+			.orElseThrow(() -> new PredioNaoEncontradoException(predioId));
+	}
 
 }

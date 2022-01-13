@@ -20,12 +20,12 @@ public class PerfilSalaTurma {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_perfil_sala_turma")
-	private long id;
+	private Long id;
 	
-	@Column(name = "nome_perfil_sala_turma",length = 50)
+	@Column(name = "nome_perfil_sala_turma")
 	private String nome;
 	
-	@Column(name = "descricao_perfil_sala_turma",length =100)
+	@Column(name = "descricao_perfil_sala_turma")
 	private String descricao;
 	
 

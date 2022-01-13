@@ -24,7 +24,7 @@ public class Predio {
 
     @Column(name = "nome_predio")
     private String nome;
-
+    
     @Column(name = "descricao_predio")
     private String descricao;
 
