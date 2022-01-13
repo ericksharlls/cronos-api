@@ -66,7 +66,7 @@ public class PerfilSalaTurmaController{
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public PerfilSalaTurmaModel adcionar(@RequestBody PerfilSalaTurmaInput perfilSalaTurmaInput){
+	public PerfilSalaTurmaModel adicionar(@RequestBody @Valid PerfilSalaTurmaInput perfilSalaTurmaInput){
 		PerfilSalaTurma perfilSalaTurma = perfilSalaTurmaInputDisassembler.toDomainObject(perfilSalaTurmaInput);
         
         perfilSalaTurma = cadastroPerfilSalaTurma.salvar(perfilSalaTurma);
