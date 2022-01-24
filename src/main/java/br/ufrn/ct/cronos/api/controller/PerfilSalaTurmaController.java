@@ -27,7 +27,7 @@ import br.ufrn.ct.cronos.api.model.input.PerfilSalaTurmaInput;
 
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
-import br.ufrn.ct.cronos.domain.service.PerfilSalaTurmaService;
+import br.ufrn.ct.cronos.domain.service.CadastroPerfilSalaTurmaService;
 
 @RestController
 @RequestMapping(value = "/perfilSalaTurma", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +37,7 @@ public class PerfilSalaTurmaController{
 	private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
 	
 	@Autowired
-	private PerfilSalaTurmaService cadastroPerfilSalaTurma;
+	private CadastroPerfilSalaTurmaService cadastroPerfilSalaTurma;
 
 	@Autowired
 	private PerfilSalaTurmaModelAssembler perfilSalaTurmaModelAssembler;

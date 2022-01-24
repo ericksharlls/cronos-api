@@ -11,7 +11,7 @@ import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
 
 @Service
-public class PerfilSalaTurmaService {
+public class CadastroPerfilSalaTurmaService {
 	
     private static final String MSG_PERFIL_SALA_TURMA_EM_USO 
         = "O perfil sala turma de id %d não pode ser removido, pois está em uso.";
