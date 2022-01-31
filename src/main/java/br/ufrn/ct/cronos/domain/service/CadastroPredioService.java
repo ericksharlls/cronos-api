@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.PredioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.repository.PredioRepository;
@@ -13,6 +14,9 @@ import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 @Service
 public class CadastroPredioService {
     
+    private static final String MSG_PREDIO_JA_EXISTENTE 
+        = "Já existe um Prédio cadastrado com o mesmo nome.";
+
     private static final String MSG_PREDIO_EM_USO 
         = "Prédio de id %d não pode ser removido, pois está em uso.";
 
@@ -20,6 +24,9 @@ public class CadastroPredioService {
     private PredioRepository predioRepository;
 
     public Predio salvar(Predio predio) {
+        if(predioRepository.existsPredioByNome(predio.getNome()).equals(true)){
+            throw new NegocioException(MSG_PREDIO_JA_EXISTENTE);
+        }
         return predioRepository.save(predio);
     }
 
