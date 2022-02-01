@@ -27,6 +27,7 @@ public class CadastroPredioService {
         if(predioRepository.existsPredioByNome(predio.getNome()).equals(true)){
             throw new NegocioException(MSG_PREDIO_JA_EXISTENTE);
         }
+        
         return predioRepository.save(predio);
     }
 

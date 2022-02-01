@@ -7,6 +7,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -42,6 +43,9 @@ public class CadastroPredioIT {
 	
 	@Autowired
 	private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
+
+	@Autowired
+	protected ModelMapper modelMapper;
 	
 	@Autowired
 	private SalaRepository salaRepository;
@@ -68,15 +72,18 @@ public class CadastroPredioIT {
 	
 	@Test
 	public void deveAtribuirId_QuandoCadastrarPredioComDadosCorretos() {
+		PredioInput predioInput = retornaPredioComDadosCorretos();
 		RestAssured
 			.given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(retornaPredioComDadosCorretos())
+				.body(predioInput)
 			.when()
 				.post()
 			.then()
 				.body("id", Matchers.notNullValue())
+				.body("nome", Matchers.equalTo(predioInput.getNome()))
+				.body("descricao", Matchers.equalTo(predioInput.getDescricao()))
 				.statusCode(HttpStatus.CREATED.value());
 	}
 
@@ -124,6 +131,28 @@ public class CadastroPredioIT {
 				.statusCode(HttpStatus.BAD_REQUEST.value())
 				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
 				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+	}
+
+	@Test
+	public void deveRetornarCodigo200_QuandoAtualizarPredioComDadosCorretos(){
+		PredioInput predioInput = new PredioInput();
+		String novoNome = "Novo Nome";
+		String novaDescricao = "Descrição Nova";
+		predioInput.setNome(novoNome);
+		predioInput.setDescricao(novaDescricao);
+
+		RestAssured
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(predioInput)
+			.when()
+				.put("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.OK.value())
+				.body("nome", Matchers.equalTo(novoNome))
+				.body("descricao", Matchers.equalTo(novaDescricao));
 	}
 
 	@Test
