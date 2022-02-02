@@ -140,7 +140,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     	return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
-	// Tratando exception de parâmetro de URL inválido
 	/**
 	 * Customiza a resposta para uma exceção MethodArgumentTypeMismatchException.
 	 * <p>Este tipo de Exceção é lançada quando o parâmetro de uma URL é inválido.
@@ -206,6 +205,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     	return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
+	/**
+	 * Método que trata exceções de validação dos dados de entrada da API.
+	 * As exceções de validação são lançadas quando a validação de um argumento anotado com @Valid falha.
+	 * <p>Este método repassa as informações para o método de mesmo nome da sua superclasse.
+	 * @param ex a exceção
+	 * @param headers os cabeçalhos que serão repassados para o método handleValidationInternal
+	 * @param status o status de resposta que será repassado para o método handleValidationInternal
+	 * @param request a requisição atual
+	 * @return uma instância de ResponseEntity
+	 */
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
