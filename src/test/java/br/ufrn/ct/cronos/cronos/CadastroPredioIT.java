@@ -53,6 +53,7 @@ public class CadastroPredioIT {
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
 	private static final String ENTIDADE_EM_USO_PROBLEM_TYPE = "Entidade em uso";
+	private static final String RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE = "Recurso não encontrado";
 
 	private static final int PREDIO_ID_INEXISTENTE = 100;
 	private Predio predioSetorAulasIV;
@@ -70,6 +71,9 @@ public class CadastroPredioIT {
 		prepararDados();
 	}
 	
+	/**
+	 * Testes com o POST
+	 */
 	@Test
 	public void deveAtribuirId_QuandoCadastrarPredioComDadosCorretos() {
 		PredioInput predioInput = retornaPredioComDadosCorretos();
@@ -134,6 +138,23 @@ public class CadastroPredioIT {
 	}
 
 	@Test
+	public void deveRetornarStatus400_QuandoCadastrarPredioComNomeJaExistente() {
+		RestAssured
+		.given()
+			.body(retornaPredioComNomeJaExistente())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+	}
+
+	/**
+	 * Testes com o PUT
+	 */
+	@Test
 	public void deveRetornarCodigo200_QuandoAtualizarPredioComDadosCorretos(){
 		PredioInput predioInput = new PredioInput();
 		String novoNome = "Novo Nome";
@@ -155,6 +176,9 @@ public class CadastroPredioIT {
 				.body("descricao", Matchers.equalTo(novaDescricao));
 	}
 
+	/**
+	 * Testes com o GET
+	 */
 	@Test
 	public void deveRetornarQuantidadeCorretaDePredios_QuandoConsultarPredios() {
 		RestAssured
@@ -191,18 +215,21 @@ public class CadastroPredioIT {
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 
+	/**
+	 * Testes com o DELETE
+	 */
 	@Test
-	public void deveRetornarStatus400_QuandoCadastrarPredioComNomeJaExistente() {
+	public void deveRetornarRespostaEStatusCorretos_QuandoExcluirPredioSemUso(){
 		RestAssured
-		.given()
-			.body(retornaPredioComNomeJaExistente())
-			.contentType(ContentType.JSON)
-			.accept(ContentType.JSON)
-		.when()
-			.post()
-		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(predioSetorAulasIV)
+			.when()
+				.delete("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 
 	@Test
@@ -219,6 +246,21 @@ public class CadastroPredioIT {
 			.then()
 				.statusCode(HttpStatus.CONFLICT.value())
 				.body("title", Matchers.equalTo(ENTIDADE_EM_USO_PROBLEM_TYPE));
+	}
+
+	@Test
+	public void deveFalhar_QuandoExcluirPredioInexistente(){
+		RestAssured
+			.given()
+				.pathParam("predioId", PREDIO_ID_INEXISTENTE)
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(predioSetorAulasIV)
+			.when()
+				.delete("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.NOT_FOUND.value())
+				.body("title", Matchers.equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
 	}
 
 	private void prepararDados() {
