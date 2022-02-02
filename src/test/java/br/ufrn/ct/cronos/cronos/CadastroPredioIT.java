@@ -219,7 +219,7 @@ public class CadastroPredioIT {
 	 * Testes com o DELETE
 	 */
 	@Test
-	public void deveRetornarRespostaEStatusCorretos_QuandoExcluirPredioSemUso(){
+	public void deveRetornarStatus204_QuandoExcluirPredioComSucesso(){
 		RestAssured
 			.given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
