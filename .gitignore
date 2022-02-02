@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,java-web,macos,eclipse
 
 ### application-development.properties  ###
-**/application.properties
+#**/application.properties
 **/application-development.properties
 **/application-production.properties
 
