@@ -176,6 +176,74 @@ public class CadastroPredioIT {
 				.body("descricao", Matchers.equalTo(novaDescricao));
 	}
 
+	@Test
+	public void deveFalhar_QuandoAtualizarPredioParaNomeJaExistenteEmOutroPredio() {
+		PredioInput predioInput = new PredioInput();
+		Predio predioSalvoNoBanco = retornaUmPredioSalvoNoBanco();
+		predioInput.setNome(predioSalvoNoBanco.getNome());
+		predioInput.setDescricao(predioSalvoNoBanco.getDescricao());
+
+		RestAssured
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(predioInput)
+			.when()
+				.put("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.BAD_REQUEST.value())
+				.body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+	}
+
+	@Test
+	public void deveFalhar_QuandoAtualizarPredioComCamposVazios(){
+		RestAssured
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(retornaPredioComCamposVazios())
+			.when()
+				.put("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.BAD_REQUEST.value())
+				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+	}
+
+	@Test
+	public void deveFalhar_QuandoAtualizarPredioComCamposNulos(){
+		RestAssured
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(retornaPredioComCamposNulos())
+			.when()
+				.put("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.BAD_REQUEST.value())
+				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", Matchers.hasItems("nome", "descricao"));			
+	}
+
+	@Test
+	public void deveFalhar_QuandoAtualizarPredioComCamposDeTamanhosExcedidos(){
+		RestAssured
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(retornaPredioComCamposDeTamanhosExcedidos())
+			.when()
+				.put("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.BAD_REQUEST.value())
+				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+	}
+
 	/**
 	 * Testes com o GET
 	 */
@@ -225,7 +293,6 @@ public class CadastroPredioIT {
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(predioSetorAulasIV)
 			.when()
 				.delete("/{predioId}")
 			.then()
@@ -240,7 +307,6 @@ public class CadastroPredioIT {
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(predioSetorAulasIV)
 			.when()
 				.delete("/{predioId}")
 			.then()
@@ -255,7 +321,6 @@ public class CadastroPredioIT {
 				.pathParam("predioId", PREDIO_ID_INEXISTENTE)
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(predioSetorAulasIV)
 			.when()
 				.delete("/{predioId}")
 			.then()
@@ -333,6 +398,14 @@ public class CadastroPredioIT {
 		sala.setUtilizarNoAgendamento(false);
 		
 		salaRepository.save(sala);
+	}
+
+	private Predio retornaUmPredioSalvoNoBanco(){
+		Predio predio = new Predio();
+		predio.setNome("CTEC");
+		predio.setDescricao("Complexo Tecnológico de Engenharia");
+		predioRepository.save(predio);
+		return predio;
 	}
 
 	private PerfilSalaTurma retornaPerfilSalaTurmaConvencional(){
