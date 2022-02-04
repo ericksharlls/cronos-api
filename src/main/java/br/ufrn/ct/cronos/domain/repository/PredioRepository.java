@@ -18,7 +18,9 @@ public interface PredioRepository
         extends JpaRepository<Predio, Long>, CustomizedPredioRepository, 
         JpaSpecificationExecutor<Predio> {
     
-    Boolean existsPredioByNome(String nome);
+    Optional<Predio> findByNome(String nome);
+
+    Boolean existsPredioByNome(String nome); //depois excluir esse método
 
     // Usando recurso de Query Methods do Spring Data JPA e fazendo paginação
     // O valor do atributo "nome" não pode chegar nulo aqui, senão dará erro

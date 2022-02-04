@@ -1,5 +1,7 @@
 package br.ufrn.ct.cronos.domain.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,7 +17,7 @@ import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 public class CadastroPredioService {
     
     private static final String MSG_PREDIO_JA_EXISTENTE 
-        = "Já existe um Prédio cadastrado com o mesmo nome.";
+        = "Já existe um Prédio cadastrado com o nome.";
 
     private static final String MSG_PREDIO_EM_USO 
         = "Prédio de id %d não pode ser removido, pois está em uso.";
@@ -27,8 +29,16 @@ public class CadastroPredioService {
         if(predioRepository.existsPredioByNome(predio.getNome()).equals(true)){
             throw new NegocioException(MSG_PREDIO_JA_EXISTENTE);
         }
-        
+
         return predioRepository.save(predio);
+        //predioRepository.detach(predio);
+		
+		//Optional<Predio> predioExistente = predioRepository.findByNome(predio.getNome());
+		
+		//if (predioExistente.isPresent() && !predioExistente.get().equals(predio)) {
+		//	throw new NegocioException(
+		//			String.format("Já existe um Prédio cadastrado com o nome %s", predio.getNome()));
+		//}
     }
 
     public void excluir(Long predioId) {
