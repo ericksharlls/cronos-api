@@ -59,7 +59,7 @@ public class CadastroPredioIT {
 	private Predio predioSetorAulasIV;
 	private PerfilSalaTurma perfilSalaTurmaConvencional;
 	private int quantidadePrediosCadastrados;
-
+	
 	@BeforeEach
 	public void setUp() {
 		// para fazer o log do q foi enviado na requisição e recebido na resposta quando o teste falha
@@ -194,6 +194,32 @@ public class CadastroPredioIT {
 			.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
 				.body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+	}
+
+	/**
+	 * Não é permitido cadastro de novo Prédio com o mesmo nome de um já existente.
+	 * Também não é permitido atualização de nome de Prédio para nome ja existente em outro Prédio.
+	 * O método abaixo testa a atualização(PUT) de um Prédio com nome já existente, 
+	 * 		porém é o nome do próprio Prédio, e não de outro.
+	 */
+	@Test
+	public void deveRetornarCodigo200_QuandoAtualizarDescricaoDePredioComNomeJaExistente() {
+		PredioInput predioInput = new PredioInput();
+		predioInput.setNome(predioSetorAulasIV.getNome());
+		predioInput.setDescricao("Descrição para Testes");
+
+		RestAssured
+			.given()
+				.pathParam("predioId", predioSetorAulasIV.getId())
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(predioInput)
+			.when()
+				.put("/{predioId}")
+			.then()
+				.statusCode(HttpStatus.OK.value())
+				.body("nome", Matchers.equalTo(predioInput.getNome()))
+				.body("descricao", Matchers.equalTo(predioInput.getDescricao()));
 	}
 
 	@Test
