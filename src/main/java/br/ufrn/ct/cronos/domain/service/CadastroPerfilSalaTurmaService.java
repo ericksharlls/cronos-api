@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
@@ -19,13 +20,16 @@ public class CadastroPerfilSalaTurmaService {
 	@Autowired
 	private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
 	
+    @Transactional
 	public PerfilSalaTurma salvar(PerfilSalaTurma perfilSalaTurma) {
 		return perfilSalaTurmaRepository.save(perfilSalaTurma);
 	}
 	
+    @Transactional
 	public void excluir(Long perfilSalaTurmaId) {
         try {
         	perfilSalaTurmaRepository.deleteById(perfilSalaTurmaId);   
+            perfilSalaTurmaRepository.flush(); 
         } catch (EmptyResultDataAccessException e){
             throw new PerfilSalaTurmaNaoEncontradoException(perfilSalaTurmaId);
         } catch (DataIntegrityViolationException e) {

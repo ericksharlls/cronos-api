@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
@@ -25,6 +26,7 @@ public class CadastroPeriodoService {
 	@Autowired
 	private PeriodoRepository periodoRepository;
 	
+    @Transactional
 	public Periodo cadastrar(Periodo periodo) {
         if(periodoRepository.verificarIntervaloDatasJaExiste(periodo.getDataInicio(), periodo.getDataTermino())){
             throw new NegocioException(MSG_INTERVALO_DATAS_EM_USO);
@@ -33,6 +35,7 @@ public class CadastroPeriodoService {
 		return periodoRepository.save(periodo); 
 	}
 	
+    @Transactional
     public Periodo atualizar(Periodo periodo) {
         List<Periodo> periodos = periodoRepository.findByIntervalo(periodo.getDataInicio(), periodo.getDataTermino());
 
@@ -48,9 +51,11 @@ public class CadastroPeriodoService {
 		return periodoRepository.save(periodo); 
 	}
 
+    @Transactional
 	public void excluir(Long periodoId) {
         try {
-            periodoRepository.deleteById(periodoId);   
+            periodoRepository.deleteById(periodoId);  
+            periodoRepository.flush();
         } catch (EmptyResultDataAccessException e){
             throw new PeriodoNaoEncontradoException(periodoId);
         } catch (DataIntegrityViolationException e) {

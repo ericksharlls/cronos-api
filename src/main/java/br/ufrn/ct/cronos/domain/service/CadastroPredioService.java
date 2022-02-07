@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
@@ -25,6 +26,7 @@ public class CadastroPredioService {
     @Autowired
     private PredioRepository predioRepository;
 
+    @Transactional
     public Predio salvar(Predio predio) {
         if(predioRepository.existsPredioByNome(predio.getNome()).equals(true)){
             throw new NegocioException(MSG_PREDIO_JA_EXISTENTE);
@@ -41,9 +43,10 @@ public class CadastroPredioService {
 		//}
     }
 
+    @Transactional
     public void excluir(Long predioId) {
         try {
-            predioRepository.deleteById(predioId);   
+            predioRepository.deleteById(predioId);
         } catch (EmptyResultDataAccessException e){
             throw new PredioNaoEncontradoException(predioId);
         } catch (DataIntegrityViolationException e) {
