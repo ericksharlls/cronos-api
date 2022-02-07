@@ -2,11 +2,12 @@ package br.ufrn.ct.cronos.domain.service;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
@@ -16,9 +17,6 @@ import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 
 @Service
 public class CadastroPredioService {
-    
-    private static final String MSG_PREDIO_JA_EXISTENTE 
-        = "Já existe um Prédio cadastrado com o nome.";
 
     private static final String MSG_PREDIO_EM_USO 
         = "Prédio de id %d não pode ser removido, pois está em uso.";
@@ -28,25 +26,22 @@ public class CadastroPredioService {
 
     @Transactional
     public Predio salvar(Predio predio) {
-        if(predioRepository.existsPredioByNome(predio.getNome()).equals(true)){
-            throw new NegocioException(MSG_PREDIO_JA_EXISTENTE);
-        }
-
-        return predioRepository.save(predio);
         //predioRepository.detach(predio);
 		
-		//Optional<Predio> predioExistente = predioRepository.findByNome(predio.getNome());
+		Optional<Predio> predioExistente = predioRepository.findByNome(predio.getNome());
 		
-		//if (predioExistente.isPresent() && !predioExistente.get().equals(predio)) {
-		//	throw new NegocioException(
-		//			String.format("Já existe um Prédio cadastrado com o nome %s", predio.getNome()));
-		//}
+		if (predioExistente.isPresent() && !predioExistente.get().equals(predio)) {
+			throw new NegocioException(
+					String.format("Já existe um Prédio cadastrado com o nome \'%s\'", predio.getNome()));
+		}
+        return predioRepository.save(predio);
     }
 
     @Transactional
     public void excluir(Long predioId) {
         try {
             predioRepository.deleteById(predioId);
+            predioRepository.flush();
         } catch (EmptyResultDataAccessException e){
             throw new PredioNaoEncontradoException(predioId);
         } catch (DataIntegrityViolationException e) {

@@ -47,6 +47,7 @@ public class CadastroSalaService {
     public void excluir(Long salaId) {
         try {
             salaRepository.deleteById(salaId);
+            salaRepository.flush();
         } catch (EmptyResultDataAccessException e){
             throw new SalaNaoEncontradaException(salaId);
         } catch (DataIntegrityViolationException e) {
