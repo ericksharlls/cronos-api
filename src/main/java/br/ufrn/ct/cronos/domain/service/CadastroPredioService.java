@@ -26,7 +26,7 @@ public class CadastroPredioService {
 
     @Transactional
     public Predio salvar(Predio predio) {
-        //predioRepository.detach(predio);
+        predioRepository.detach(predio);
 		
 		Optional<Predio> predioExistente = predioRepository.findByNome(predio.getNome());
 		

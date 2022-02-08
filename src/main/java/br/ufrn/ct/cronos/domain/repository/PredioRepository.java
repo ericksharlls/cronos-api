@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,12 +13,9 @@ import br.ufrn.ct.cronos.domain.model.Predio;
 
 @Repository
 public interface PredioRepository 
-        extends JpaRepository<Predio, Long>, CustomizedPredioRepository, 
-        JpaSpecificationExecutor<Predio> {
+        extends CustomJpaRepository<Predio, Long>, CustomizedPredioRepository {
     
     Optional<Predio> findByNome(String nome);
-
-    Boolean existsPredioByNome(String nome); //depois excluir esse método
 
     // Usando recurso de Query Methods do Spring Data JPA e fazendo paginação
     // O valor do atributo "nome" não pode chegar nulo aqui, senão dará erro

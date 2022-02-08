@@ -3,7 +3,6 @@ package br.ufrn.ct.cronos.cronos;
 
 import org.flywaydb.core.Flyway;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +24,12 @@ import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 import br.ufrn.ct.cronos.domain.repository.SalaRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 
 //@SpringBootTest //fornece as funcionalidades do Spring Boot nos testes
 @ExtendWith(SpringExtension.class) //faz com q o contexto do Spring seja levantado no momento da execução dos testes
@@ -77,24 +82,22 @@ public class CadastroPredioIT {
 	@Test
 	public void deveAtribuirId_QuandoCadastrarPredioComDadosCorretos() {
 		PredioInput predioInput = retornaPredioComDadosCorretos();
-		RestAssured
-			.given()
+			given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(predioInput)
 			.when()
 				.post()
 			.then()
-				.body("id", Matchers.notNullValue())
-				.body("nome", Matchers.equalTo(predioInput.getNome()))
-				.body("descricao", Matchers.equalTo(predioInput.getDescricao()))
+				.body("id", notNullValue())
+				.body("nome", equalTo(predioInput.getNome()))
+				.body("descricao", equalTo(predioInput.getDescricao()))
 				.statusCode(HttpStatus.CREATED.value());
 	}
 
 	@Test
 	public void deveFalhar_QuandoCadastrarPredioComCamposVazios(){
-		RestAssured
-			.given()
+			given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(retornaPredioComCamposVazios())
@@ -102,14 +105,13 @@ public class CadastroPredioIT {
 				.post()
 			.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", hasItems("nome", "descricao"));
 	}
 
 	@Test
 	public void deveFalhar_QuandoCadastrarPredioComCamposNulos(){
-		RestAssured
-			.given()
+			given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(retornaPredioComCamposNulos())
@@ -117,15 +119,14 @@ public class CadastroPredioIT {
 				.post()
 			.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", hasItems("nome", "descricao"));
 				
 	}
 
 	@Test
 	public void deveFalhar_QuandoCadastrarPredioComCamposDeTamanhosExcedidos(){
-		RestAssured
-			.given()
+			given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(retornaPredioComCamposDeTamanhosExcedidos())
@@ -133,14 +134,13 @@ public class CadastroPredioIT {
 				.post()
 			.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", hasItems("nome", "descricao"));
 	}
 
 	@Test
 	public void deveRetornarStatus400_QuandoCadastrarPredioComNomeJaExistente() {
-		RestAssured
-		.given()
+		given()
 			.body(retornaPredioComNomeJaExistente())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -148,7 +148,7 @@ public class CadastroPredioIT {
 			.post()
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
 	}
 
 	/**
@@ -162,18 +162,17 @@ public class CadastroPredioIT {
 		predioInput.setNome(novoNome);
 		predioInput.setDescricao(novaDescricao);
 
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(predioInput)
-			.when()
+		.when()
 				.put("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.OK.value())
-				.body("nome", Matchers.equalTo(novoNome))
-				.body("descricao", Matchers.equalTo(novaDescricao));
+				.body("nome", equalTo(novoNome))
+				.body("descricao", equalTo(novaDescricao));
 	}
 
 	@Test
@@ -183,17 +182,16 @@ public class CadastroPredioIT {
 		predioInput.setNome(predioSalvoNoBanco.getNome());
 		predioInput.setDescricao(predioSalvoNoBanco.getDescricao());
 
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(predioInput)
-			.when()
+		.when()
 				.put("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+				.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
 	}
 
 	/**
@@ -208,66 +206,62 @@ public class CadastroPredioIT {
 		predioInput.setNome(predioSetorAulasIV.getNome());
 		predioInput.setDescricao("Descrição para Testes");
 
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(predioInput)
-			.when()
+		.when()
 				.put("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.OK.value())
-				.body("nome", Matchers.equalTo(predioInput.getNome()))
-				.body("descricao", Matchers.equalTo(predioInput.getDescricao()));
+				.body("nome", equalTo(predioInput.getNome()))
+				.body("descricao", equalTo(predioInput.getDescricao()));
 	}
 
 	@Test
 	public void deveFalhar_QuandoAtualizarPredioComCamposVazios(){
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(retornaPredioComCamposVazios())
-			.when()
+		.when()
 				.put("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", hasItems("nome", "descricao"));
 	}
 
 	@Test
 	public void deveFalhar_QuandoAtualizarPredioComCamposNulos(){
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(retornaPredioComCamposNulos())
-			.when()
+		.when()
 				.put("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", Matchers.hasItems("nome", "descricao"));			
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", hasItems("nome", "descricao"));			
 	}
 
 	@Test
 	public void deveFalhar_QuandoAtualizarPredioComCamposDeTamanhosExcedidos(){
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(retornaPredioComCamposDeTamanhosExcedidos())
-			.when()
+		.when()
 				.put("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", Matchers.hasItems("nome", "descricao"));
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+				.body("validations.name", hasItems("nome", "descricao"));
 	}
 
 	/**
@@ -275,32 +269,29 @@ public class CadastroPredioIT {
 	 */
 	@Test
 	public void deveRetornarQuantidadeCorretaDePredios_QuandoConsultarPredios() {
-		RestAssured
-		.given()
+		given()
 			.accept(ContentType.JSON)
 		.when()
 			.get()
 		.then()
-			.body("content", Matchers.hasSize(quantidadePrediosCadastrados));
+			.body("content", hasSize(quantidadePrediosCadastrados));
 	}
 
 	@Test
 	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarPredioExistente() {
-		RestAssured
-		.given()
+		given()
 			.pathParam("predioId", predioSetorAulasIV.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{predioId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", Matchers.equalTo(predioSetorAulasIV.getNome()));
+			.body("nome", equalTo(predioSetorAulasIV.getNome()));
 	}
 	
 	@Test
 	public void deveRetornarStatus404_QuandoConsultarPredioInexistente() {
-		RestAssured
-		.given()
+		given()
 			.pathParam("predioId", PREDIO_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
 		.when()
@@ -314,44 +305,41 @@ public class CadastroPredioIT {
 	 */
 	@Test
 	public void deveRetornarStatus204_QuandoExcluirPredioComSucesso(){
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-			.when()
+		.when()
 				.delete("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 
 	@Test
 	public void deveFalhar_QuandoExcluirPredioEmUso(){
 		salvarSalaNoPredioDoSetorAulasIV();
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", predioSetorAulasIV.getId())
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-			.when()
+		.when()
 				.delete("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.CONFLICT.value())
-				.body("title", Matchers.equalTo(ENTIDADE_EM_USO_PROBLEM_TYPE));
+				.body("title", equalTo(ENTIDADE_EM_USO_PROBLEM_TYPE));
 	}
 
 	@Test
 	public void deveFalhar_QuandoExcluirPredioInexistente(){
-		RestAssured
-			.given()
+		given()
 				.pathParam("predioId", PREDIO_ID_INEXISTENTE)
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-			.when()
+		.when()
 				.delete("/{predioId}")
-			.then()
+		.then()
 				.statusCode(HttpStatus.NOT_FOUND.value())
-				.body("title", Matchers.equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
+				.body("title", equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
 	}
 
 	private void prepararDados() {
