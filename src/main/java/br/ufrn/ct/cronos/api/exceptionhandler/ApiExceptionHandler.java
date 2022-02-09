@@ -105,7 +105,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
-		System.out.println("##### ENTROU NO handleNegocioException");
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.ERRO_NEGOCIO;
 		String detail = ex.getMessage();
@@ -128,7 +127,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
     @ExceptionHandler(EntidadeEmUsoException.class)
 	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
-		System.out.println("##### ENTROU NO handleEntidadeEmUsoException");
 		HttpStatus status = HttpStatus.CONFLICT;
     	ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
     	String detail = ex.getMessage();
@@ -151,7 +149,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
-		ex.printStackTrace();
     	return handleMethodArgumentTypeMismatch(ex, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
@@ -168,8 +165,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, 
         	HttpHeaders headers, HttpStatus status, WebRequest request) {
     
-		System.out.println("##### ENTROU NO handleNoHandlerFoundException");
-		ex.printStackTrace();
     	ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
     	String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.", 
             	ex.getRequestURL());
@@ -218,7 +213,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		ex.printStackTrace();
 		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 
@@ -267,7 +261,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpStatus status, WebRequest request) {
 				//String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
 		String path = joinPath(ex.getPath());
-		System.out.println("##### ENTROU NO handleInvalidFormatException");
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 		String detail = String.format("A propriedade '%s' recebeu o valor '%s', "
 				+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo '%s'.",
@@ -320,7 +313,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         	MethodArgumentTypeMismatchException ex, HttpHeaders headers,
         	HttpStatus status, WebRequest request) {
 
-		System.out.println("###### ENTROU NO handleMethodArgumentTypeMismatch");
     	ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
 
     	String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
