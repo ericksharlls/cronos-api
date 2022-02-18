@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import br.ufrn.ct.cronos.domain.model.Periodo;
 import br.ufrn.ct.cronos.domain.repository.CustomizedPeriodoRepository;
 
+// classe que implementa a interface dos metodos que devem ser customizados
+
 @Repository
 public class PeriodoRepositoryImpl implements CustomizedPeriodoRepository{
     
