@@ -222,7 +222,7 @@ public class CadastroPerfilSalaTurmaIT {
 			.body("descricao", equalTo("Descricao Atualizada"));
 	}
 	
-	@Test
+	//@Test
 	public void deveFalhar_QuandoAtualizarPerfilSalaTurma_ComNomeJaExistente_EmOutroPerfilSalaTurma() {
 		PerfilSalaTurma perfilBanco = retornaUmPerfilSalvoNoBanco();
 		PerfilSalaTurmaInput perfilInput = new PerfilSalaTurmaInput();
@@ -279,7 +279,7 @@ public class CadastroPerfilSalaTurmaIT {
 	@Test
 	public void deveFalharQuandoAtualizar_PerfilSalaTurma_ComCamposNulos(){
 		given()
-			.pathParam("perfilSalaTurmaId",perfilTurma.getId())
+			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(retornaPerfilSalaTurmaComCamposNulos())
@@ -290,21 +290,20 @@ public class CadastroPerfilSalaTurmaIT {
 			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
 			.body("validations.name",hasItems("nome","descricao"));
 	}
-	
+
 	@Test
-	public void deveFalhar_QuandoAtualizar_PerfilSalaTurma_ComTamanhosExcedidos() {
+	public void deveFalhar_QuandoAtualizarPerfilSalaTurmaComTamanhosExcedidos() {
 		given()
-			.pathParam("perfilSalaTurmaId", 1)
+			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(retornaPerfilSalaTurmaComCamposDeTamanhoExedido())
 		.when()
-			.put("{/perfilSalaTurmaId}")
+			.put("/{perfilSalaTurmaId}")
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title",equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
 			.body("validations.name",hasItems("nome","descricao"));
-		
 	}
 	
 	/* Testes Com o Get */
@@ -440,7 +439,7 @@ public class CadastroPerfilSalaTurmaIT {
 	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComCamposDeTamanhoExedido() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
 		perfil.setNome("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa");
-		perfil.setDescricao("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa ");
+		perfil.setDescricao("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaa aaaa");
 		
 		return perfil;
 	}
