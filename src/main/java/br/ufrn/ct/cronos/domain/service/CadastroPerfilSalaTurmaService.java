@@ -1,5 +1,7 @@
 package br.ufrn.ct.cronos.domain.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -7,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
+ 
 
 @Service
 public class CadastroPerfilSalaTurmaService {
@@ -22,6 +26,14 @@ public class CadastroPerfilSalaTurmaService {
 	
     @Transactional
 	public PerfilSalaTurma salvar(PerfilSalaTurma perfilSalaTurma) {
+		perfilSalaTurmaRepository.detach(perfilSalaTurma);
+    	
+		Optional<PerfilSalaTurma> perfilExistente = perfilSalaTurmaRepository.findByNome(perfilSalaTurma.getNome());
+		
+		if(perfilExistente.isPresent() && !perfilExistente.get().equals(perfilSalaTurma)) {
+			throw new NegocioException(String.format("Já existe um Perfil de Sala cadastrado com o nome \'%s\'",perfilSalaTurma.getNome()));
+		}
+		
 		return perfilSalaTurmaRepository.save(perfilSalaTurma);
 	}
 	
