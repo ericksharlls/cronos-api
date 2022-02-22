@@ -13,6 +13,7 @@ import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
+
  
 
 @Service
@@ -25,7 +26,7 @@ public class CadastroPerfilSalaTurmaService {
 	private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
 	
     @Transactional
-	public PerfilSalaTurma salvar(PerfilSalaTurma perfilSalaTurma) {
+	public PerfilSalaTurma salvar(PerfilSalaTurma perfilSalaTurma){
 		perfilSalaTurmaRepository.detach(perfilSalaTurma);
     	
 		Optional<PerfilSalaTurma> perfilExistente = perfilSalaTurmaRepository.findByNome(perfilSalaTurma.getNome());
