@@ -18,6 +18,11 @@ public interface PerfilSalaTurmaRepository extends CustomJpaRepository<PerfilSal
 	@Query(value = "FROM PerfilSalaTurma pst WHERE :nome is null OR pst.nome like %:nome%",
 			countQuery = "SELECT count(pst.id) FROM PerfilSalaTurma pst WHERE :nome is null OR pst.nome like %:nome%")
 	Page<PerfilSalaTurma> findByNome(@Param("nome") String nome, Pageable pageable);
+<<<<<<< HEAD
 	
 	Optional<PerfilSalaTurma> findByNome(String nome);
+=======
+
+	Optional<PerfilSalaTurma> findByNome(@Param("nome") String nome); 
+>>>>>>> 73b5a23e91f56377852edb3f443d1e85ed4fba09
 }
