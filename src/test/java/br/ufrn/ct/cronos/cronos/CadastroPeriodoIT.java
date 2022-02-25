@@ -47,6 +47,8 @@ public class CadastroPeriodoIT {
 	
 	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
+	private static final String ENTIDADE_EM_USO_PROBLEM_TYPE = "Entidade em uso";
+	private static final int PERIODO_ID_INEXISTENTE = 81;
 	
 	@BeforeEach
 	public void setup () {
@@ -99,7 +101,7 @@ public class CadastroPeriodoIT {
 	/**** TESTES COM REQUISIÇÃ0 TIPO POST ****/
 	
 	@Test
-	public void deveAtribuirIdAoCadastrarPeriodoComDadosCorretos() {
+	public void deveAtribuirId_QuandoCadastrarPeriodoComDadosCorretos() {
 		retornaPeriodoComDadosCorretos();
 		
 		given()
@@ -122,7 +124,7 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveRetornarErroParaPeriodoComNomeJaExistente () {
+	public void deveFalhar_QuandoHouverPeriodoComNomeJaExistente () {
 		retornaPeriodoComNomeJaExistente(testePeriodo1.getNome());
 		
 		given()
@@ -137,7 +139,7 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveRetornarErroParaPeriodoEmIntervaloJaExistente() {
+	public void deveFalhar_QuandoHouverPeriodoEmIntervaloJaExistente() {
 		retornaPeriodoComIntervaloExistente();
 		
 		given()
@@ -152,7 +154,7 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveRetornarErroParaCamposVazios() {
+	public void deveFalhar_QuandoHouverCamposVazios() {
 		retornaPeriodoComAtributosVazios();
 		
 		given()
@@ -168,7 +170,7 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveRetornarErroParaCamposNulos() {
+	public void deveFalhar_QuandoHouverCamposNulos() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -189,11 +191,26 @@ public class CadastroPeriodoIT {
 	
 	/**** TESTE COM REQUISIÇÃO PUT ****/
 	@Test
-	public void deveRetornarErroParaAtualizarPeriodoParaNomeJaExistente () {
-		retornaPeriodoComNomeJaExistente(testePeriodo1.getNome());
+	public void deveRetornarSucesso_QuandoAtualizarPeriodoComDadosCorretos() {
+		retornaPeriodoComNomeEDatasAtualizadas(testePeriodo2);
 		
 		given()
-			.pathParam("periodoId", testePeriodo1.getId())
+			.pathParam("periodoId", testePeriodo2.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(periodoInput)
+		.when()
+			.put("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.OK.value());
+	}
+	
+	@Test
+	public void deveFalhar_QuandoAtualizarPeriodoParaNomeJaExistente() {
+		retornaPeriodoAtualizadoComNomeExistente(testePeriodo2);
+		
+		given()
+			.pathParam("periodoId", testePeriodo2.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -204,6 +221,86 @@ public class CadastroPeriodoIT {
 			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
 	}
 	
+	@Test
+	public void deveFalhar_QuandoAtualizarPeriodoParaIntervaloJaExistente() {
+		retornaPeriodoAtualizadoComDatasJaExistentes(testePeriodo2);
+		
+		given()
+			.pathParam("periodoId", testePeriodo2.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(periodoInput)
+		.when()
+			.put("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+	}
+	@Test
+	public void deveFalhar_QuandoAtualizarComCamposVazios() {
+		retornaPeriodoComAtualizarAtributosVazios(testePeriodo2);
+		
+		given()
+			.pathParam("periodoId", testePeriodo2.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(periodoInput)
+		.when()
+			.put("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("validations.name", hasItems("nome", "descricao"));
+	}
+	
+	@Test
+	public void deveFalhar_QuandoAtualizarComCamposNulos() {
+		this.periodoInput = new PeriodoInput(); 
+	
+		given()
+			.pathParam("periodoId", testePeriodo2.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(periodoInput)
+		.when()
+			.put("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("validations.name", hasItems("nome", 
+											   "descricao",
+											   "dataInicio",
+											   "dataTermino",
+											   "isPeriodoLetivo",
+											   "ano",
+											   "periodo"));
+	}
+	
+	/**** TESTES COM REQUISIÇÕES DELETE ****/
+	@Test
+	public void deveRetornarSucesso_QuandoExcluirPredioComSucesso(){
+		
+		given()
+			.pathParam("periodoId", testePeriodo2.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
+	@Test
+	public void deveFalhar_QuandoExcluirPredioInexistente(){
+		given()
+			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
 	private void retornaPeriodoComDadosCorretos() {
 		periodoInput.setNome("teste 03");
 		periodoInput.setDescricao("objeto de teste");
@@ -211,7 +308,6 @@ public class CadastroPeriodoIT {
 		periodoInput.setDataTermino(LocalDate.of(2022, 9, 19));
 		periodoInput.setIsPeriodoLetivo(true);
 		periodoInput.setAno(anoPeriodoTeste);
-		periodoInput.setIsPeriodoLetivo(true);
 		periodoInput.setPeriodo(++valorPeriodoTeste);
 		
 	}
@@ -234,5 +330,46 @@ public class CadastroPeriodoIT {
 		
 		periodoInput.setNome("");
 		periodoInput.setDescricao("");
+	}
+	
+	private void retornaPeriodoComNomeEDatasAtualizadas(Periodo periodoSalvo) {
+		periodoInput.setNome("teste 03");
+		periodoInput.setDescricao(periodoSalvo.getDescricao());
+		periodoInput.setDataInicio(LocalDate.of(2022, 7, 19));
+		periodoInput.setDataTermino(LocalDate.of(2022, 9, 19));
+		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
+		periodoInput.setAno(periodoSalvo.getAno());
+		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+	}
+	
+	private void retornaPeriodoAtualizadoComNomeExistente(Periodo periodoSalvo) {
+		periodoInput.setNome(testePeriodo1.getNome());
+		periodoInput.setDescricao(periodoSalvo.getDescricao());
+		periodoInput.setDataInicio(periodoSalvo.getDataInicio());
+		periodoInput.setDataTermino(periodoSalvo.getDataTermino());
+		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
+		periodoInput.setAno(periodoSalvo.getAno());
+		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+	}
+	
+	private void retornaPeriodoAtualizadoComDatasJaExistentes(Periodo periodoSalvo) {
+		periodoInput.setNome(periodoSalvo.getNome());
+		periodoInput.setDescricao(periodoSalvo.getDescricao());
+		periodoInput.setDataInicio(testePeriodo1.getDataInicio());
+		periodoInput.setDataTermino(testePeriodo1.getDataTermino());
+		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
+		periodoInput.setAno(periodoSalvo.getAno());
+		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+	}
+	
+	private void retornaPeriodoComAtualizarAtributosVazios(Periodo periodoSalvo) {
+		periodoInput.setNome("");
+		periodoInput.setDescricao("");
+		periodoInput.setDataInicio(periodoSalvo.getDataInicio());
+		periodoInput.setDataTermino(periodoSalvo.getDataTermino());
+		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
+		periodoInput.setAno(periodoSalvo.getAno());
+		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+		
 	}
 }
