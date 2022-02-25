@@ -19,9 +19,7 @@
 -- Current Database: `db_cronos`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `db_cronos` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-USE `db_cronos`;
+CREATE DATABASE db_cronos DEFAULT CHARACTER SET utf8;
 
 --
 -- Table structure for table `agendamento`
