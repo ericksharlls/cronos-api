@@ -42,7 +42,13 @@ public class CadastroPerfilSalaTurmaIT {
 	
 	@Autowired
 	private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
+	
+	@Autowired
+	private PredioRepository predioRepository;
 
+	@Autowired
+	private SalaRepository salaRepository;
+	
 	@Autowired
 	protected ModelMapper modelMapper;
 	
@@ -147,7 +153,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCampoNomeDeTamanhoExedido() {
+	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCampoNomeDeTamanhoExcedido() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -161,11 +167,11 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCampoDescicaoDeTamanhoExedido() {
+	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCampoDescicaoDeTamanhoExcedido() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(retornaPerfilSalaTurmaComDescricaoDeTamanhoExedido())
+			.body(retornaPerfilSalaTurmaComDescricaoDeTamanhoExcedido())
 		.when()
 			.post()
 		.then()
@@ -175,11 +181,11 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCamposDeTamanhoExedido() {
+	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCamposDeTamanhoExcedido() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(retornaPerfilSalaTurmaComCamposDeTamanhoExedido())
+			.body(retornaPerfilSalaTurmaComCamposDeTamanhoExcedido())
 		.when()
 			.post()
 		.then()
@@ -297,7 +303,7 @@ public class CadastroPerfilSalaTurmaIT {
 			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(retornaPerfilSalaTurmaComCamposDeTamanhoExedido())
+			.body(retornaPerfilSalaTurmaComCamposDeTamanhoExcedido())
 		.when()
 			.put("/{perfilSalaTurmaId}")
 		.then()
@@ -370,6 +376,21 @@ public class CadastroPerfilSalaTurmaIT {
 			.body("title", equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
 	}
 	
+	@Test
+	public void deveFalhar_QuandoExcluir_perfilSalaTurma_EmUso() {
+		SalvandoPerfilTurmaEmUmaSala();
+		given()
+			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("{perfilSalaTurmaId}")
+		.then()
+			.statusCode(HttpStatus.CONFLICT.value())
+			.body("title",equalTo(ENTIDADE_EM_USO_PROBLEM_TYPE));
+	}
+	
+	
 	public void prepararDados(){
 		PerfilSalaTurma perfil1 = new PerfilSalaTurma();
 		perfil1.setNome("Sala 1");
@@ -428,7 +449,7 @@ public class CadastroPerfilSalaTurmaIT {
 		return perfil;
 	}
 	
-	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComDescricaoDeTamanhoExedido() {
+	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComDescricaoDeTamanhoExcedido() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
 		perfil.setNome("Teste Nome");
 		perfil.setDescricao("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa ");
@@ -436,7 +457,7 @@ public class CadastroPerfilSalaTurmaIT {
 		return perfil;
 	}
 	
-	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComCamposDeTamanhoExedido() {
+	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComCamposDeTamanhoExcedido() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
 		perfil.setNome("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa");
 		perfil.setDescricao("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaa aaaa");
@@ -465,6 +486,32 @@ public class CadastroPerfilSalaTurmaIT {
 		perfilSalaTurmaRepository.save(perfil);
 		
 		return perfil;
+	}
+	
+	private void  SalvandoPerfilTurmaEmUmaSala() {
+		Sala sala = new Sala();
+		
+		sala.setNome("Sala A0");
+		sala.setDescricao("Sala do Setor IV");
+		sala.setCapacidade(50);
+		sala.setDistribuir(true);
+		sala.setPerfilSalaTurma(perfilTurma);
+		sala.setPredio(retornaUmPredio());
+		sala.setTipoQuadro("Touch");
+		sala.setUtilizarNaDistribuicao(true);
+		sala.setUtilizarNoAgendamento(true);
+		
+		salaRepository.save(sala);
+	}
+	
+	private Predio retornaUmPredio() {
+		Predio predio = new Predio();
+		predio.setNome("Nome Predio");
+		predio.setDescricao("Descricao predio");
+		predioRepository.save(predio);
+		
+		return predio;
+		
 	}
 	
 }
