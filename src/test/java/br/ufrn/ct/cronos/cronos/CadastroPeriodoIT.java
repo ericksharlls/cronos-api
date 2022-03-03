@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.time.LocalDate;
 
@@ -42,8 +43,10 @@ public class CadastroPeriodoIT {
 	private Periodo testePeriodo2;
 	private PeriodoInput periodoInput;
 	
-	Short anoPeriodoTeste;  
-	Short valorPeriodoTeste;
+	private Short anoPeriodoTeste;  
+	private Short valorPeriodoTeste;
+	private int contadorDePeriodosSalvos;
+	
 	
 	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
@@ -96,6 +99,8 @@ public class CadastroPeriodoIT {
 		testePeriodo2.setPeriodo(++valorPeriodoTeste);
 		
 		periodoRepository.save(testePeriodo2);
+		
+		contadorDePeriodosSalvos = (int) periodoRepository.count();
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO POST ****/
@@ -277,8 +282,9 @@ public class CadastroPeriodoIT {
 	}
 	
 	/**** TESTES COM REQUISIÇÕES DELETE ****/
+	
 	@Test
-	public void deveRetornarSucesso_QuandoExcluirPredioComSucesso(){
+	public void deveRetornarSucesso_QuandoExcluirPeriodoComSucesso(){
 		
 		given()
 			.pathParam("periodoId", testePeriodo2.getId())
@@ -290,7 +296,7 @@ public class CadastroPeriodoIT {
 			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 	@Test
-	public void deveFalhar_QuandoExcluirPredioInexistente(){
+	public void deveFalhar_QuandoExcluirPeriodoInexistente(){
 		given()
 			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
 			.contentType(ContentType.JSON)
@@ -301,6 +307,38 @@ public class CadastroPeriodoIT {
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
+	/*** TESTES COM RESQUISIÇÃO DO TIPO GET ****/
+	@Test
+	public void deveRetornarQuantidadeCorretaDePeriodos_QuandoBuscarPeriodos() {
+		given()
+			.accept(ContentType.JSON)
+		.when()
+			.get()
+		.then()
+			.body("content", hasSize(contadorDePeriodosSalvos));
+	}
+	
+	@Test
+	public void deveRetornarSucesso_QuandoConsultarPeriodoExistente() {
+		given()
+			.pathParam("periodoId", testePeriodo1.getId())
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("nome", equalTo(testePeriodo1.getNome()));
+	}
+	@Test
+	public void deveRetornarSucesso_QuandoConsultarPeriodoInexistente() {
+		given()
+			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
 	private void retornaPeriodoComDadosCorretos() {
 		periodoInput.setNome("teste 03");
 		periodoInput.setDescricao("objeto de teste");
