@@ -1,0 +1,32 @@
+package br.ufrn.ct.cronos.domain.model;
+
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "feriado")
+public class Feriado {
+	
+	@EqualsAndHashCode.Include
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_feriado")
+	private Long id;
+	
+	@Column(name = "data_feriado")
+	private LocalDate data;
+	
+	@Column(name = "nome_feriado")
+	private String nome;
+}
