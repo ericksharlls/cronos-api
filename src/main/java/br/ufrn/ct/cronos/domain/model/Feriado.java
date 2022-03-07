@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -29,4 +31,8 @@ public class Feriado {
 	
 	@Column(name = "nome_feriado")
 	private String nome;
+	
+	@ManyToOne
+	@JoinColumn(name =  "id_periodo")
+	private Periodo periodo;
 }
