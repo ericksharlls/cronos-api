@@ -61,6 +61,19 @@ public class FeriadoController {
 		return feriadoModelAssembler.toModel(feriado);
 	}
 	
+	@GetMapping("/Por-Periodo/{periodoId}")
+	public Page<FeriadoModel> FeriadosPorPeriodo(@PathVariable Long periodoId,@PageableDefault(size = 10) Pageable pageable){
+		Page<Feriado> feriadosPage = feriadoRepository.findByPeriodo(periodoId, pageable);
+		
+		Page<FeriadoModel> feriadoModelPage = new PageImpl<>(
+				feriadoModelAssembler.toCollectionModel(feriadosPage.getContent()),
+				pageable,
+				feriadosPage.getTotalElements()
+				);
+		return feriadoModelPage;
+	}
+	
+	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FeriadoModel cadastrar(@Valid @RequestBody FeriadoInput feriadoInput) {
