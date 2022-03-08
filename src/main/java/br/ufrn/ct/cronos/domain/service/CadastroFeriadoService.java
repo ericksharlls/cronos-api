@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.model.Periodo;
 import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
@@ -29,6 +30,26 @@ public class CadastroFeriadoService {
 	
 	@Autowired
 	private CadastroPeriodoService cadastroPeriodoService;
+	
+	@Transactional
+	public Feriado buscar(Long idFeriado) {
+		
+		return feriadoRepository.findById(idFeriado).orElseThrow(() -> new FeriadoNaoEncontradoException(idFeriado));
+	}
+	
+	@Transactional
+	public Feriado atualizar(Feriado feriadoAtual) {
+		feriadoRepository.detach(feriadoAtual);
+		
+		Long periodoId = feriadoAtual.getPeriodo().getId();
+		
+		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
+		
+		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual.getData(), periodo);
+		verificarSeJaExisteUmFeriadoComMesmaData(feriadoAtual);
+		
+		return feriadoRepository.save(feriadoAtual);
+	}
 	
 	@Transactional
 	public Feriado salvar(Feriado feriado) {
@@ -73,4 +94,5 @@ public class CadastroFeriadoService {
 			throw new NegocioException(MSG_FERIADO_FORA_DO_PERIODO_INFORMADO);
 		}
 	}
+
 }
