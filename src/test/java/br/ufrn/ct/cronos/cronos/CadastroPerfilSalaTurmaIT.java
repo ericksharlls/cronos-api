@@ -90,39 +90,7 @@ public class CadastroPerfilSalaTurmaIT {
 	
 	
 	@Test
-	public void Deve_Falhar_QuandoCadastrarPerfilDeSalaTurmaComNomeVazio(){
-		PerfilSalaTurmaInput perfil = retornaPerfilSalaTurmaComONomeVazio();
-			
-			given()
-				.contentType(ContentType.JSON)
-				.accept(ContentType.JSON)
-				.body(perfil)
-			.when()
-				.post()
-			.then()
-				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", hasItems("nome"));
-	}
-	
-	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComDescricaoVazio() {
-		PerfilSalaTurmaInput perfil = retornaPerfilSalaTurmaComADescricaoVazio();
-		
-		given()
-			.contentType(ContentType.JSON)
-			.accept(ContentType.JSON)
-			.body(perfil)
-		.when()
-			.post()
-		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-			.body("validations.name",hasItems("descricao"));
-	}
-	
-	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTrumaComCamposVazios() {
+	public void deveFalhar_QuandoCadastrarPerfilSalaTrumaComCamposVazios() {
 		PerfilSalaTurmaInput perfil = retornaPerfilSalaTurmaComCamposVazios();
 		
 		given()
@@ -139,7 +107,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCamposNulos() {
+	public void deveFalhar_QuandoCadastrarPerfilSalaTurmaComCamposNulos() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -152,36 +120,9 @@ public class CadastroPerfilSalaTurmaIT {
 			.body("validations.name", hasItems("nome","descricao"));
 	}
 	
-	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCampoNomeDeTamanhoExcedido() {
-		given()
-			.contentType(ContentType.JSON)
-			.accept(ContentType.JSON)
-			.body(retornaPerfilSalaTurmaComNomeDeTamanhoExedido())
-		.when()
-			.post()
-		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-			.body("validations.name", hasItems("nome"));
-	}
 	
 	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCampoDescicaoDeTamanhoExcedido() {
-		given()
-			.contentType(ContentType.JSON)
-			.accept(ContentType.JSON)
-			.body(retornaPerfilSalaTurmaComDescricaoDeTamanhoExcedido())
-		.when()
-			.post()
-		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-			.body("validations.name", hasItems("descricao"));
-	}
-	
-	@Test
-	public void deve_Falhar_QuandoCadastrarPerfilSalaTurmaComCamposDeTamanhoExcedido() {
+	public void deveFalhar_QuandoCadastrarPerfilSalaTurmaComCamposDeTamanhoExcedido() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -195,7 +136,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}	
 	
 	@Test
-	public void deveRetornarStatus400_QuandoCadastrarPerfilSalaTurma_ComNomeJaExistente() {
+	public void deveRetornarStatus400_QuandoCadastrarPerfilSalaTurmaComNomeJaExistente() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -210,7 +151,7 @@ public class CadastroPerfilSalaTurmaIT {
 	/* Testes com o PUT*/
 	
 	@Test
-	public void deveRetornarCodigo200_quandoAtualizar_PerfilSalaTurma_ComOsDadosCorretos() {
+	public void deveRetornarCodigo200_QuandoAtualizarPerfilSalaTurmaComOsDadosCorretos() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
 		perfil.setNome("Nome Atualizado");
 		perfil.setDescricao("Descricao Atualizada");
@@ -224,12 +165,12 @@ public class CadastroPerfilSalaTurmaIT {
 			.put("/{perfilSalaTurmaId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome",equalTo("Nome Atualizado"))
-			.body("descricao", equalTo("Descricao Atualizada"));
+			.body("nome",equalTo(perfil.getNome()))
+			.body("descricao", equalTo(perfil.getNome()));
 	}
 	
-	//@Test
-	public void deveFalhar_QuandoAtualizarPerfilSalaTurma_ComNomeJaExistente_EmOutroPerfilSalaTurma() {
+	@Test
+	public void deveFalhar_QuandoAtualizarPerfilSalaTurmaComNomeJaExistenteEmOutroPerfilSalaTurma() {
 		PerfilSalaTurma perfilBanco = retornaUmPerfilSalvoNoBanco();
 		PerfilSalaTurmaInput perfilInput = new PerfilSalaTurmaInput();
 		perfilInput.setNome(perfilBanco.getNome());
@@ -248,7 +189,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deveRetornarCodigo200_QuandoAtualizarDescricaoDe_PerfilSalaTuma_ComNomeJaExistente() {
+	public void deveRetornarCodigo200_QuandoAtualizarDescricaoDePerfilSalaTumaComNomeJaExistente() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
 		perfil.setNome(perfilTurma.getNome());
 		perfil.setDescricao("Descricao teste");
@@ -267,7 +208,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deveFalhar_QuandoAtualizar_PerfilSalaTurma_ComCamposVazios() {
+	public void deveFalhar_QuandoAtualizarPerfilSalaTurmaComCamposVazios() {
 		given()
 			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
@@ -283,7 +224,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deveFalharQuandoAtualizar_PerfilSalaTurma_ComCamposNulos(){
+	public void deveFalhar_QuandoAtualizarPerfilSalaTurmaComCamposNulos(){
 		given()
 			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
@@ -315,7 +256,7 @@ public class CadastroPerfilSalaTurmaIT {
 	/* Testes Com o Get */
 	
 	@Test
-	public void deveRetornarQuantidadeCorretaDe_PerfisSalaTurma_Cadastrados() {
+	public void deveRetornar_QuantidadeCorretaDePerfisSalaTurmaCadastrados() {
 		given()
 			.accept(ContentType.JSON)
 		.when()
@@ -325,7 +266,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deveRetornarRespostaEStatusCorretosQuandoConsutar_PerfilSalaTurmaExistente() {
+	public void deveRetornarRespostaEStatusCorretos_QuandoConsutarPerfilSalaTurmaExistente() {
 		given()
 			.pathParam("perfilSalaTurmaId",perfilTurma.getId())
 			.accept(ContentType.JSON)
@@ -337,7 +278,7 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deveRetornar404_QuandoConsutar_PerfilSalaTurmaInexistente() {
+	public void deveRetornar404_QuandoConsutarPerfilSalaTurmaInexistente() {
 		int id = 20;
 		given()
 			.pathParam("perfilSalaTurmaId", id)
@@ -351,7 +292,7 @@ public class CadastroPerfilSalaTurmaIT {
 	/* Testes com o DELETE */
 	
 	@Test
-	public void deveRetornar204_QuandoExcluirPerfilSalaTurma_ComSucesso() {
+	public void deveRetornar204_QuandoExcluirPerfilSalaTurmaComSucesso() {
 		given()
 			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
@@ -377,8 +318,8 @@ public class CadastroPerfilSalaTurmaIT {
 	}
 	
 	@Test
-	public void deveFalhar_QuandoExcluir_perfilSalaTurma_EmUso() {
-		SalvandoPerfilTurmaEmUmaSala();
+	public void deveFalhar_QuandoExcluirperfilSalaTurmaEmUso() {
+		salvandoPerfilTurmaEmUmaSala();
 		given()
 			.pathParam("perfilSalaTurmaId", perfilTurma.getId())
 			.contentType(ContentType.JSON)
@@ -418,21 +359,6 @@ public class CadastroPerfilSalaTurmaIT {
 		return perfil;
 	}
 	
-	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComONomeVazio() {
-		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
-		perfil.setNome("");
-		perfil.setDescricao("Descricao teste");
-		
-		return perfil;
-	}
-	
-	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComADescricaoVazio() {
-		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
-		perfil.setNome("Sala teste");
-		perfil.setDescricao("");
-		
-		return perfil;
-	}
 	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComCamposVazios() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
 		perfil.setNome("");
@@ -441,21 +367,6 @@ public class CadastroPerfilSalaTurmaIT {
 		return perfil;
 	}
 	
-	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComNomeDeTamanhoExedido() {
-		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
-		perfil.setNome("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa");
-		perfil.setDescricao("Teste Descricao");
-		
-		return perfil;
-	}
-	
-	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComDescricaoDeTamanhoExcedido() {
-		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
-		perfil.setNome("Teste Nome");
-		perfil.setDescricao("aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa aaaaaaaaaa ");
-		
-		return perfil;
-	}
 	
 	private PerfilSalaTurmaInput retornaPerfilSalaTurmaComCamposDeTamanhoExcedido() {
 		PerfilSalaTurmaInput perfil = new PerfilSalaTurmaInput();
@@ -488,7 +399,7 @@ public class CadastroPerfilSalaTurmaIT {
 		return perfil;
 	}
 	
-	private void  SalvandoPerfilTurmaEmUmaSala() {
+	private void  salvandoPerfilTurmaEmUmaSala() {
 		Sala sala = new Sala();
 		
 		sala.setNome("Sala A0");
