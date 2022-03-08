@@ -1,6 +1,7 @@
 package br.ufrn.ct.cronos.domain.service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -88,9 +89,9 @@ public class CadastroFeriadoService {
 	private void verificarSeJaExisteUmFeriadoComMesmaData(Feriado feriado) {
 		LocalDate data = feriado.getData();
 		
-		Boolean existe = feriadoRepository.verificarSeJaHaUmFeriadoComMesmaData(data);
+		Optional<Feriado> feriadoExistente = feriadoRepository.findByData(data);
 		
-		if(existe) {
+		if(feriadoExistente.isPresent() && !feriadoExistente.get().equals(feriado)) {
 			throw new NegocioException(MSG_FERIADO_FORA_DO_PERIODO_INFORMADO);
 		}
 	}
