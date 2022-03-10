@@ -26,13 +26,14 @@ public class Feriado {
 	@Column(name = "id_feriado")
 	private Long id;
 	
+	@Column(name = "descricao_feriado")
+	private String descricao;
+	
 	@Column(name = "data_feriado")
 	private LocalDate data;
-	
-	@Column(name = "nome_feriado")
-	private String nome;
 	
 	@ManyToOne
 	@JoinColumn(name =  "id_periodo")
 	private Periodo periodo;
 }
+

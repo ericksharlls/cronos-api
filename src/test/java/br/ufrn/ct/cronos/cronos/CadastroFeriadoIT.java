@@ -1,5 +1,12 @@
 package br.ufrn.ct.cronos.cronos;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.ArgumentMatchers.notNull;
+
+import java.time.LocalDate;
+
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,16 +14,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import br.ufrn.ct.cronos.api.model.input.FeriadoInput;
+import br.ufrn.ct.cronos.api.model.input.PeriodoIdInput;
 import br.ufrn.ct.cronos.domain.model.Feriado;
+import br.ufrn.ct.cronos.domain.model.Periodo;
 import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
+import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 //@SpringBootTest //fornece as funcionalidades do Spring Boot nos testes
 @ExtendWith(SpringExtension.class) //faz com q o contexto do Spring seja levantado no momento da execução dos testes
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource("/application-test.properties")
 public class CadastroFeriadoIT {
+	
 	@Autowired
 	private Flyway flyway;
 	
@@ -26,12 +42,15 @@ public class CadastroFeriadoIT {
 	@Autowired
 	private FeriadoRepository feriadoRepository;
 	
-	private Feriado testeFeriado;
+	@Autowired
+	private PeriodoRepository periodoRepository;
+	
+	private Feriado feriadoDomainObject;
+	private FeriadoInput feriadoInput;
+	private Periodo periodoDomainObject;
 	
 	@BeforeEach
 	public void setup () {
-		// para fazer o log do q foi enviado na requisição e recebido na resposta quando o teste falha
-		
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = port;
 		RestAssured.basePath = "/feriados";
@@ -40,19 +59,54 @@ public class CadastroFeriadoIT {
 		
 		init();
 	}
-	private void clear() {
-		
-	}
 
 	private void init() {
-	
+		salvaPeriodoDomainObjectNoBanco();
 		
+		feriadoDomainObject = new Feriado();
+		
+		feriadoDomainObject.setDescricao("Carnaval");
+		feriadoDomainObject.setData(LocalDate.of(2022, 2, 27));
+		feriadoDomainObject.setPeriodo(periodoDomainObject);
+		
+		feriadoRepository.save(feriadoDomainObject);
+	} 
+	
+	private void salvaPeriodoDomainObjectNoBanco() {
+		periodoDomainObject = new Periodo();
+		
+		short anoPeriodoTeste = 2022;
+		short valorPeriodoTeste = 1;
+		
+		periodoDomainObject.setNome("teste 01");
+		periodoDomainObject.setDescricao("objeto de teste");
+		periodoDomainObject.setDataInicio(LocalDate.of(2022, 2, 9));
+		periodoDomainObject.setDataTermino(LocalDate.of(2022, 3, 22));
+		periodoDomainObject.setIsPeriodoLetivo(true);
+		periodoDomainObject.setAno(anoPeriodoTeste);
+		periodoDomainObject.setIsPeriodoLetivo(true);
+		periodoDomainObject.setPeriodo(valorPeriodoTeste);
+		
+		periodoRepository.save(periodoDomainObject);
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO POST ****/
 	@Test
 	private void deveAtribuirId_QuandoCadastrarFeriadoComDadosCorretos() {
+		settaDadosCorretosEmFeriadoInput();
 		
+		given()
+		.contentType(ContentType.JSON)
+		.accept(ContentType.JSON)
+		.body(feriadoInput)
+	.when()
+		.post()
+	.then()
+		.body("id", notNullValue())
+		.body("descricao", equalTo(feriadoInput.getDescricao()))
+		.body("data", equalTo(feriadoInput.getData()))
+		.body("periodo", notNull())
+		.statusCode(HttpStatus.CREATED.value());
 	}
 	
 	@Test
@@ -120,4 +174,15 @@ public class CadastroFeriadoIT {
 		
 	}
 	
+	private void settaDadosCorretosEmFeriadoInput() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("Feriado de Carnaval");
+		feriadoInput.setData(LocalDate.of(2022, 2, 28));
+		feriadoInput.setPeriodo(periodoIdInput);
+	}
 }

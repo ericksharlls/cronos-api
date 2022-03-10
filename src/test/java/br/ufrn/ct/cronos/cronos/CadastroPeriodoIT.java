@@ -39,8 +39,7 @@ public class CadastroPeriodoIT {
 	@Autowired 
 	private PeriodoRepository periodoRepository;
 	
-	private Periodo testePeriodo1;
-	private Periodo testePeriodo2;
+	private Periodo periodoDomainObject;
 	private PeriodoInput periodoInput;
 	
 	private Short anoPeriodoTeste;  
@@ -65,41 +64,26 @@ public class CadastroPeriodoIT {
 		
 		init();
 	}
-	// cria novas instancias dos objetos quando necessario
-	private void clear () {
-		testePeriodo1 = new Periodo();
-		testePeriodo2 = new Periodo();
-		periodoInput = new PeriodoInput(); 
-	}
+	
 	// Popula os objetos e setta no banco de dados para realizar as demais operações
 	private void init() {
-		clear();
+		periodoDomainObject = new Periodo();
+		periodoInput = new PeriodoInput(); 
 		
 		anoPeriodoTeste = 2022;
 		valorPeriodoTeste = 1;
 		
-		testePeriodo1.setNome("teste 01");
-		testePeriodo1.setDescricao("objeto de teste");
-		testePeriodo1.setDataInicio(LocalDate.now());
-		testePeriodo1.setDataTermino(LocalDate.of(2022, 3, 22));
-		testePeriodo1.setIsPeriodoLetivo(true);
-		testePeriodo1.setAno(anoPeriodoTeste);
-		testePeriodo1.setIsPeriodoLetivo(true);
-		testePeriodo1.setPeriodo(valorPeriodoTeste);
+		periodoDomainObject.setNome("teste 01");
+		periodoDomainObject.setDescricao("objeto de teste");
+		periodoDomainObject.setDataInicio(LocalDate.of(2022, 2, 9));
+		periodoDomainObject.setDataTermino(LocalDate.of(2022, 3, 22));
+		periodoDomainObject.setIsPeriodoLetivo(true);
+		periodoDomainObject.setAno(anoPeriodoTeste);
+		periodoDomainObject.setIsPeriodoLetivo(true);
+		periodoDomainObject.setPeriodo(valorPeriodoTeste);
 		
-		periodoRepository.save(testePeriodo1);
-		
-		testePeriodo2.setNome("teste 02");
-		testePeriodo2.setDescricao("objeto de teste");
-		testePeriodo2.setDataInicio(LocalDate.of(2022, 4, 19));
-		testePeriodo2.setDataTermino(LocalDate.of(2022, 6, 19));
-		testePeriodo2.setIsPeriodoLetivo(true);
-		testePeriodo2.setAno(anoPeriodoTeste);
-		testePeriodo2.setIsPeriodoLetivo(true);
-		testePeriodo2.setPeriodo(++valorPeriodoTeste);
-		
-		periodoRepository.save(testePeriodo2);
-		
+		periodoRepository.save(periodoDomainObject);
+				
 		contadorDePeriodosSalvos = (int) periodoRepository.count();
 	}
 	
@@ -107,7 +91,7 @@ public class CadastroPeriodoIT {
 	
 	@Test
 	public void deveAtribuirId_QuandoCadastrarPeriodoComDadosCorretos() {
-		retornaPeriodoComDadosCorretos();
+		settaPeriodoInputComDadosCorretos();
 		
 		given()
 			.contentType(ContentType.JSON)
@@ -122,15 +106,15 @@ public class CadastroPeriodoIT {
 			.body("dataInicio", equalTo(periodoInput.getDataInicio().toString()))
 			.body("dataTermino", equalTo(periodoInput.getDataTermino().toString()))
 			.body("isPeriodoLetivo", equalTo(periodoInput.getIsPeriodoLetivo()))
-			.body("ano", equalTo(2022))
-			.body("periodo", equalTo(3))
+			.body("ano", equalTo(2022)) // nao consigo passar o valor do objeto
+			.body("periodo", equalTo(2)) // nao consigo passar o valor do objeto
 			.statusCode(HttpStatus.CREATED.value());
 		
 	}
 	
 	@Test
-	public void deveFalhar_QuandoHouverPeriodoComNomeJaExistente () {
-		retornaPeriodoComNomeJaExistente(testePeriodo1.getNome());
+	public void deveFalhar_QuandoCadastrarPeriodoComNomeJaExistente () {
+		settaPeriodoInputComNomeJaExistente(periodoDomainObject.getNome());
 		
 		given()
 			.contentType(ContentType.JSON)
@@ -144,8 +128,8 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveFalhar_QuandoHouverPeriodoEmIntervaloJaExistente() {
-		retornaPeriodoComIntervaloExistente();
+	public void deveFalhar_QuandoCadastrarPeriodoEmIntervaloJaExistente() {
+		settaPeriodoInputComIntervaloExistente();
 		
 		given()
 			.contentType(ContentType.JSON)
@@ -159,8 +143,8 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveFalhar_QuandoHouverCamposVazios() {
-		retornaPeriodoComAtributosVazios();
+	public void deveFalhar_QuandoCadastrarPeriodoComCamposVazios() {
+		settaPeriodoInputComAtributosVazios();
 		
 		given()
 			.contentType(ContentType.JSON)
@@ -175,7 +159,7 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveFalhar_QuandoHouverCamposNulos() {
+	public void deveFalhar_QuandoCadastrarPeriodoComCamposNulos() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -197,10 +181,10 @@ public class CadastroPeriodoIT {
 	/**** TESTE COM REQUISIÇÃO PUT ****/
 	@Test
 	public void deveRetornarSucesso_QuandoAtualizarPeriodoComDadosCorretos() {
-		retornaPeriodoComNomeEDatasAtualizadas(testePeriodo2);
+		settaPeriodoInputComNomeEDatasAtualizadas(periodoDomainObject);
 		
 		given()
-			.pathParam("periodoId", testePeriodo2.getId())
+			.pathParam("periodoId", periodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -212,10 +196,12 @@ public class CadastroPeriodoIT {
 	
 	@Test
 	public void deveFalhar_QuandoAtualizarPeriodoParaNomeJaExistente() {
-		retornaPeriodoAtualizadoComNomeExistente(testePeriodo2);
+		Periodo novoPeriodoDomainObject = criaNovoPeriodoDomainObject();
+		
+		settaPeriodoInputAtualizadoComNomeExistente(novoPeriodoDomainObject);
 		
 		given()
-			.pathParam("periodoId", testePeriodo2.getId())
+			.pathParam("periodoId", novoPeriodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -228,10 +214,12 @@ public class CadastroPeriodoIT {
 	
 	@Test
 	public void deveFalhar_QuandoAtualizarPeriodoParaIntervaloJaExistente() {
-		retornaPeriodoAtualizadoComDatasJaExistentes(testePeriodo2);
+		Periodo novoPeriodoDomainObject = criaNovoPeriodoDomainObject();
+		
+		settaPeriodoInputAtualizadoComDatasJaExistentes(novoPeriodoDomainObject);
 		
 		given()
-			.pathParam("periodoId", testePeriodo2.getId())
+			.pathParam("periodoId", novoPeriodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -243,10 +231,12 @@ public class CadastroPeriodoIT {
 	}
 	@Test
 	public void deveFalhar_QuandoAtualizarComCamposVazios() {
-		retornaPeriodoComAtualizarAtributosVazios(testePeriodo2);
+		Periodo novoPeriodoDomainObject = criaNovoPeriodoDomainObject();
+		
+		settaPeriodoInputParaAtualizarAtributosVazios(novoPeriodoDomainObject);
 		
 		given()
-			.pathParam("periodoId", testePeriodo2.getId())
+			.pathParam("periodoId", novoPeriodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -261,9 +251,9 @@ public class CadastroPeriodoIT {
 	@Test
 	public void deveFalhar_QuandoAtualizarComCamposNulos() {
 		this.periodoInput = new PeriodoInput(); 
-	
+		
 		given()
-			.pathParam("periodoId", testePeriodo2.getId())
+			.pathParam("periodoId", periodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -287,7 +277,7 @@ public class CadastroPeriodoIT {
 	public void deveRetornarSucesso_QuandoExcluirPeriodoComSucesso(){
 		
 		given()
-			.pathParam("periodoId", testePeriodo2.getId())
+			.pathParam("periodoId", periodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -321,13 +311,13 @@ public class CadastroPeriodoIT {
 	@Test
 	public void deveRetornarSucesso_QuandoConsultarPeriodoExistente() {
 		given()
-			.pathParam("periodoId", testePeriodo1.getId())
+			.pathParam("periodoId", periodoDomainObject.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{periodoId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", equalTo(testePeriodo1.getNome()));
+			.body("nome", equalTo(periodoDomainObject.getNome()));
 	}
 	@Test
 	public void deveRetornarSucesso_QuandoConsultarPeriodoInexistente() {
@@ -339,7 +329,7 @@ public class CadastroPeriodoIT {
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
-	private void retornaPeriodoComDadosCorretos() {
+	private void settaPeriodoInputComDadosCorretos() {
 		periodoInput.setNome("teste 03");
 		periodoInput.setDescricao("objeto de teste");
 		periodoInput.setDataInicio(LocalDate.of(2022, 7, 19));
@@ -350,28 +340,28 @@ public class CadastroPeriodoIT {
 		
 	}
 	
-	private void retornaPeriodoComNomeJaExistente(String nomeJaExistente) {
-		retornaPeriodoComDadosCorretos();
+	private void settaPeriodoInputComNomeJaExistente(String nomeJaExistente) {
+		settaPeriodoInputComDadosCorretos();
 		
 		periodoInput.setNome(nomeJaExistente);
 	}
 	
-	private void retornaPeriodoComIntervaloExistente() {
-		retornaPeriodoComDadosCorretos();
+	private void settaPeriodoInputComIntervaloExistente() {
+		settaPeriodoInputComDadosCorretos();
 		
-		periodoInput.setDataInicio(testePeriodo1.getDataInicio());
-		periodoInput.setDataTermino(testePeriodo1.getDataTermino());
+		periodoInput.setDataInicio(periodoDomainObject.getDataInicio());
+		periodoInput.setDataTermino(periodoDomainObject.getDataTermino());
 	}
 	
-	private void retornaPeriodoComAtributosVazios() {
-		retornaPeriodoComDadosCorretos();
+	private void settaPeriodoInputComAtributosVazios() {
+		settaPeriodoInputComDadosCorretos();
 		
 		periodoInput.setNome("");
 		periodoInput.setDescricao("");
 	}
 	
-	private void retornaPeriodoComNomeEDatasAtualizadas(Periodo periodoSalvo) {
-		periodoInput.setNome("teste 03");
+	private void settaPeriodoInputComNomeEDatasAtualizadas(Periodo periodoSalvo) {
+		periodoInput.setNome(periodoSalvo.getDescricao());
 		periodoInput.setDescricao(periodoSalvo.getDescricao());
 		periodoInput.setDataInicio(LocalDate.of(2022, 7, 19));
 		periodoInput.setDataTermino(LocalDate.of(2022, 9, 19));
@@ -380,8 +370,8 @@ public class CadastroPeriodoIT {
 		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
 	}
 	
-	private void retornaPeriodoAtualizadoComNomeExistente(Periodo periodoSalvo) {
-		periodoInput.setNome(testePeriodo1.getNome());
+	private void settaPeriodoInputAtualizadoComNomeExistente(Periodo periodoSalvo) {
+		periodoInput.setNome(periodoDomainObject.getNome());
 		periodoInput.setDescricao(periodoSalvo.getDescricao());
 		periodoInput.setDataInicio(periodoSalvo.getDataInicio());
 		periodoInput.setDataTermino(periodoSalvo.getDataTermino());
@@ -390,17 +380,17 @@ public class CadastroPeriodoIT {
 		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
 	}
 	
-	private void retornaPeriodoAtualizadoComDatasJaExistentes(Periodo periodoSalvo) {
+	private void settaPeriodoInputAtualizadoComDatasJaExistentes(Periodo periodoSalvo) {
 		periodoInput.setNome(periodoSalvo.getNome());
 		periodoInput.setDescricao(periodoSalvo.getDescricao());
-		periodoInput.setDataInicio(testePeriodo1.getDataInicio());
-		periodoInput.setDataTermino(testePeriodo1.getDataTermino());
+		periodoInput.setDataInicio(periodoDomainObject.getDataInicio());
+		periodoInput.setDataTermino(periodoDomainObject.getDataTermino());
 		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
 		periodoInput.setAno(periodoSalvo.getAno());
 		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
 	}
 	
-	private void retornaPeriodoComAtualizarAtributosVazios(Periodo periodoSalvo) {
+	private void settaPeriodoInputParaAtualizarAtributosVazios(Periodo periodoSalvo) {
 		periodoInput.setNome("");
 		periodoInput.setDescricao("");
 		periodoInput.setDataInicio(periodoSalvo.getDataInicio());
@@ -410,4 +400,22 @@ public class CadastroPeriodoIT {
 		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
 		
 	}
+	
+	private Periodo criaNovoPeriodoDomainObject() {
+		 Periodo novoPeriodoDomain = new Periodo();
+		 
+		novoPeriodoDomain.setNome("teste 02");
+		novoPeriodoDomain.setDescricao("novo objeto de teste");
+		novoPeriodoDomain.setDataInicio(LocalDate.of(2022, 4, 9));
+		novoPeriodoDomain.setDataTermino(LocalDate.of(2022, 5, 22));
+		novoPeriodoDomain.setIsPeriodoLetivo(true);
+		novoPeriodoDomain.setAno(anoPeriodoTeste);
+		novoPeriodoDomain.setIsPeriodoLetivo(true);
+		novoPeriodoDomain.setPeriodo(valorPeriodoTeste);
+			
+		periodoRepository.save(novoPeriodoDomain);
+		
+		return novoPeriodoDomain;
+	}
+
 }

@@ -12,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.model.Periodo;
 import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
-
 
 
 @Service 
