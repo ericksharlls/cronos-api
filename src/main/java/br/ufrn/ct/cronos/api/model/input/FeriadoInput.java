@@ -13,13 +13,13 @@ import lombok.Setter;
 @Setter
 public class FeriadoInput {
 
-	@NotNull
-	private LocalDate data;
-	
-	@NotBlankAndSizeForString(max = 30)
+	@NotBlankAndSizeForString(max = 50)
 	private String descricao;
 	
 	@NotNull
+	private LocalDate data;
+	
 	@Valid
+	@NotNull
 	private PeriodoIdInput periodo; 
 }

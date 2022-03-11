@@ -1,7 +1,6 @@
 package br.ufrn.ct.cronos.domain.service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +44,8 @@ public class CadastroFeriadoService {
 		
 		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
 		
+		feriadoAtual.setPeriodo(periodo);
+		
 		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual.getData(), periodo);
 		verificarSeJaExisteUmFeriadoComMesmaData(feriadoAtual);
 		
@@ -56,6 +57,8 @@ public class CadastroFeriadoService {
 		Long periodoId = feriado.getPeriodo().getId();
 		
 		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
+		
+		feriado.setPeriodo(periodo);
 		
 		vericarSeOFeriadoEstaNoPeriodoInformado(feriado.getData(), periodo);
 		verificarSeJaExisteUmFeriadoComMesmaData(feriado);

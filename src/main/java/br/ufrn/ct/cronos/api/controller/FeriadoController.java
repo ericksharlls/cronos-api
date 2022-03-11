@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +22,14 @@ import br.ufrn.ct.cronos.api.assembler.FeriadoInputDisassembler;
 import br.ufrn.ct.cronos.api.assembler.FeriadoModelAssembler;
 import br.ufrn.ct.cronos.api.model.FeriadoModel;
 import br.ufrn.ct.cronos.api.model.input.FeriadoInput;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
 import br.ufrn.ct.cronos.domain.service.CadastroFeriadoService;
 
 @RestController
-@RequestMapping(value = "/feriados", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/feriados")
 public class FeriadoController {
 	
 	@Autowired
@@ -61,26 +62,32 @@ public class FeriadoController {
 		return feriadoModelAssembler.toModel(feriado);
 	}
 	
-	@GetMapping("/Por-Periodo/{periodoId}")
-	public Page<FeriadoModel> FeriadosPorPeriodo(@PathVariable Long periodoId,@PageableDefault(size = 10) Pageable pageable){
-		Page<Feriado> feriadosPage = feriadoRepository.findByPeriodo(periodoId, pageable);
-		
-		Page<FeriadoModel> feriadoModelPage = new PageImpl<>(
-				feriadoModelAssembler.toCollectionModel(feriadosPage.getContent()),
-				pageable,
-				feriadosPage.getTotalElements()
-				);
-		return feriadoModelPage;
-	}
+//	@GetMapping("/Por-Periodo/{periodoId}")
+//	public Page<FeriadoModel> FeriadosPorPeriodo(@PathVariable Long periodoId,@PageableDefault(size = 10) Pageable pageable){
+//		Page<Feriado> feriadosPage = feriadoRepository.findByPeriodo(periodoId, pageable);
+//		
+//		Page<FeriadoModel> feriadoModelPage = new PageImpl<>(
+//				feriadoModelAssembler.toCollectionModel(feriadosPage.getContent()),
+//				pageable,
+//				feriadosPage.getTotalElements()
+//				);
+//		return feriadoModelPage;
+//	}
 	
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public FeriadoModel cadastrar(@Valid @RequestBody FeriadoInput feriadoInput) {
-		Feriado feriado = feriadoInputDisassembler.toDomainObject(feriadoInput);
-		feriado = feriadoService.salvar(feriado);
+	public FeriadoModel cadastrar(@RequestBody @Valid FeriadoInput feriadoInput) {
+		try {
+			Feriado feriado = feriadoInputDisassembler.toDomainObject(feriadoInput);
+			feriado = feriadoService.salvar(feriado);
+			
+			return feriadoModelAssembler.toModel(feriado);
+			
+		} catch (PeriodoNaoEncontradoException e ) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 		
-		return feriadoModelAssembler.toModel(feriado);
 	}
 
 	@PutMapping("/{idFeriado}")
@@ -88,10 +95,13 @@ public class FeriadoController {
         Feriado feriadoAtual = feriadoService.buscar(idFeriado);
 		
         feriadoInputDisassembler.copyToDomainObject(feriadoInput, feriadoAtual);
-        
-        feriadoAtual = feriadoService.atualizar(feriadoAtual);
-		
-        return feriadoModelAssembler.toModel(feriadoAtual);
+        try {
+	        feriadoAtual = feriadoService.atualizar(feriadoAtual);
+			
+	        return feriadoModelAssembler.toModel(feriadoAtual);
+        } catch (PeriodoNaoEncontradoException e) {
+        	throw new NegocioException(e.getMessage(), e);
+        } 
     }
 	
 	@DeleteMapping("/{idFeriado}")
