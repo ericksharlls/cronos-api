@@ -20,7 +20,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.ufrn.ct.cronos.api.model.input.PeriodoInput;
+import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.model.Periodo;
+import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
 import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -38,6 +40,9 @@ public class CadastroPeriodoIT {
 	
 	@Autowired 
 	private PeriodoRepository periodoRepository;
+	
+	@Autowired
+	private FeriadoRepository feriadoRepository;
 	
 	private Periodo periodoDomainObject;
 	private PeriodoInput periodoInput;
@@ -181,10 +186,12 @@ public class CadastroPeriodoIT {
 	/**** TESTE COM REQUISIÇÃO PUT ****/
 	@Test
 	public void deveRetornarSucesso_QuandoAtualizarPeriodoComDadosCorretos() {
-		settaPeriodoInputComNomeEDatasAtualizadas(periodoDomainObject);
+		Periodo novoPeriodoDomainObject = criaNovoPeriodoDomainObject();
+		
+		settaPeriodoInputComNomeEDatasAtualizadas(novoPeriodoDomainObject);
 		
 		given()
-			.pathParam("periodoId", periodoDomainObject.getId())
+			.pathParam("periodoId", novoPeriodoDomainObject.getId())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(periodoInput)
@@ -297,6 +304,31 @@ public class CadastroPeriodoIT {
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
+	@Test
+	public void deveFalhar_QuandoExcluirPeriodoEmUso() {
+		criaFeriadoEmPeriodoDomainObject();
+		
+		given()
+			.pathParam("periodoId", periodoDomainObject.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.CONFLICT.value())
+			.body("title",equalTo(ENTIDADE_EM_USO_PROBLEM_TYPE));
+	}
+	
+	private void criaFeriadoEmPeriodoDomainObject() {
+		Feriado feriado = new Feriado();
+		
+		feriado.setDescricao("Carnaval");
+		feriado.setData(LocalDate.of(2022, 02, 25));
+		feriado.setPeriodo(periodoDomainObject);
+		
+		feriadoRepository.save(feriado);
+	}
+
 	/*** TESTES COM RESQUISIÇÃO DO TIPO GET ****/
 	@Test
 	public void deveRetornarQuantidadeCorretaDePeriodos_QuandoBuscarPeriodos() {
@@ -309,7 +341,7 @@ public class CadastroPeriodoIT {
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoConsultarPeriodoExistente() {
+	public void deveRetornarSucesso_QuandoConsultarPeriodoPorIdExistente() {
 		given()
 			.pathParam("periodoId", periodoDomainObject.getId())
 			.accept(ContentType.JSON)
@@ -320,7 +352,7 @@ public class CadastroPeriodoIT {
 			.body("nome", equalTo(periodoDomainObject.getNome()));
 	}
 	@Test
-	public void deveRetornarSucesso_QuandoConsultarPeriodoInexistente() {
+	public void deveRetornarSucesso_QuandoConsultarPeriodoPorIdInexistente() {
 		given()
 			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
 			.accept(ContentType.JSON)

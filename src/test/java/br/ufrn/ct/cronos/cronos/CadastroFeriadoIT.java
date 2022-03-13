@@ -2,7 +2,10 @@ package br.ufrn.ct.cronos.cronos;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.notNull;
 
 import java.time.LocalDate;
@@ -48,6 +51,12 @@ public class CadastroFeriadoIT {
 	private Feriado feriadoDomainObject;
 	private FeriadoInput feriadoInput;
 	private Periodo periodoDomainObject;
+	private int contadorDeFeriadosSalvos;
+	
+	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
+	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
+	private static final int FERIADO_ID_INEXISTENTE = 81;
+	private static final int PERIODO_ID_INEXISTENTE = 19;
 	
 	@BeforeEach
 	public void setup () {
@@ -65,7 +74,7 @@ public class CadastroFeriadoIT {
 		
 		feriadoDomainObject = new Feriado();
 		
-		feriadoDomainObject.setDescricao("Carnaval");
+		feriadoDomainObject.setDescricao("Feriado de carnaval");
 		feriadoDomainObject.setData(LocalDate.of(2022, 2, 27));
 		feriadoDomainObject.setPeriodo(periodoDomainObject);
 		
@@ -88,6 +97,9 @@ public class CadastroFeriadoIT {
 		periodoDomainObject.setPeriodo(valorPeriodoTeste);
 		
 		periodoRepository.save(periodoDomainObject);
+		
+		contadorDeFeriadosSalvos = (int) periodoRepository.count();
+		
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO POST ****/
@@ -96,82 +108,224 @@ public class CadastroFeriadoIT {
 		settaDadosCorretosEmFeriadoInput();
 		
 		given()
-		.contentType(ContentType.JSON)
-		.accept(ContentType.JSON)
-		.body(feriadoInput)
-	.when()
-		.post()
-	.then()
-		.body("id", notNullValue())
-		.body("descricao", equalTo(feriadoInput.getDescricao()))
-		.body("data", equalTo(feriadoInput.getData()))
-		.body("periodo", notNull())
-		.statusCode(HttpStatus.CREATED.value());
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.body("id", notNullValue())
+			.body("descricao", equalTo(feriadoInput.getDescricao()))
+			.body("data", equalTo(feriadoInput.getData()))
+			.body("periodo", notNull())
+			.statusCode(HttpStatus.CREATED.value());
 	}
 	
 	@Test
-	private void deveRetornarErro_QuandoJaHouverFeriadoComADataInformada() {
+	private void deveFalhar_QuandoCadastrarFeriadoComDataJaExistente() {
+		settaPeriodoInputComDataJaExistente();
 		
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+
+	}
+
+	@Test
+	private void deveFalhar_QuandoCadastrarFeriadoComCamposNulos() {
+		feriadoInput = new FeriadoInput();
+		
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("validations.name", hasItems("descricao",
+											   "data",
+											   "periodo"));
 	}
 	
 	@Test
-	private void deveRetornarErro_QuandoHouverCamposNulos() {
+	private void deveFalhar_QuandoCadastrarComCamposVazios() {
+		settaPeriodoInputComCamposVazios();
 		
-	}
-	
-	@Test
-	private void deveRetornarErro_QuandoHouverCamposVazios() {
-		
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("validations.name", hasItems("descricao"));
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO PUT ****/
 	@Test
 	private void deveAtribuirId_QuandoAtualizarFeriadoComDadosCorretos() {
+		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
+		settaFeriadoInputComDadosAtualizadasCorretamente(novoFeriadoDomainObject);
+		
+		given()
+			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.put("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.OK.value());
 	}
-	
+
 	@Test
 	private void deveRetornarErro_QuandoAtualizarFeriadoComDataExistente() {
+		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
+		settaFeriadoInputAtualizadoComDataExistente(novoFeriadoDomainObject);
+		
+		given()
+			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.put("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
 	}
-	
+
 	@Test
 	private void deveRetornarErro_QuandoAtualizarComCamposNulos() {
+		feriadoInput = new FeriadoInput();
 		
+		given()
+			.pathParam("idFeriado", feriadoDomainObject.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.put("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("validations.name", hasItems("descricao",
+					  						   "data",
+					   						   "periodo"));
 	}
 	
 	@Test
 	private void deveRetornarErro_QuandoAtualizarComCamposVazios() {
+		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
+		settaFeriadoInputComDadosAtualizadosComCamposVazios(novoFeriadoDomainObject);
+		
+		given()
+			.pathParam("idFeriado", feriadoDomainObject.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.put("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
+			.body("validations.name", hasItems("descricao"));
 	}
-	
+
 	/**** TESTES COM REQUISIÇÃ0 TIPO GET ****/
 	
 	@Test
 	private void deveRetornarSucesso_QuandoBuscarFeriados() {
-		
+		given()
+			.accept(ContentType.JSON)
+		.when()
+			.get()
+		.then()
+			.body("content", hasSize(contadorDeFeriadosSalvos));
 	}
 	
 	@Test
-	private void deveRetornarSucesso_QuandoBuscarFeriadoPorId() {
-		
+	private void deveRetornarSucesso_QuandoBuscarFeriadoPorIdExistente() {
+		given()
+			.pathParam("idFeriado", feriadoDomainObject.getId())
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("descricao", equalTo(feriadoDomainObject.getDescricao()));
 	}
 	
 	@Test
-	private void deveRetornarErro_QuandoBuscarFeriadoInexistente() {
-		
+	private void deveRetornarSucesso_QuandoBuscarFeriadoPorPeriodoExistente() {
+	given()
+		.pathParam("periodoId", periodoDomainObject.getId())
+		.accept(ContentType.JSON)
+	.when()
+		.get("/por-periodo/{periodoId}")
+	.then()
+		.body("content", hasSize(contadorDeFeriadosSalvos));
+	}
+	
+	@Test
+	private void deveRetornarErro_QuandoBuscarFeriadoIdInexistente() {
+		given()
+			.pathParam("idFeriado", FERIADO_ID_INEXISTENTE)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+	
+	@Test
+	private void deveRetornarSucesso_QuandoBuscarFeriadoPorPeriodoInexistente() {
+		given()
+			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/por-periodo/{periodoId}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO DELETE ****/
 	
 	@Test
-	private void deveRetornarSucesso_QuandoExcluirFeriadoComDadosCorretos() {
-		
+	private void deveRetornarSucesso_QuandoExcluirFeriadoComSucesso() {
+		given()
+			.pathParam("idFeriado", feriadoDomainObject.getId())
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 	
 	@Test
 	private void deveRetornarErro_QuandoDeletarFeriadoInexistente() {
-		
+		given()
+			.pathParam("idFeriado", FERIADO_ID_INEXISTENTE)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
 	private void settaDadosCorretosEmFeriadoInput() {
@@ -184,5 +338,73 @@ public class CadastroFeriadoIT {
 		feriadoInput.setDescricao("Feriado de Carnaval");
 		feriadoInput.setData(LocalDate.of(2022, 2, 28));
 		feriadoInput.setPeriodo(periodoIdInput);
+	}
+	
+	private void settaPeriodoInputComDataJaExistente() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("Feriado de carnaval");
+		feriadoInput.setData(feriadoDomainObject.getData());
+		feriadoInput.setPeriodo(periodoIdInput);
+	}
+	
+	private void settaPeriodoInputComCamposVazios() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("");
+		feriadoInput.setData(LocalDate.of(2022, 2, 28));
+		feriadoInput.setPeriodo(periodoIdInput);
+		
+	}
+	
+	private Feriado criaNovoFeriadoObjectDomain() {
+		Feriado novoFeriadoDomain = new Feriado();
+		
+		novoFeriadoDomain.setDescricao("Feriado de carnaval");
+		novoFeriadoDomain.setData(LocalDate.of(2022, 2, 27));
+		novoFeriadoDomain.setPeriodo(periodoDomainObject);
+		
+		feriadoRepository.save(novoFeriadoDomain);
+		
+		return novoFeriadoDomain;
+	}
+	
+	private void settaFeriadoInputComDadosAtualizadasCorretamente(Feriado feriadoSalvo) {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(feriadoSalvo.getPeriodo().getId());
+		
+		feriadoInput.setDescricao(feriadoSalvo.getDescricao());
+		feriadoInput.setData(LocalDate.of(2022,02, 29));
+		feriadoInput.setPeriodo(periodoIdInput);
+	}
+	
+	private void settaFeriadoInputAtualizadoComDataExistente(Feriado feriadoSalvo) {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(feriadoSalvo.getPeriodo().getId());
+		
+		feriadoInput.setDescricao(feriadoSalvo.getDescricao());
+		feriadoInput.setData(feriadoDomainObject.getData());
+		feriadoInput.setPeriodo(periodoIdInput);
+	}
+	
+	private void settaFeriadoInputComDadosAtualizadosComCamposVazios(Feriado feriadoSalvo) {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(feriadoSalvo.getPeriodo().getId());
+		
+		feriadoInput.setDescricao("");
+		feriadoInput.setData(feriadoDomainObject.getData());
+		feriadoInput.setPeriodo(periodoIdInput);
+		
 	}
 }
