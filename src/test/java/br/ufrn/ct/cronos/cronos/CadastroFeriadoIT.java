@@ -94,7 +94,7 @@ public class CadastroFeriadoIT {
 		periodoDomainObject.setIsPeriodoLetivo(true);
 		periodoDomainObject.setAno(anoPeriodoTeste);
 		periodoDomainObject.setIsPeriodoLetivo(true);
-		periodoDomainObject.setPeriodo(valorPeriodoTeste);
+		periodoDomainObject.setNumero(valorPeriodoTeste);
 		
 		periodoRepository.save(periodoDomainObject);
 		

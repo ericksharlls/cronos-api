@@ -36,6 +36,6 @@ public class PeriodoInput {
 	private Short ano;
 
 	@NotNullAndRangeForNumber(min = 1, max = 10)
-	private Short periodo;
+	private Short numero;
 
 }

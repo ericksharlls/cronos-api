@@ -85,7 +85,7 @@ public class CadastroPeriodoIT {
 		periodoDomainObject.setIsPeriodoLetivo(true);
 		periodoDomainObject.setAno(anoPeriodoTeste);
 		periodoDomainObject.setIsPeriodoLetivo(true);
-		periodoDomainObject.setPeriodo(valorPeriodoTeste);
+		periodoDomainObject.setNumero(valorPeriodoTeste);
 		
 		periodoRepository.save(periodoDomainObject);
 				
@@ -368,7 +368,7 @@ public class CadastroPeriodoIT {
 		periodoInput.setDataTermino(LocalDate.of(2022, 9, 19));
 		periodoInput.setIsPeriodoLetivo(true);
 		periodoInput.setAno(anoPeriodoTeste);
-		periodoInput.setPeriodo(++valorPeriodoTeste);
+		periodoInput.setNumero(++valorPeriodoTeste);
 		
 	}
 	
@@ -399,7 +399,7 @@ public class CadastroPeriodoIT {
 		periodoInput.setDataTermino(LocalDate.of(2022, 9, 19));
 		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
 		periodoInput.setAno(periodoSalvo.getAno());
-		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+		periodoInput.setNumero(periodoSalvo.getNumero());
 	}
 	
 	private void settaPeriodoInputAtualizadoComNomeExistente(Periodo periodoSalvo) {
@@ -409,7 +409,7 @@ public class CadastroPeriodoIT {
 		periodoInput.setDataTermino(periodoSalvo.getDataTermino());
 		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
 		periodoInput.setAno(periodoSalvo.getAno());
-		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+		periodoInput.setNumero(periodoSalvo.getNumero());
 	}
 	
 	private void settaPeriodoInputAtualizadoComDatasJaExistentes(Periodo periodoSalvo) {
@@ -419,7 +419,7 @@ public class CadastroPeriodoIT {
 		periodoInput.setDataTermino(periodoDomainObject.getDataTermino());
 		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
 		periodoInput.setAno(periodoSalvo.getAno());
-		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+		periodoInput.setNumero(periodoSalvo.getNumero());
 	}
 	
 	private void settaPeriodoInputParaAtualizarAtributosVazios(Periodo periodoSalvo) {
@@ -429,7 +429,7 @@ public class CadastroPeriodoIT {
 		periodoInput.setDataTermino(periodoSalvo.getDataTermino());
 		periodoInput.setIsPeriodoLetivo(periodoSalvo.getIsPeriodoLetivo());
 		periodoInput.setAno(periodoSalvo.getAno());
-		periodoInput.setPeriodo(periodoSalvo.getPeriodo());
+		periodoInput.setNumero(periodoSalvo.getNumero());
 		
 	}
 	
@@ -443,7 +443,7 @@ public class CadastroPeriodoIT {
 		novoPeriodoDomain.setIsPeriodoLetivo(true);
 		novoPeriodoDomain.setAno(anoPeriodoTeste);
 		novoPeriodoDomain.setIsPeriodoLetivo(true);
-		novoPeriodoDomain.setPeriodo(valorPeriodoTeste);
+		novoPeriodoDomain.setNumero(valorPeriodoTeste);
 			
 		periodoRepository.save(novoPeriodoDomain);
 		

@@ -31,7 +31,7 @@ public class FeriadoRepositoryImpl implements CustomizedFeriadoRepository{
 		query.setParameter("periodoId", periodoId);
 		
 		Long cont = (Long) query.getSingleResult();
-		
+		System.out.println(cont);
 		if(cont > 0) {
 			return true;
 		}

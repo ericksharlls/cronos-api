@@ -43,6 +43,6 @@ public class Periodo {
 	private Short ano;
 
 	@Column(name="numero_periodo")
-	private Short periodo;
+	private Short numero;
 	
 }

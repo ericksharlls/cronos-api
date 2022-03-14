@@ -20,6 +20,6 @@ public class PeriodoModel {
 	private Boolean isPeriodoLetivo;
 	
 	private Short ano;
-	private Short periodo;
+	private Short numero;
     
 }

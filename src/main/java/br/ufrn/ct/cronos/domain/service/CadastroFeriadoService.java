@@ -85,8 +85,9 @@ public class CadastroFeriadoService {
 		
 		Boolean existe = feriadoRepository.verificarSeADataDoFeriadoCorrespondeAoPeriodoInformado(periodoId, Data);
 		
-		if(existe) {
-			throw new NegocioException(MSG_FERIADO_COM_DATA_EM_USO);
+		if(!existe) {
+			throw new NegocioException(MSG_FERIADO_FORA_DO_PERIODO_INFORMADO);
+			
 		}
 	}
 	
@@ -96,7 +97,7 @@ public class CadastroFeriadoService {
 		Optional<Feriado> feriadoExistente = feriadoRepository.findByData(data);
 		
 		if(feriadoExistente.isPresent() && !feriadoExistente.get().equals(feriado)) {
-			throw new NegocioException(MSG_FERIADO_FORA_DO_PERIODO_INFORMADO);
+			throw new NegocioException(MSG_FERIADO_COM_DATA_EM_USO);
 		}
 	}
 
