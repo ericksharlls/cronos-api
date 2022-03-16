@@ -35,7 +35,7 @@ public class CadastroFeriadoService {
 		
 		return feriadoRepository.findById(idFeriado).orElseThrow(() -> new FeriadoNaoEncontradoException(idFeriado));
 	}
-	
+	// tornar um só com salvar
 	@Transactional
 	public Feriado atualizar(Feriado feriadoAtual) {
 		feriadoRepository.detach(feriadoAtual);
@@ -46,7 +46,7 @@ public class CadastroFeriadoService {
 		
 		feriadoAtual.setPeriodo(periodo);
 		
-		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual.getData(), periodo);
+		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual, periodo);
 		verificarSeJaExisteUmFeriadoComMesmaData(feriadoAtual);
 		
 		return feriadoRepository.save(feriadoAtual);
@@ -60,7 +60,7 @@ public class CadastroFeriadoService {
 		
 		feriado.setPeriodo(periodo);
 		
-		vericarSeOFeriadoEstaNoPeriodoInformado(feriado.getData(), periodo);
+		vericarSeOFeriadoEstaNoPeriodoInformado(feriado, periodo);
 		verificarSeJaExisteUmFeriadoComMesmaData(feriado);
 		
 		return feriadoRepository.save(feriado);
@@ -78,12 +78,11 @@ public class CadastroFeriadoService {
 		}
 	}
 	
-	
-	
-	private void vericarSeOFeriadoEstaNoPeriodoInformado(LocalDate Data, Periodo periodo) {
+	// refatorar metodo para diminuir um acesso ao banco
+	private void vericarSeOFeriadoEstaNoPeriodoInformado(Feriado feriado, Periodo periodo) {
 		Long periodoId = periodo.getId();
 		
-		Boolean existe = feriadoRepository.verificarSeADataDoFeriadoCorrespondeAoPeriodoInformado(periodoId, Data);
+		Boolean existe = feriadoRepository.verificarSeADataDoFeriadoCorrespondeAoPeriodoInformado(periodoId, feriado.getData());
 		
 		if(!existe) {
 			throw new NegocioException(MSG_FERIADO_FORA_DO_PERIODO_INFORMADO);

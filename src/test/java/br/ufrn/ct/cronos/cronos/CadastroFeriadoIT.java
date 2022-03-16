@@ -2,7 +2,6 @@ package br.ufrn.ct.cronos.cronos;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
@@ -246,17 +245,7 @@ public class CadastroFeriadoIT {
 	}
 
 	/**** TESTES COM REQUISIÇÃ0 TIPO GET ****/
-	
-	@Test
-	private void deveRetornarSucesso_QuandoBuscarFeriados() {
-		given()
-			.accept(ContentType.JSON)
-		.when()
-			.get()
-		.then()
-			.body("content", hasSize(contadorDeFeriadosSalvos));
-	}
-	
+
 	@Test
 	private void deveRetornarSucesso_QuandoBuscarFeriadoPorIdExistente() {
 		given()

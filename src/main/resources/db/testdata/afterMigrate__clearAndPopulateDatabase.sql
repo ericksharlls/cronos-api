@@ -4,6 +4,7 @@ TRUNCATE TABLE predio;
 TRUNCATE TABLE perfil_sala_turma;
 TRUNCATE TABLE periodo;
 TRUNCATE TABLE sala;
+TRUNCATE TABLE feriado;
 
 SET FOREIGN_KEY_CHECKS = 1;
 

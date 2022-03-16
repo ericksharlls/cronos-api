@@ -13,7 +13,6 @@ import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
 
 @Service
@@ -34,7 +33,7 @@ public class CadastroPeriodoService {
 
 		return periodoRepository.save(periodo);
 	}
-
+	// tornar um só com cadastrar
 	@Transactional
 	public Periodo atualizar(Periodo periodo) {
 		verificaSeExistePeriodoComMesmoNome(periodo);

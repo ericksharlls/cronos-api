@@ -44,17 +44,6 @@ public class FeriadoController {
 	@Autowired
 	private FeriadoModelAssembler feriadoModelAssembler;
 	
-	@GetMapping
-	public Page<FeriadoModel> listar (@PageableDefault(size = 10) Pageable pageable) {
-		Page<Feriado> feriadosPage = feriadoRepository.findAll(pageable);
-		Page<FeriadoModel> feriadosModelPage = new PageImpl<>(
-                feriadoModelAssembler.toCollectionModel(feriadosPage.getContent()),
-                pageable,
-                feriadosPage.getTotalElements()
-            );
-		return feriadosModelPage;
-	} 
-	
 	@GetMapping("/{idFeriado}")
 	public FeriadoModel buscarPorId(@PathVariable Long idFeriado) {
 		Feriado feriado = feriadoService.buscar(idFeriado);
@@ -63,7 +52,7 @@ public class FeriadoController {
 	}
 	
 	@GetMapping("/por-periodo/{periodoId}")
-	public Page<FeriadoModel> FeriadosPorPeriodo(@PathVariable Long periodoId,@PageableDefault(size = 10) Pageable pageable){
+	public Page<FeriadoModel> feriadosPorPeriodo(@PathVariable Long periodoId,@PageableDefault(size = 10) Pageable pageable){
 		Page<Feriado> feriadosPage = feriadoRepository.findByPeriodo(periodoId, pageable);
 	
 		Page<FeriadoModel> feriadoModelPage = new PageImpl<>(
