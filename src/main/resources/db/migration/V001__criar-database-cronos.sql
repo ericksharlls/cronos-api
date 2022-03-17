@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.22, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.62, for linux-glibc2.12 (x86_64)
 --
 -- Host: localhost    Database: db_cronos
 -- ------------------------------------------------------
--- Server version	5.7.22
+-- Server version	5.5.62
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,8 +38,8 @@ CREATE TABLE `agendamento` (
   KEY `fk_agendamento_periodo1_idx` (`id_periodo`),
   KEY `id_usuario_sistema` (`id_usuario_sistema`),
   CONSTRAINT `agendamento_ibfk_1` FOREIGN KEY (`id_usuario_sistema`) REFERENCES `usuario` (`id_usuario`),
-  CONSTRAINT `fk_agendamento_funcionario1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_agendamento_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_agendamento_funcionario1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
+  CONSTRAINT `fk_agendamento_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16662 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -60,7 +60,7 @@ CREATE TABLE `chave` (
   PRIMARY KEY (`id_chave`),
   UNIQUE KEY `codigo_chave_UNIQUE` (`codigo_chave`),
   KEY `fk_chave_sala1_idx` (`id_sala`),
-  CONSTRAINT `fk_chave_sala1` FOREIGN KEY (`id_sala`) REFERENCES `sala` (`id_sala`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_chave_sala1` FOREIGN KEY (`id_sala`) REFERENCES `sala` (`id_sala`)
 ) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -104,15 +104,17 @@ CREATE TABLE `disponibilidade_sala` (
   KEY `fk_disponibilidade_sala_turma1_idx` (`id_turma`),
   KEY `fk_disponibilidade_sala_agendamento1_idx` (`id_agendamento`),
   KEY `fk_disponibilidade_sala_horario1_idx` (`id_horario_sala`),
-  CONSTRAINT `fk_disponibilidade_dia_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_dia_sala1` FOREIGN KEY (`id_sala`) REFERENCES `sala` (`id_sala`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_agendamento1` FOREIGN KEY (`id_agendamento`) REFERENCES `agendamento` (`id_agendamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_horario1` FOREIGN KEY (`id_horario_sala`) REFERENCES `horario` (`id_horario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_turma1` FOREIGN KEY (`id_turma`) REFERENCES `turma` (`id_turma`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_disponibilidade_dia_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`),
+  CONSTRAINT `fk_disponibilidade_dia_sala1` FOREIGN KEY (`id_sala`) REFERENCES `sala` (`id_sala`),
+  CONSTRAINT `fk_disponibilidade_sala_agendamento1` FOREIGN KEY (`id_agendamento`) REFERENCES `agendamento` (`id_agendamento`),
+  CONSTRAINT `fk_disponibilidade_sala_horario1` FOREIGN KEY (`id_horario_sala`) REFERENCES `horario` (`id_horario`),
+  CONSTRAINT `fk_disponibilidade_sala_turma1` FOREIGN KEY (`id_turma`) REFERENCES `turma` (`id_turma`)
 ) ENGINE=InnoDB AUTO_INCREMENT=970339 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
+--
+-- Table structure for table `disponibilidade_sala_agendamento_backup`
 --
 
 DROP TABLE IF EXISTS `disponibilidade_sala_agendamento_backup`;
@@ -132,11 +134,11 @@ CREATE TABLE `disponibilidade_sala_agendamento_backup` (
   KEY `fk_disponibilidade_sala_backup_horario1_idx` (`id_horario_sala`),
   KEY `fk_disponibilidade_sala_backup_turma1_idx` (`id_turma`),
   KEY `fk_disponibilidade_sala_backup_agendamento1_idx` (`id_agendamento`),
-  CONSTRAINT `fk_disponibilidade_sala_backup_agendamento1` FOREIGN KEY (`id_agendamento`) REFERENCES `agendamento` (`id_agendamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_backup_horario1` FOREIGN KEY (`id_horario_sala`) REFERENCES `horario` (`id_horario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_backup_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_backup_sala1` FOREIGN KEY (`id_sala`) REFERENCES `sala` (`id_sala`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_disponibilidade_sala_backup_turma1` FOREIGN KEY (`id_turma`) REFERENCES `turma` (`id_turma`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_disponibilidade_sala_backup_agendamento1` FOREIGN KEY (`id_agendamento`) REFERENCES `agendamento` (`id_agendamento`),
+  CONSTRAINT `fk_disponibilidade_sala_backup_horario1` FOREIGN KEY (`id_horario_sala`) REFERENCES `horario` (`id_horario`),
+  CONSTRAINT `fk_disponibilidade_sala_backup_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`),
+  CONSTRAINT `fk_disponibilidade_sala_backup_sala1` FOREIGN KEY (`id_sala`) REFERENCES `sala` (`id_sala`),
+  CONSTRAINT `fk_disponibilidade_sala_backup_turma1` FOREIGN KEY (`id_turma`) REFERENCES `turma` (`id_turma`)
 ) ENGINE=InnoDB AUTO_INCREMENT=82322 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -156,7 +158,7 @@ CREATE TABLE `feriado` (
   PRIMARY KEY (`id_feriado`),
   UNIQUE KEY `data_feriado_unique` (`data_feriado`),
   KEY `fk_feriado_periodo1_idx` (`id_periodo`),
-  CONSTRAINT `fk_feriado_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_feriado_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -179,7 +181,7 @@ CREATE TABLE `funcionario` (
   `id_sigaa_funcionario` int(11) DEFAULT NULL,
   `id_tipo_funcionario` tinyint(4) DEFAULT '3',
   PRIMARY KEY (`id_funcionario`)
-) ENGINE=InnoDB AUTO_INCREMENT=1631 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1667 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -202,10 +204,10 @@ CREATE TABLE `historico_chave` (
   KEY `fk_historico_chave_operacao1_idx` (`id_operacao`),
   KEY `fk_historico_chave_usuario1_idx` (`id_usuario`),
   KEY `fk_historico_chave_funcionario1` (`id_responsavel`),
-  CONSTRAINT `fk_historico_chave_chave1` FOREIGN KEY (`id_chave`) REFERENCES `chave` (`id_chave`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_historico_chave_chave1` FOREIGN KEY (`id_chave`) REFERENCES `chave` (`id_chave`),
   CONSTRAINT `fk_historico_chave_funcionario1` FOREIGN KEY (`id_responsavel`) REFERENCES `funcionario` (`id_funcionario`),
-  CONSTRAINT `fk_historico_chave_operacao1` FOREIGN KEY (`id_operacao`) REFERENCES `operacao` (`id_operacao`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_historico_chave_usuario1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_historico_chave_operacao1` FOREIGN KEY (`id_operacao`) REFERENCES `operacao` (`id_operacao`),
+  CONSTRAINT `fk_historico_chave_usuario1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=58985 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -244,6 +246,7 @@ CREATE TABLE `operacao` (
   PRIMARY KEY (`id_operacao`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Table structure for table `papel_usuario`
@@ -289,9 +292,11 @@ CREATE TABLE `perfil_sala_turma` (
   `id_perfil_sala_turma` tinyint(4) NOT NULL AUTO_INCREMENT,
   `nome_perfil_sala_turma` varchar(50) NOT NULL,
   `descricao_perfil_sala_turma` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_perfil_sala_turma`)
+  PRIMARY KEY (`id_perfil_sala_turma`),
+  UNIQUE KEY `nome_perfil_sala_turma_UNIQUE` (`nome_perfil_sala_turma`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Table structure for table `periodo`
@@ -309,7 +314,8 @@ CREATE TABLE `periodo` (
   `is_periodo_letivo` tinyint(1) NOT NULL,
   `ano_periodo` smallint(6) NOT NULL,
   `numero_periodo` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id_periodo`)
+  PRIMARY KEY (`id_periodo`),
+  UNIQUE KEY `nome_periodo_UNIQUE` (`nome_periodo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -327,8 +333,8 @@ CREATE TABLE `permissao_usuario` (
   PRIMARY KEY (`id_papel`,`id_usuario`),
   KEY `fk_papel_usuario_has_usuario_usuario1_idx` (`id_usuario`),
   KEY `fk_papel_usuario_has_usuario_papel_usuario1_idx` (`id_papel`),
-  CONSTRAINT `fk_papel_usuario_has_usuario_papel_usuario1` FOREIGN KEY (`id_papel`) REFERENCES `papel_usuario` (`id_papel`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_papel_usuario_has_usuario_usuario1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_papel_usuario_has_usuario_papel_usuario1` FOREIGN KEY (`id_papel`) REFERENCES `papel_usuario` (`id_papel`),
+  CONSTRAINT `fk_papel_usuario_has_usuario_usuario1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -344,7 +350,8 @@ CREATE TABLE `predio` (
   `id_predio` tinyint(4) NOT NULL AUTO_INCREMENT,
   `nome_predio` varchar(50) NOT NULL,
   `descricao_predio` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_predio`)
+  PRIMARY KEY (`id_predio`),
+  UNIQUE KEY `nome_predio_UNIQUE` (`nome_predio`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -370,8 +377,8 @@ CREATE TABLE `sala` (
   PRIMARY KEY (`id_sala`),
   KEY `fk_sala_tipo1_idx` (`id_perfil`),
   KEY `fk_sala_predio1_idx` (`id_predio`),
-  CONSTRAINT `fk_sala_predio1` FOREIGN KEY (`id_predio`) REFERENCES `predio` (`id_predio`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_sala_tipo1` FOREIGN KEY (`id_perfil`) REFERENCES `perfil_sala_turma` (`id_perfil_sala_turma`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_sala_predio1` FOREIGN KEY (`id_predio`) REFERENCES `predio` (`id_predio`),
+  CONSTRAINT `fk_sala_tipo1` FOREIGN KEY (`id_perfil`) REFERENCES `perfil_sala_turma` (`id_perfil_sala_turma`)
 ) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -392,7 +399,6 @@ CREATE TABLE `tipo_funcionario` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
-
 --
 -- Table structure for table `turma`
 --
@@ -403,7 +409,7 @@ DROP TABLE IF EXISTS `turma`;
 CREATE TABLE `turma` (
   `id_turma` smallint(6) NOT NULL AUTO_INCREMENT,
   `codigo_componente_turma` varchar(20) NOT NULL,
-  `nome_componente_turma` varchar(90) NOT NULL,
+  `nome_componente_turma` varchar(100) NOT NULL,
   `nome_docente_turma` varchar(80) DEFAULT NULL,
   `horario_turma` varchar(50) NOT NULL,
   `capacidade_turma` smallint(6) NOT NULL,
@@ -423,11 +429,11 @@ CREATE TABLE `turma` (
   KEY `fk_turma_predio1_idx` (`id_predio`),
   KEY `fk_turma_periodo1_idx` (`id_periodo`),
   KEY `fk_turma_departamento1_idx` (`id_departamento`),
-  CONSTRAINT `fk_turma_departamento1` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_turma_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_turma_predio1` FOREIGN KEY (`id_predio`) REFERENCES `predio` (`id_predio`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_turma_tipo1` FOREIGN KEY (`id_perfil`) REFERENCES `perfil_sala_turma` (`id_perfil_sala_turma`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=10166 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_turma_departamento1` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`),
+  CONSTRAINT `fk_turma_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`),
+  CONSTRAINT `fk_turma_predio1` FOREIGN KEY (`id_predio`) REFERENCES `predio` (`id_predio`),
+  CONSTRAINT `fk_turma_tipo1` FOREIGN KEY (`id_perfil`) REFERENCES `perfil_sala_turma` (`id_perfil_sala_turma`)
+) ENGINE=InnoDB AUTO_INCREMENT=10810 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -444,8 +450,8 @@ CREATE TABLE `turma_docente` (
   PRIMARY KEY (`id_turma`,`id_docente`),
   KEY `fk_turma_has_funcionario_funcionario1_idx` (`id_docente`),
   KEY `fk_turma_has_funcionario_turma1_idx` (`id_turma`),
-  CONSTRAINT `fk_turma_has_funcionario_funcionario1` FOREIGN KEY (`id_docente`) REFERENCES `funcionario` (`id_funcionario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_turma_has_funcionario_turma1` FOREIGN KEY (`id_turma`) REFERENCES `turma` (`id_turma`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_turma_has_funcionario_funcionario1` FOREIGN KEY (`id_docente`) REFERENCES `funcionario` (`id_funcionario`),
+  CONSTRAINT `fk_turma_has_funcionario_turma1` FOREIGN KEY (`id_turma`) REFERENCES `turma` (`id_turma`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -466,10 +472,12 @@ CREATE TABLE `usuario` (
   `id_funcionario` smallint(6) NOT NULL,
   PRIMARY KEY (`id_usuario`),
   KEY `fk_usuario_funcionario1_idx` (`id_funcionario`),
-  CONSTRAINT `fk_usuario_funcionario1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_usuario_funcionario1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -481,4 +489,4 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-23 19:43:21
+-- Dump completed on 2022-03-17 14:37:11
