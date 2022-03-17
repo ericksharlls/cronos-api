@@ -23,3 +23,12 @@ INSERT INTO perfil_sala_turma (nome_perfil_sala_turma, descricao_perfil_sala_tur
 INSERT INTO sala (nome_sala, descricao_sala, capacidade_sala, tipo_quadro_sala, utilizar_distribuicao, utilizar_agendamento, distribuir, id_predio, id_perfil) VALUES 
 ("A1", "Sala A1", 30, "Branco", true, true, true, 1, 1),
 ("A2", "Sala A2", 50, "Negro", true, true, true, 1, 1);
+
+INSERT INTO periodo (nome_periodo, descricao_periodo, data_inicio_periodo, data_termino_periodo, is_periodo_letivo, ano_periodo, numero_periodo) VALUES 
+('RECESSO ACADÊMICO - 2021.2','RECESSO ACADÊMICO - 2021.2','2021-12-15','2022-03-27',0,2021,4),
+('PERÍODO LETIVO - 2022.1','PERÍODO LETIVO de 2022.1','2022-03-28','2022-06-30',1,2022,1);
+
+INSERT INTO feriado (descricao_feriado, data_feriado, id_periodo) VALUES 
+('Quinta-feira Santa','2022-04-14',2), ('Paixão de Cristo','2022-04-15',2),
+('Sábado de Aleluia','2022-04-16',2), ('Tiradentes','2022-04-21',2),
+('Dia Mundial do Trabalho','2022-05-01',2), ('Corpus Christi','2022-06-16',2);
