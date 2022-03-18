@@ -85,7 +85,7 @@ public class FeriadoController {
 		
         feriadoInputDisassembler.copyToDomainObject(feriadoInput, feriadoAtual);
         try {
-	        feriadoAtual = feriadoService.atualizar(feriadoAtual);
+	        feriadoAtual = feriadoService.salvar(feriadoAtual);
 			
 	        return feriadoModelAssembler.toModel(feriadoAtual);
         } catch (PeriodoNaoEncontradoException e) {

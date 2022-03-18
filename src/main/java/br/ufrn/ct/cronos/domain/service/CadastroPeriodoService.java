@@ -27,17 +27,11 @@ public class CadastroPeriodoService {
 	private PeriodoRepository periodoRepository;
 
 	@Transactional
-	public Periodo cadastrar(Periodo periodo) {
+	public Periodo salvar(Periodo periodo) {
+		periodoRepository.detach(periodo);
+		
 		verificaSeIntervaloDeDatasJaExiste(periodo);
 		verificaSeExistePeriodoComMesmoNome(periodo);
-
-		return periodoRepository.save(periodo);
-	}
-	// tornar um só com cadastrar
-	@Transactional
-	public Periodo atualizar(Periodo periodo) {
-		verificaSeExistePeriodoComMesmoNome(periodo);
-		verificaPorIdSeIntervaloDeDatasJaExiste(periodo);
 
 		return periodoRepository.save(periodo);
 	}
@@ -78,8 +72,6 @@ public class CadastroPeriodoService {
 	}
 
 	public void verificaSeExistePeriodoComMesmoNome(Periodo periodo) {
-		periodoRepository.detach(periodo);
-		
 		Optional<Periodo> periodoExistente = periodoRepository.findByNome(periodo.getNome());
 		
 		if (periodoExistente.isPresent() && !periodoExistente.get().equals(periodo)) {

@@ -35,25 +35,27 @@ public class CadastroFeriadoService {
 		
 		return feriadoRepository.findById(idFeriado).orElseThrow(() -> new FeriadoNaoEncontradoException(idFeriado));
 	}
-	// tornar um só com salvar
-	@Transactional
-	public Feriado atualizar(Feriado feriadoAtual) {
-		feriadoRepository.detach(feriadoAtual);
-		
-		Long periodoId = feriadoAtual.getPeriodo().getId();
-		
-		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
-		
-		feriadoAtual.setPeriodo(periodo);
-		
-		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual, periodo);
-		verificarSeJaExisteUmFeriadoComMesmaData(feriadoAtual);
-		
-		return feriadoRepository.save(feriadoAtual);
-	}
+//	// tornar um só com salvar
+//	@Transactional
+//	public Feriado atualizar(Feriado feriadoAtual) {
+//		
+//		
+//		Long periodoId = feriadoAtual.getPeriodo().getId();
+//		
+//		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
+//		
+//		feriadoAtual.setPeriodo(periodo);
+//		
+//		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual, periodo);
+//		verificarSeJaExisteUmFeriadoComMesmaData(feriadoAtual);
+//		
+//		return feriadoRepository.save(feriadoAtual);
+//	}
 	
 	@Transactional
 	public Feriado salvar(Feriado feriado) {
+		feriadoRepository.detach(feriado);
+		
 		Long periodoId = feriado.getPeriodo().getId();
 		
 		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
