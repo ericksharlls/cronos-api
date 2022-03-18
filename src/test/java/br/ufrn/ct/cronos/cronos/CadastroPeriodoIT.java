@@ -111,8 +111,8 @@ public class CadastroPeriodoIT {
 			.body("dataInicio", equalTo(periodoInput.getDataInicio().toString()))
 			.body("dataTermino", equalTo(periodoInput.getDataTermino().toString()))
 			.body("isPeriodoLetivo", equalTo(periodoInput.getIsPeriodoLetivo()))
-			.body("ano", equalTo(2022)) // nao consigo passar o valor do objeto
-			.body("periodo", equalTo(2)) // nao consigo passar o valor do objeto
+			.body("ano", equalTo(periodoInput.getAno().intValue())) // nao consigo passar o valor do objeto
+			.body("numero", equalTo(periodoInput.getNumero().intValue())) // nao consigo passar o valor do objeto
 			.statusCode(HttpStatus.CREATED.value());
 		
 	}
@@ -180,7 +180,7 @@ public class CadastroPeriodoIT {
 											   "dataTermino",
 											   "isPeriodoLetivo",
 											   "ano",
-											   "periodo"));
+											   "numero"));
 	}
 	
 	/**** TESTE COM REQUISIÇÃO PUT ****/
@@ -275,7 +275,7 @@ public class CadastroPeriodoIT {
 											   "dataTermino",
 											   "isPeriodoLetivo",
 											   "ano",
-											   "periodo"));
+											   "numero"));
 	}
 	
 	/**** TESTES COM REQUISIÇÕES DELETE ****/
