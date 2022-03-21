@@ -6,12 +6,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.exception.PeriodoSemFeriadoExeption;
 import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.model.Periodo;
 import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
@@ -35,22 +38,14 @@ public class CadastroFeriadoService {
 		
 		return feriadoRepository.findById(idFeriado).orElseThrow(() -> new FeriadoNaoEncontradoException(idFeriado));
 	}
-//	// tornar um só com salvar
-//	@Transactional
-//	public Feriado atualizar(Feriado feriadoAtual) {
-//		
-//		
-//		Long periodoId = feriadoAtual.getPeriodo().getId();
-//		
-//		Periodo periodo = cadastroPeriodoService.buscar(periodoId);
-//		
-//		feriadoAtual.setPeriodo(periodo);
-//		
-//		vericarSeOFeriadoEstaNoPeriodoInformado(feriadoAtual, periodo);
-//		verificarSeJaExisteUmFeriadoComMesmaData(feriadoAtual);
-//		
-//		return feriadoRepository.save(feriadoAtual);
-//	}
+	
+	public Page<Feriado> buscarPorPeriodo(Long idPeriodo,Pageable pageable){
+		Page <Feriado> page = feriadoRepository.findByPeriodo(idPeriodo, pageable);
+		if(page.isEmpty()) {
+			throw new PeriodoSemFeriadoExeption(idPeriodo);
+		}
+		return page;
+	}
 	
 	@Transactional
 	public Feriado salvar(Feriado feriado) {
@@ -82,15 +77,15 @@ public class CadastroFeriadoService {
 	
 	// refatorar metodo para diminuir um acesso ao banco
 	private void vericarSeOFeriadoEstaNoPeriodoInformado(Feriado feriado, Periodo periodo) {
-		Long periodoId = periodo.getId();
+		LocalDate dataFeriado = feriado.getData().minusDays(1);
+		LocalDate dataInicio = periodo.getDataInicio();
+		LocalDate dataTermino = periodo.getDataTermino().plusDays(1);
 		
-		Boolean existe = feriadoRepository.verificarSeADataDoFeriadoCorrespondeAoPeriodoInformado(periodoId, feriado.getData());
-		
-		if(!existe) {
+		if( !(dataFeriado.isAfter(dataInicio) && dataFeriado.isBefore(dataTermino)) ) {
 			throw new NegocioException(MSG_FERIADO_FORA_DO_PERIODO_INFORMADO);
-			
 		}
 	}
+	
 	
 	private void verificarSeJaExisteUmFeriadoComMesmaData(Feriado feriado) {
 		LocalDate data = feriado.getData();

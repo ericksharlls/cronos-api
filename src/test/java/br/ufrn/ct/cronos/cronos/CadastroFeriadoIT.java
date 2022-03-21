@@ -55,7 +55,7 @@ public class CadastroFeriadoIT {
 	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final int FERIADO_ID_INEXISTENTE = 81;
-	private static final int PERIODO_ID_INEXISTENTE = 19;
+	private static final int PERIODO_ID_INEXISTENTE = 100;
 	
 	@BeforeEach
 	public void setup () {
@@ -115,8 +115,8 @@ public class CadastroFeriadoIT {
 		.then()
 			.body("id", notNullValue())
 			.body("descricao", equalTo(feriadoInput.getDescricao()))
-			.body("data", equalTo(feriadoInput.getData()))
-			.body("periodo", notNull())
+			.body("data", equalTo(feriadoInput.getData().toString()))
+			.body("periodo", notNullValue())
 			.statusCode(HttpStatus.CREATED.value());
 	}
 	
@@ -172,10 +172,13 @@ public class CadastroFeriadoIT {
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO PUT ****/
 	@Test
-	public void deveAtribuirId_QuandoAtualizarFeriadoComDadosCorretos() {
+	public void deveRetornarSucesso_QuandoAtualizarFeriadoComDadosCorretos() {
 		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
 		settaFeriadoInputComDadosAtualizadasCorretamente(novoFeriadoDomainObject);
+		
+		feriadoInput.setDescricao("teste ");
+		//feriadoInput.setData(LocalDate.of(2023,02,27));
 		
 		given()
 			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
@@ -185,7 +188,7 @@ public class CadastroFeriadoIT {
 		.when()
 			.put("/{idFeriado}")
 		.then()
-			.statusCode(HttpStatus.OK.value());
+			.statusCode(HttpStatus.OK.value());       
 	}
 
 	@Test
@@ -193,7 +196,7 @@ public class CadastroFeriadoIT {
 		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
 		settaFeriadoInputAtualizadoComDataExistente(novoFeriadoDomainObject);
-		
+		System.out.println(feriadoInput);
 		given()
 			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
 			.contentType(ContentType.JSON)
@@ -281,7 +284,7 @@ public class CadastroFeriadoIT {
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoBuscarFeriadoPorPeriodoInexistente() {
+	public void deveRetornarErro_QuandoBuscarFeriadoPorPeriodoInexistente() {
 		given()
 			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
@@ -325,7 +328,7 @@ public class CadastroFeriadoIT {
 		feriadoInput = new FeriadoInput();
 		
 		feriadoInput.setDescricao("Feriado de Carnaval");
-		feriadoInput.setData(LocalDate.of(2023, 02, 29));
+		feriadoInput.setData(LocalDate.of(2023, 02, 27));
 		feriadoInput.setPeriodo(periodoIdInput);
 	}
 	
@@ -371,8 +374,10 @@ public class CadastroFeriadoIT {
 		
 		periodoIdInput.setId(feriadoSalvo.getPeriodo().getId());
 		
+		feriadoInput = new FeriadoInput();
+		
 		feriadoInput.setDescricao(feriadoSalvo.getDescricao());
-		feriadoInput.setData(LocalDate.of(2023,02, 29));
+		feriadoInput.setData(LocalDate.of(2023,02,27));
 		feriadoInput.setPeriodo(periodoIdInput);
 	}
 	
@@ -380,6 +385,8 @@ public class CadastroFeriadoIT {
 		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
 		
 		periodoIdInput.setId(feriadoSalvo.getPeriodo().getId());
+		
+		feriadoInput = new FeriadoInput();
 		
 		feriadoInput.setDescricao(feriadoSalvo.getDescricao());
 		feriadoInput.setData(feriadoDomainObject.getData());
@@ -390,6 +397,8 @@ public class CadastroFeriadoIT {
 		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
 		
 		periodoIdInput.setId(feriadoSalvo.getPeriodo().getId());
+		
+		feriadoInput = new FeriadoInput();
 		
 		feriadoInput.setDescricao("");
 		feriadoInput.setData(feriadoDomainObject.getData());

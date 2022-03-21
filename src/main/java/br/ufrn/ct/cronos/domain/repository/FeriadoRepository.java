@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import br.ufrn.ct.cronos.domain.model.Feriado;
 
 @Repository
-public interface FeriadoRepository extends CustomJpaRepository<Feriado, Long>, CustomizedFeriadoRepository {
+public interface FeriadoRepository extends CustomJpaRepository<Feriado, Long>{
 	
 	@Query("FROM Feriado f WHERE f.periodo.id  = :periodoId")
 	Page<Feriado> findByPeriodo(@Param("periodoId") Long periodoId,Pageable pageable);

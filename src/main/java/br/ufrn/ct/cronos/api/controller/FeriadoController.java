@@ -53,13 +53,14 @@ public class FeriadoController {
 	
 	@GetMapping("/por-periodo/{periodoId}")
 	public Page<FeriadoModel> feriadosPorPeriodo(@PathVariable Long periodoId,@PageableDefault(size = 10) Pageable pageable){
-		Page<Feriado> feriadosPage = feriadoRepository.findByPeriodo(periodoId, pageable);
+		Page<Feriado> feriadosPage = feriadoService.buscarPorPeriodo(periodoId, pageable);
 	
 		Page<FeriadoModel> feriadoModelPage = new PageImpl<>(
 				feriadoModelAssembler.toCollectionModel(feriadosPage.getContent()),
 				pageable,
 				feriadosPage.getTotalElements()
 				);
+		
 		return feriadoModelPage;
 	}
 	
