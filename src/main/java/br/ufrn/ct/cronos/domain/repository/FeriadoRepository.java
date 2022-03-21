@@ -14,11 +14,7 @@ import br.ufrn.ct.cronos.domain.model.Feriado;
 @Repository
 public interface FeriadoRepository extends CustomJpaRepository<Feriado, Long>{
 	
-	//@Query("FROM Feriado f WHERE :periodoId IS NULL OR f.periodo.id  = :periodoId")
-	@Query(value = "SELECT f FROM Feriado f JOIN FETCH f.periodo " +
-				" WHERE :periodoId IS NULL OR f.periodo.id  = :periodoId",
-		countQuery = "SELECT COUNT(f.id) FROM Feriado f JOIN f.periodo " +
-				" WHERE :periodoId IS NULL OR f.periodo.id  = :periodoId")
+	@Query("FROM Feriado f WHERE :periodoId IS NULL OR f.periodo.id  = :periodoId")
 	Page<Feriado> findByPeriodo(@Param("periodoId") Long periodoId, Pageable pageable);
 	
 	Optional<Feriado> findByData(LocalDate data);
