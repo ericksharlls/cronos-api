@@ -175,10 +175,11 @@ public class CadastroFeriadoIT {
 	public void deveRetornarSucesso_QuandoAtualizarFeriadoComDadosCorretos() {
 		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
+		novoFeriadoDomainObject.setDescricao("teste");
+		novoFeriadoDomainObject.setData(LocalDate.of(2023,02,27));
+		
 		settaFeriadoInputComDadosAtualizadasCorretamente(novoFeriadoDomainObject);
 		
-		feriadoInput.setDescricao("teste ");
-		//feriadoInput.setData(LocalDate.of(2023,02,27));
 		
 		given()
 			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
@@ -264,10 +265,10 @@ public class CadastroFeriadoIT {
 	@Test
 	public void deveRetornarSucesso_QuandoBuscarFeriadoPorPeriodoExistente() {
 	given()
-		.pathParam("periodoId", periodoDomainObject.getId())
+		.param("periodoId",periodoDomainObject.getId())
 		.accept(ContentType.JSON)
 	.when()
-		.get("/por-periodo/{periodoId}")
+		.get("")
 	.then()
 		.body("content", hasSize(contadorDeFeriadosSalvos));
 	}
@@ -284,14 +285,14 @@ public class CadastroFeriadoIT {
 	}
 	
 	@Test
-	public void deveRetornarErro_QuandoBuscarFeriadoPorPeriodoInexistente() {
+	public void deveRetornarok_QuandoBuscarFeriadoPorPeriodoInexistente() {
 		given()
-			.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
+			.param("periodoId", PERIODO_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
 		.when()
-			.get("/por-periodo/{periodoId}")
+			.get("")
 		.then()
-			.statusCode(HttpStatus.NOT_FOUND.value());
+			.statusCode(HttpStatus.OK.value());
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO DELETE ****/

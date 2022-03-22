@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.exception.PeriodoSemFeriadoExeption;
 import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.model.Periodo;
 import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
@@ -40,11 +39,7 @@ public class CadastroFeriadoService {
 	}
 	
 	public Page<Feriado> buscarPorPeriodo(Long idPeriodo,Pageable pageable){
-		Page <Feriado> page = feriadoRepository.findByPeriodo(idPeriodo, pageable);
-		if(page.isEmpty()) {
-			throw new PeriodoSemFeriadoExeption(idPeriodo);
-		}
-		return page;
+		return feriadoRepository.findByPeriodo(idPeriodo, pageable);
 	}
 	
 	@Transactional
