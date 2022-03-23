@@ -14,6 +14,6 @@ public class FeriadoModel {
 	
 	private LocalDate data;
 	
-	private PeriodoModel periodo;
+	private PeriodoResumoModel periodo;
 	
 }

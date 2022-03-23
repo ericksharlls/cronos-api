@@ -52,7 +52,7 @@ public class FeriadoController {
 	}
 	
 	@GetMapping
-	public Page<FeriadoModel> feriadosPorPeriodo(Long periodoId,@PageableDefault(size = 10) Pageable pageable){
+	public Page<FeriadoModel> feriadosPorPeriodo(Long periodoId, @PageableDefault(size = 10) Pageable pageable){
 		Page<Feriado> feriadosPage = feriadoService.buscarPorPeriodo(periodoId, pageable);
 	
 		Page<FeriadoModel> feriadoModelPage = new PageImpl<>(

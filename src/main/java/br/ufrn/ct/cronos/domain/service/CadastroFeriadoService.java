@@ -38,7 +38,7 @@ public class CadastroFeriadoService {
 		return feriadoRepository.findById(idFeriado).orElseThrow(() -> new FeriadoNaoEncontradoException(idFeriado));
 	}
 	
-	public Page<Feriado> buscarPorPeriodo(Long idPeriodo,Pageable pageable){
+	public Page<Feriado> buscarPorPeriodo(Long idPeriodo, Pageable pageable){
 		return feriadoRepository.findByPeriodo(idPeriodo, pageable);
 	}
 	
