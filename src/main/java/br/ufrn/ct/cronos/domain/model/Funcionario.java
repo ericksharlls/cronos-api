@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -44,6 +45,7 @@ public class Funcionario {
 	@Column(name = "id_sigaa_funcionario")
 	private Long idSigaa;
 	
+	@ManyToOne
 	@Column(name = "id_tipo_funcionario")
-	private Long idTipo;
+	private TipoFuncionario idTipo;
 }
