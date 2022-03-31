@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.JoinColumn;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,6 +47,6 @@ public class Funcionario {
 	private Long idSigaa;
 	
 	@ManyToOne
-	@Column(name = "id_tipo_funcionario")
-	private TipoFuncionario idTipo;
+	@JoinColumn(name = "id_tipo_funcionario")
+	private TipoFuncionario tipoFuncionario;
 }

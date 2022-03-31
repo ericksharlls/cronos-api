@@ -15,8 +15,10 @@ import org.springframework.util.StringUtils;
 import br.ufrn.ct.cronos.domain.model.Funcionario;
 import br.ufrn.ct.cronos.domain.repository.CustomizedFuncionarioRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
-public class CustomFuncionarioRepository  implements CustomizedFuncionarioRepository{
+@Repository
+public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioRepository{
 
     @PersistenceContext 
     private EntityManager manager;

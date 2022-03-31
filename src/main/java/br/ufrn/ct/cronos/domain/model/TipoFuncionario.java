@@ -20,13 +20,13 @@ public class TipoFuncionario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipo_funcionario")
-    private Long idTipo;
+    private Long id;
 
     @Column(name = "nome_tipo_funcionario")
-    private  String nomeTipo;
+    private  String nome;
 
     @Column(name = "descrição_tipo_funcionario")
-    private String descricaoTipo;
+    private String descricao;
 
     
 
