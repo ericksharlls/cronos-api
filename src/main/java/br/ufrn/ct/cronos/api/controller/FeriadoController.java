@@ -25,15 +25,11 @@ import br.ufrn.ct.cronos.api.model.input.FeriadoInput;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Feriado;
-import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
 import br.ufrn.ct.cronos.domain.service.CadastroFeriadoService;
 
 @RestController
 @RequestMapping(value = "/feriados")
 public class FeriadoController {
-	
-	@Autowired
-	private FeriadoRepository feriadoRepository;
 	
 	@Autowired
 	private CadastroFeriadoService feriadoService;

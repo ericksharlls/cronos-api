@@ -8,6 +8,6 @@ import br.ufrn.ct.cronos.domain.model.Feriado;
 
 // Classe que transforma um DTO num objeto da entidade Feriado
 @Component
-public class FeriadoInputDisassembler extends  ObjectInputDisassembler<FeriadoInput, Feriado>{
+public class FeriadoInputDisassembler extends ObjectInputDisassembler<FeriadoInput, Feriado>{
 
 }

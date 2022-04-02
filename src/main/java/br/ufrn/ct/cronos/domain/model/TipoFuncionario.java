@@ -25,7 +25,7 @@ public class TipoFuncionario {
     @Column(name = "nome_tipo_funcionario")
     private  String nome;
 
-    @Column(name = "descrição_tipo_funcionario")
+    @Column(name = "descricao_tipo_funcionario")
     private String descricao;
 
     
