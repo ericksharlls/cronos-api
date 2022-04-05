@@ -5,6 +5,8 @@ TRUNCATE TABLE perfil_sala_turma;
 TRUNCATE TABLE periodo;
 TRUNCATE TABLE sala;
 TRUNCATE TABLE feriado;
+TRUNCATE TABLE funcionario;
+TRUNCATE TABLE tipo_funcionario;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -32,3 +34,7 @@ INSERT INTO feriado (descricao_feriado, data_feriado, id_periodo) VALUES
 ('Quinta-feira Santa','2022-04-14',2), ('Paixão de Cristo','2022-04-15',2),
 ('Sábado de Aleluia','2022-04-16',2), ('Tiradentes','2022-04-21',2),
 ('Dia Mundial do Trabalho','2022-05-01',2), ('Corpus Christi','2022-06-16',2);
+
+INSERT INTO tipo_funcionario (nome_tipo_funcionario,descricao_tipo_funcionario) VALUES 
+('Docente','Perfil Para Docentes'),('Técnico-administrativo','Perfil Para Técnicos-administrativo'),
+('Discente','Perfil Para Discentes'),('Terceirizado','Perfil Para Terceirizados');
