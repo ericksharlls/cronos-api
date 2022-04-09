@@ -13,11 +13,9 @@ import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.FuncionarioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.exception.TipoFuncionarioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Funcionario;
 import br.ufrn.ct.cronos.domain.model.TipoFuncionario;
 import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
-import br.ufrn.ct.cronos.domain.repository.TipoFuncionarioRepository;
 
 
 @Service
@@ -55,8 +53,6 @@ public class CadastroFuncionarioService {
 		verificarSeExisteCPFouMatricula(funcionario);
 	
 		return funcionarioRepository.save(funcionario);
-		
-		
 	}
 	
 	@Transactional

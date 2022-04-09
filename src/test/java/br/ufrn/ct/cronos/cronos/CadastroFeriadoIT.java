@@ -180,7 +180,6 @@ public class CadastroFeriadoIT {
 		
 		settaFeriadoInputComDadosAtualizadasCorretamente(novoFeriadoDomainObject);
 		
-		
 		given()
 			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
 			.contentType(ContentType.JSON)
@@ -197,7 +196,7 @@ public class CadastroFeriadoIT {
 		Feriado novoFeriadoDomainObject = criaNovoFeriadoObjectDomain();
 		
 		settaFeriadoInputAtualizadoComDataExistente(novoFeriadoDomainObject);
-		System.out.println(feriadoInput);
+		
 		given()
 			.pathParam("idFeriado", novoFeriadoDomainObject.getId())
 			.contentType(ContentType.JSON)
@@ -358,8 +357,8 @@ public class CadastroFeriadoIT {
 		
 	}
 	
-	private Feriado criaNovoFeriadoObjectDomain() {
 		Feriado novoFeriadoDomain = new Feriado();
+		private Feriado criaNovoFeriadoObjectDomain() {
 		
 		novoFeriadoDomain.setDescricao("Feriado de carnaval");
 		novoFeriadoDomain.setData(LocalDate.of(2023, 03, 1));
