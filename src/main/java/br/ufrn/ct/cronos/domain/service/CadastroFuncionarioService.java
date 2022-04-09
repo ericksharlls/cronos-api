@@ -75,7 +75,7 @@ public class CadastroFuncionarioService {
 	private void verificarSeExisteCPFouMatricula(Funcionario funcionario) {
 		String cpf = funcionario.getCpf();
 		String matricula = funcionario.getMatricula();
-		// aqui nao seria "ou" ja que pelo menos um deve ser informado?
+		
 		if(cpf.isEmpty() && matricula.isEmpty()) {
 			throw new NegocioException(MSG_CPF_OU_MATRICULA_NECESSARIO);
 		}

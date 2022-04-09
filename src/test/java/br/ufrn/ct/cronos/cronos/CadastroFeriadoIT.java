@@ -69,7 +69,7 @@ public class CadastroFeriadoIT {
 	}
 
 	private void init() {
-		salvaPeriodoDomainObjectNoBanco();
+		criaPeriodoDomainObjectNoBanco();
 		
 		feriadoDomainObject = new Feriado();
 		
@@ -80,7 +80,7 @@ public class CadastroFeriadoIT {
 		feriadoRepository.save(feriadoDomainObject);
 	} 
 	
-	private void salvaPeriodoDomainObjectNoBanco() {
+	private void criaPeriodoDomainObjectNoBanco() {
 		periodoDomainObject = new Periodo();
 		
 		short anoPeriodoTeste = 2023;
