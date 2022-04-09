@@ -85,7 +85,7 @@ public class FuncionarioController {
 			
 	        return funcionarioModelAssembler.toModel(funcionarioAtual);
 	        
-        } catch (FuncionarioNaoEncontradoException | TipoFuncionarioNaoEncontradoException e) {
+        } catch (TipoFuncionarioNaoEncontradoException e) {
         	throw new NegocioException(e.getMessage(), e);
         } 
     }

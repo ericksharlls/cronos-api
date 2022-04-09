@@ -19,7 +19,7 @@ public class FuncionarioInput {
 	
 	private String matricula;
 	
-	@CPF
+	
 	private String cpf;
 	
 	@Email

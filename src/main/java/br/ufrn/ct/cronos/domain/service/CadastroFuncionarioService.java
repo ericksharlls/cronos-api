@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
@@ -29,7 +30,7 @@ public class CadastroFuncionarioService {
 	private FuncionarioRepository funcionarioRepository;
 	
 	@Autowired
-	private TipoFuncionarioRepository tipoFuncionarioRepository;
+	private CadastroTipoFuncionarioService tipoFuncionarioService;
 	
 	@Transactional
 	public Funcionario buscarPorId(Long idFuncionario) {
@@ -47,17 +48,15 @@ public class CadastroFuncionarioService {
 		funcionarioRepository.detach(funcionario);
 		
 		Long idTipo = funcionario.getTipoFuncionario().getId();
-		TipoFuncionario tipo = tipoFuncionarioRepository.getById(idTipo);
-		try {
+		TipoFuncionario tipo = tipoFuncionarioService.buscar(idTipo);
+		
 		funcionario.setTipoFuncionario(tipo);
 		
 		verificarSeExisteCPFouMatricula(funcionario);
 	
 		return funcionarioRepository.save(funcionario);
 		
-		} catch (TipoFuncionarioNaoEncontradoException e) {
-			throw new NegocioException(e.getMessage(), e);
-		}
+		
 	}
 	
 	@Transactional
@@ -75,8 +74,9 @@ public class CadastroFuncionarioService {
 	private void verificarSeExisteCPFouMatricula(Funcionario funcionario) {
 		String cpf = funcionario.getCpf();
 		String matricula = funcionario.getMatricula();
-		
-		if(cpf.isEmpty() && matricula.isEmpty()) {
+
+		if(!StringUtils.hasText(cpf) && !StringUtils.hasText(matricula)) {
+			
 			throw new NegocioException(MSG_CPF_OU_MATRICULA_NECESSARIO);
 		}
 	}
