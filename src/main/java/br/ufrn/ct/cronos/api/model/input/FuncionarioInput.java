@@ -19,7 +19,6 @@ public class FuncionarioInput {
 	
 	private String matricula;
 	
-	
 	private String cpf;
 	
 	@Email
@@ -29,7 +28,6 @@ public class FuncionarioInput {
 	
 	private String ramal;
 	
-	@NotNull
 	private Long idSigaa;
 	
 	@Valid

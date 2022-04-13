@@ -26,7 +26,7 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
     
 
     @Override
-    public Page<Funcionario> findByNomeEIdTipo(String nome, Long idTipo, Pageable pageable) {
+    public Page<Funcionario> findByNomeEIdTipo(String nome, Long idTipoFuncionario, Pageable pageable) {
         
        var jpql = new StringBuilder();
 
@@ -35,13 +35,13 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
             var parametros = new HashMap<String,Object>();
 
             if(StringUtils.hasText(nome)){
-                jpql.append("AND nome LIKE :nome");
+                jpql.append(" AND nome LIKE :nome");
                 parametros.put("nome", "%" +nome + "%");
             }
 
-            if(idTipo != null){
-                jpql.append("AND idTipo = :idTipo ");
-                parametros.put("idTipo",idTipo);
+            if(idTipoFuncionario != null){
+                jpql.append(" AND tipoFuncionario.id = :idTipoFuncionario ");
+                parametros.put("idTipoFuncionario",idTipoFuncionario);
             }
 
             TypedQuery<Funcionario> query = manager.createQuery(jpql.toString(),Funcionario.class);
@@ -56,7 +56,7 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
             Page<Funcionario> funcionariosPage = new PageImpl<>(
                 funcionarios,
                 pageable,
-                getTotalCountFuncionarios(nome, idTipo)
+                getTotalCountFuncionarios(nome, idTipoFuncionario)
             );
 
 
@@ -65,7 +65,7 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
 
 
 
-    private Long getTotalCountFuncionarios(String nome, Long idTipo) {
+    private Long getTotalCountFuncionarios(String nome, Long idTipoFuncionario) {
         
         var jpql = new StringBuilder();
 
@@ -74,13 +74,13 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
             var parametros = new HashMap<String,Object>();
 
             if(StringUtils.hasText(nome)){
-                jpql.append("AND nome LIKE :nome");
+                jpql.append(" AND nome LIKE :nome");
                 parametros.put("nome", "%" +nome + "%");
             }
 
-            if(idTipo != null){
-                jpql.append("AND idTipo = :idTipo ");
-                parametros.put("idTipo",idTipo);
+            if(idTipoFuncionario != null){
+                jpql.append(" AND tipoFuncionario.id = :idTipoFuncionario ");
+                parametros.put("idTipoFuncionario",idTipoFuncionario);
             }
 
             TypedQuery<Long> query = manager.createQuery(jpql.toString(),Long.class);

@@ -25,6 +25,8 @@ import br.ufrn.ct.cronos.domain.repository.TipoFuncionarioRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
+import static org.hamcrest.Matchers.hasItem;
+
 //@SpringBootTest //fornece as funcionalidades do Spring Boot nos testes
 @ExtendWith(SpringExtension.class) // faz com q o contexto do Spring seja levantado no momento da execução dos
 									// testes
@@ -52,7 +54,7 @@ public class CadastroFuncionarioIT {
 	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final int FUNCIONARIO_ID_INEXISTENTE = 81;
-	private static final int TIPO_FUNCIONARIO_ID_INEXISTENTE = 100;
+	private static final Long TIPO_FUNCIONARIO_ID_INEXISTENTE = 100L;
 
 	@BeforeEach
 	public void setup() {
@@ -102,17 +104,17 @@ public class CadastroFuncionarioIT {
 				.body("cpf", equalTo(funcionarioInput.getCpf())).body("email", equalTo(funcionarioInput.getEmail()))
 				.body("telefone", equalTo(funcionarioInput.getTelefone()))
 				.body("ramal", equalTo(funcionarioInput.getRamal()))
-				.body("idSigaa", equalTo(funcionarioInput.getIdSigaa())).body("tipoFuncionario", notNullValue())
+				.body("idSigaa", equalTo(funcionarioInput.getIdSigaa().intValue())).body("tipoFuncionario", notNullValue())
 				.statusCode(HttpStatus.CREATED.value());
 	}
 
 	@Test
-	public void deveFalhar_QuandoCadastrarFuncionarioSemTipoFuncionario() {
-		settaDadosEmFuncionarioInputSemTipoFuncionario();
+	public void deveFalhar_QuandoCadastrarFuncionarioTipoFuncionario() {
+		settaDadosEmFuncionarioInputTipoFuncionarioInexistente();
 
 		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(funcionarioInput).when().post().then()
 				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+				.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE));
 	}
 
 	@Test
@@ -130,7 +132,7 @@ public class CadastroFuncionarioIT {
 
 		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(funcionarioInput).when().post().then()
 				.statusCode(HttpStatus.BAD_REQUEST.value()).body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-				.body("validations.name", hasItems("nome", "idSigaa", "tipoFuncionario"));
+				.body("validations.name", hasItems("nome", "tipoFuncionario"));
 	}
 
 	@Test
@@ -163,13 +165,12 @@ public class CadastroFuncionarioIT {
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoAtualizarFuncionarioSemTipoFuncionario() {
+	public void deveRetornarErro_QuandoAtualizarFuncionarioComTipoFuncionarioInexistente() {
 		Funcionario novoFuncionarioDomainObject = criaNovoFuncionarioObjectDomain();
 		
-		novoFuncionarioDomainObject.setTipoFuncionario(null);
 		
-		settaFuncionarioInputComDadosAtualizados(novoFuncionarioDomainObject);
-		
+		settaDadosEmFuncionarioInputTipoFuncionarioInexistente();
+
 		given()
 			.pathParam("idFuncionario", novoFuncionarioDomainObject.getId())
 			.contentType(ContentType.JSON)
@@ -179,11 +180,11 @@ public class CadastroFuncionarioIT {
 			.put("/{idFuncionario}")
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));    
+			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE));    
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoAtualizarFuncionarioSemMatriculaECPF() {
+	public void deveRetornarErro_QuandoAtualizarFuncionarioSemMatriculaECPF() {
 		Funcionario novoFuncionarioDomainObject = criaNovoFuncionarioObjectDomain();
 		
 		novoFuncionarioDomainObject.setCpf(null);
@@ -204,14 +205,11 @@ public class CadastroFuncionarioIT {
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoAtualizarFuncionarioComCamposNulos() {
+	public void deveRetornarErro_QuandoAtualizarFuncionarioComCamposNulos() {
 		Funcionario novoFuncionarioDomainObject = criaNovoFuncionarioObjectDomain();
 		
-		novoFuncionarioDomainObject.setNome(null);
-		novoFuncionarioDomainObject.setIdSigaa(null);
-		novoFuncionarioDomainObject.setTipoFuncionario(null);
-		
-		settaFuncionarioInputComDadosAtualizados(novoFuncionarioDomainObject);
+		funcionarioInput = new FuncionarioInput();
+
 		
 		given()
 			.pathParam("idFuncionario", novoFuncionarioDomainObject.getId())
@@ -223,11 +221,11 @@ public class CadastroFuncionarioIT {
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
-			.body("validations.name", hasItems("nome", "idSigaa", "tipoFuncionario"));    
+			.body("validations.name", hasItems("nome", "tipoFuncionario"));    
 	}
 	
 	@Test
-	public void deveRetornarSucesso_QuandoAtualizarFuncionarioComNomeVazio() {
+	public void deveRetornarErro_QuandoAtualizarFuncionarioComNomeVazio() {
 		Funcionario novoFuncionarioDomainObject = criaNovoFuncionarioObjectDomain();
 		
 		novoFuncionarioDomainObject.setNome("");
@@ -246,7 +244,9 @@ public class CadastroFuncionarioIT {
 			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
 			.body("validations.name", hasItems("nome"));    
 	}
+
 	/**** TESTES COM REQUISIÇÃ0 TIPO GET ****/
+
 	@Test
 	public void deveRetornarSucesso_QuandoBuscarFuncionarioPorIdExistente() {
 		given()
@@ -270,16 +270,20 @@ public class CadastroFuncionarioIT {
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
-//	@Test
-//	public void deveRetornarSucesso_QuandoBuscarFuncionarioPorTipoENome() {
-//		given()
-//			.accept(ContentType.JSON)
-//		.when()
-//			.get("/funcionarios")
-//		.then()
-//			.statusCode(HttpStatus.OK.value())
-//			.body("nome", equalTo(funcionarioDomainObject.getNome()));
-//	}
+	@Test
+	public void deveRetornarSucesso_QuandoBuscarFuncionarioPorTipoENome() {
+		Funcionario novoFuncionarioDomainObject = criaNovoFuncionarioObjectDomain();
+		given()
+			.param("tipoFuncionarioId", novoFuncionarioDomainObject.getTipoFuncionario().getId())
+			.param("nome", novoFuncionarioDomainObject.getNome())
+			.accept(ContentType.JSON)
+		.when()
+			.get("")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("content.nome", hasItem(equalTo( novoFuncionarioDomainObject.getNome())))
+			.body("content.tipoFuncionario.id", hasItem(novoFuncionarioDomainObject.getTipoFuncionario().getId().intValue()));
+	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO DELETE ****/
 	@Test
@@ -324,10 +328,10 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
 	}
 
-	private void settaDadosEmFuncionarioInputSemTipoFuncionario() {
+	private void settaDadosEmFuncionarioInputTipoFuncionarioInexistente() {
 		TipoFuncionarioIdInput tipoFuncionarioIdInput = new TipoFuncionarioIdInput();
 
-		tipoFuncionarioIdInput.setId(tipoFuncionarioDomainObject.getId());
+		tipoFuncionarioIdInput.setId(TIPO_FUNCIONARIO_ID_INEXISTENTE);
 
 		funcionarioInput = new FuncionarioInput();
 
@@ -404,5 +408,20 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setIdSigaa(funcionarioSalvo.getIdSigaa());
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
 		
+	}
+
+	private void settaFuncionarioInputSemTipoFuncionario(Funcionario funcionarioSalvo){
+		
+		funcionarioInput = new FuncionarioInput();
+		
+		funcionarioInput.setNome(funcionarioSalvo.getNome());
+		funcionarioInput.setCpf(funcionarioSalvo.getCpf());
+		funcionarioInput.setMatricula(funcionarioSalvo.getMatricula());
+		funcionarioInput.setEmail(funcionarioSalvo.getEmail());
+		funcionarioInput.setTelefone(funcionarioSalvo.getTelefone());
+		funcionarioInput.setRamal(funcionarioSalvo.getRamal());
+		funcionarioInput.setIdSigaa(funcionarioSalvo.getIdSigaa());
+		
+
 	}
 }
