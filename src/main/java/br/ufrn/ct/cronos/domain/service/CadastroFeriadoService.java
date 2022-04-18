@@ -22,9 +22,9 @@ import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
 @Service 
 public class CadastroFeriadoService {
 
-	private static final String MSG_FERIADO_COM_DATA_EM_USO = "Já existe um feriado na data informada";
-	private static final String MSG_FERIADO_FORA_DO_PERIODO_INFORMADO = "O feriado esta fora das datas do periodo informado";
-	private static final String MSG_FERIADO_EM_USO = "O feriado de id %d não pode ser removido, pois esta em uso";
+	private static final String MSG_FERIADO_COM_DATA_EM_USO = "Já existe um Feriado na data informada.";
+	private static final String MSG_FERIADO_FORA_DO_PERIODO_INFORMADO = "O Feriado está fora do intervalo de datas do Período informado.";
+	private static final String MSG_FERIADO_EM_USO = "O Feriado de id %d não pode ser removido, pois está em uso.";
 	
 	@Autowired
 	private FeriadoRepository feriadoRepository;
