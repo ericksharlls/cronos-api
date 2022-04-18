@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.notNull;
 
 import java.time.LocalDate;
 
@@ -168,6 +167,100 @@ public class CadastroFeriadoIT {
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
 			.body("validations.name", hasItems("descricao"));
+	}
+
+	@Test
+	public void deveRetornarSucesso_QuandoCadastrarFeriadoComDataInicialDoPeriodo() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("Feriado Teste");
+		feriadoInput.setData(periodoDomainObject.getDataInicio());
+		feriadoInput.setPeriodo(periodoIdInput);
+
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.body("id", notNullValue())
+			.body("descricao", equalTo(feriadoInput.getDescricao()))
+			.body("data", equalTo(feriadoInput.getData().toString()))
+			.body("periodo", notNullValue())
+			.statusCode(HttpStatus.CREATED.value());
+	}
+
+	@Test
+	public void deveRetornarSucesso_QuandoCadastrarFeriadoComDataFinalDoPeriodo() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("Feriado Teste");
+		feriadoInput.setData(periodoDomainObject.getDataTermino());
+		feriadoInput.setPeriodo(periodoIdInput);
+
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.body("id", notNullValue())
+			.body("descricao", equalTo(feriadoInput.getDescricao()))
+			.body("data", equalTo(feriadoInput.getData().toString()))
+			.body("periodo", notNullValue())
+			.statusCode(HttpStatus.CREATED.value());
+	}
+
+	@Test
+	public void deveFalhar_QuandoCadastrarFeriadoComDataAnteriorADataInicialDoPeriodo() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("Feriado Teste");
+		feriadoInput.setData(periodoDomainObject.getDataInicio().minusDays(1));
+		feriadoInput.setPeriodo(periodoIdInput);
+
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+	}
+
+	@Test
+	public void deveFalhar_QuandoCadastrarFeriadoComDataPosteriorADataFinalDoPeriodo() {
+		PeriodoIdInput periodoIdInput = new PeriodoIdInput();
+		
+		periodoIdInput.setId(periodoDomainObject.getId());
+		feriadoInput = new FeriadoInput();
+		
+		feriadoInput.setDescricao("Feriado Teste");
+		feriadoInput.setData(periodoDomainObject.getDataTermino().plusDays(1));
+		feriadoInput.setPeriodo(periodoIdInput);
+
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
 	}
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO PUT ****/
