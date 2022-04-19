@@ -63,8 +63,6 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
        return funcionariosPage;
     }
 
-
-
     private Long getTotalCountFuncionarios(String nome, Long idTipoFuncionario) {
         
         var jpql = new StringBuilder();
@@ -80,7 +78,7 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
 
             if(idTipoFuncionario != null){
                 jpql.append(" AND tipoFuncionario.id = :idTipoFuncionario ");
-                parametros.put("idTipoFuncionario",idTipoFuncionario);
+                parametros.put("idTipoFuncionario", idTipoFuncionario);
             }
 
             TypedQuery<Long> query = manager.createQuery(jpql.toString(),Long.class);

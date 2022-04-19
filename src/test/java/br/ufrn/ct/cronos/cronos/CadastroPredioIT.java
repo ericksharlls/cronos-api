@@ -264,6 +264,26 @@ public class CadastroPredioIT {
 				.body("validations.name", hasItems("nome", "descricao"));
 	}
 
+	@Test
+	public void deveRetornarStatus404_QuandoAtualizarPredioInexistente() {
+		PredioInput predioInput = new PredioInput();
+		String novoNome = "Novo Nome";
+		String novaDescricao = "Descrição Nova";
+		predioInput.setNome(novoNome);
+		predioInput.setDescricao(novaDescricao);
+
+		given()
+				.pathParam("predioId", PREDIO_ID_INEXISTENTE)
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(predioInput)
+		.when()
+				.put("/{predioId}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value())
+			.body("title", equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
+	}
+
 	/**
 	 * Testes com o GET
 	 */

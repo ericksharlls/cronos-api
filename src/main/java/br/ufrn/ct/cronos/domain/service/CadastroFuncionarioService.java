@@ -1,5 +1,9 @@
 package br.ufrn.ct.cronos.domain.service;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,8 +25,8 @@ import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
 @Service
 public class CadastroFuncionarioService {
 
-	private static final String MSG_CPF_OU_MATRICULA_NECESSARIO = "É necessario informar a matricula ou o CPF do funcionario";	
-	private static final String MSG_FUNCIONARIO_EM_USO = "O funcionario de id %d não pode ser removido, pois esta em uso";
+	private static final String MSG_CPF_OU_MATRICULA_NECESSARIO = "É necessário informar a matrícula ou o CPF do Funcionário.";	
+	private static final String MSG_FUNCIONARIO_EM_USO = "O Funcionário de id %d não pode ser removido, pois está em uso.";
 	
 	@Autowired
 	private FuncionarioRepository funcionarioRepository;
@@ -51,6 +55,12 @@ public class CadastroFuncionarioService {
 		funcionario.setTipoFuncionario(tipo);
 		
 		verificarSeExisteCPFouMatricula(funcionario);
+		if(StringUtils.hasText(funcionario.getEmail())) {
+			validarEmail(funcionario.getEmail());
+		}
+		if(StringUtils.hasText(funcionario.getCpf())) {
+			validarCPF(funcionario.getCpf());
+		}
 	
 		return funcionarioRepository.save(funcionario);
 	}
@@ -76,5 +86,14 @@ public class CadastroFuncionarioService {
 			throw new NegocioException(MSG_CPF_OU_MATRICULA_NECESSARIO);
 		}
 	}
+
+	private void validarEmail(@Valid @Email String email){
+		System.out.println("#### ENTROU NA VALIDAÇÂO de EMAIL!!!");
+	}
+
+	private void validarCPF(@CPF String cpf){
+		System.out.println("#### ENTROU NA VALIDAÇÂO de CPF!!!");
+	}
+
 }
 	

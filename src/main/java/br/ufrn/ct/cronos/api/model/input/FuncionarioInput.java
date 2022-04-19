@@ -21,7 +21,6 @@ public class FuncionarioInput {
 	
 	private String cpf;
 	
-	@Email
 	private String email;
 	
 	private String telefone;
