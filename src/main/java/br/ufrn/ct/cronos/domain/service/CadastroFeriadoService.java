@@ -72,8 +72,8 @@ public class CadastroFeriadoService {
 	
 	// refatorar metodo para diminuir um acesso ao banco
 	private void vericarSeOFeriadoEstaNoPeriodoInformado(Feriado feriado, Periodo periodo) {
-		LocalDate dataFeriado = feriado.getData().minusDays(1);
-		LocalDate dataInicio = periodo.getDataInicio();
+		LocalDate dataFeriado = feriado.getData();
+		LocalDate dataInicio = periodo.getDataInicio().minusDays(1);
 		LocalDate dataTermino = periodo.getDataTermino().plusDays(1);
 		
 		if( !(dataFeriado.isAfter(dataInicio) && dataFeriado.isBefore(dataTermino)) ) {
