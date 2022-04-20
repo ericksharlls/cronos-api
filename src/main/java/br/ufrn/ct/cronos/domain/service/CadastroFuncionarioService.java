@@ -1,9 +1,5 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
-
-import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,23 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.SmartValidator;
-import org.springframework.validation.annotation.Validated;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.exception.FuncionarioNaoEncontradoException;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.model.Funcionario;
 import br.ufrn.ct.cronos.domain.model.TipoFuncionario;
 import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
 
-
 @Service
 public class CadastroFuncionarioService {
-
-	private static final String MSG_CPF_OU_MATRICULA_NECESSARIO = "É necessário informar a matrícula ou o CPF do Funcionário.";	
+	
 	private static final String MSG_FUNCIONARIO_EM_USO = "O Funcionário de id %d não pode ser removido, pois está em uso.";
 	
 	@Autowired
@@ -56,16 +46,8 @@ public class CadastroFuncionarioService {
 		
 		funcionario.setTipoFuncionario(tipo);
 
-		if(StringUtils.hasText(funcionario.getEmail())) {
-			System.out.println("ENtROU NO EMAIL!!!");
-			validarEmail(funcionario.getEmail());
-		}
-		verificarSeExisteCPFouMatricula(funcionario);
+		verificarValoresNulos(funcionario);
 		
-		if(StringUtils.hasText(funcionario.getCpf())) {
-			validarCPF(funcionario.getCpf());
-		}
-	
 		return funcionarioRepository.save(funcionario);
 	}
 	
@@ -77,28 +59,43 @@ public class CadastroFuncionarioService {
 		} catch (EmptyResultDataAccessException e) {
 			throw new FeriadoNaoEncontradoException(funcionarioId);
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(MSG_FUNCIONARIO_EM_USO,funcionarioId));
+			throw new EntidadeEmUsoException(String.format(MSG_FUNCIONARIO_EM_USO, funcionarioId));
 		}
 	}
 	
-	private void verificarSeExisteCPFouMatricula(Funcionario funcionario) {
-		String cpf = funcionario.getCpf();
-		String matricula = funcionario.getMatricula();
-
-		if(!StringUtils.hasText(cpf) && !StringUtils.hasText(matricula)) {
-			
-			throw new NegocioException(MSG_CPF_OU_MATRICULA_NECESSARIO);
+	private void verificarValoresNulos(Funcionario funcionario) {
+		/*
+		 ** Se o CPF não for informado, ele será definido com uma string vazia.
+		 ** Se o CPF for informado, ele passará normalmente pela validação de @CPF do Hibernate Validator.
+		*/ 
+		if (funcionario.getCpf() == null) {
+			funcionario.setCpf("");
 		}
-	}
-
-	@Email
-	private String validarEmail(@Email String email){
-		System.out.println("#### ENTROU NA VALIDAÇÂO de EMAIL!!!");
-		return email;
-	}
-
-	private void validarCPF(@CPF String cpf){
-		System.out.println("#### ENTROU NA VALIDAÇÂO de CPF!!!");
+		/*
+		 ** Se o E-mail não for informado, ele será definido com uma string vazia.
+		 ** Se o E-mail for informado, ele passará normalmente pela validação de @Email do Hibernate Validator.
+		*/ 
+		if (funcionario.getEmail() == null) {
+			funcionario.setEmail("");
+		}
+		/*
+		 ** Se o Matrícula não for informada, ela será definido com uma string vazia.
+		*/ 
+		if (funcionario.getMatricula() == null) {
+			funcionario.setMatricula("");
+		}
+		/*
+		 ** Se o Telefone não for informado, ele será definido com uma string vazia.
+		*/ 
+		if (funcionario.getTelefone() == null) {
+			funcionario.setTelefone("");
+		}
+		/*
+		 ** Se o Ramal não for informado, ele será definido com uma string vazia.
+		*/ 
+		if (funcionario.getRamal() == null) {
+			funcionario.setRamal("");
+		}
 	}
 
 }
