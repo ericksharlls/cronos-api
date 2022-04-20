@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.SmartValidator;
+import org.springframework.validation.annotation.Validated;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
@@ -53,11 +55,13 @@ public class CadastroFuncionarioService {
 		TipoFuncionario tipo = tipoFuncionarioService.buscar(idTipo);
 		
 		funcionario.setTipoFuncionario(tipo);
-		
-		verificarSeExisteCPFouMatricula(funcionario);
+
 		if(StringUtils.hasText(funcionario.getEmail())) {
+			System.out.println("ENtROU NO EMAIL!!!");
 			validarEmail(funcionario.getEmail());
 		}
+		verificarSeExisteCPFouMatricula(funcionario);
+		
 		if(StringUtils.hasText(funcionario.getCpf())) {
 			validarCPF(funcionario.getCpf());
 		}
@@ -87,8 +91,10 @@ public class CadastroFuncionarioService {
 		}
 	}
 
-	private void validarEmail(@Valid @Email String email){
+	@Email
+	private String validarEmail(@Email String email){
 		System.out.println("#### ENTROU NA VALIDAÇÂO de EMAIL!!!");
+		return email;
 	}
 
 	private void validarCPF(@CPF String cpf){
