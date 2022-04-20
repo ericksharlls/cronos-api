@@ -55,7 +55,8 @@ public class CadastroFeriadoIT {
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final int FERIADO_ID_INEXISTENTE = 81;
 	private static final int PERIODO_ID_INEXISTENTE = 100;
-	
+	private static final String RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE = "Recurso não encontrado";
+
 	@BeforeEach
 	public void setup () {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -340,6 +341,22 @@ public class CadastroFeriadoIT {
 			.body("validations.name", hasItems("descricao"));
 	}
 
+	@Test
+	public void deveRetornarStatus404_QuandoAtualizarFeriadoInexistente(){
+		settaDadosCorretosEmFeriadoInput();
+
+		given()
+			.pathParam("idFeriado", FERIADO_ID_INEXISTENTE)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(feriadoInput)
+		.when()
+			.put("{idFeriado}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value())
+			.body("title",equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
+	}
+
 	/**** TESTES COM REQUISIÇÃ0 TIPO GET ****/
 
 	@Test
@@ -386,6 +403,7 @@ public class CadastroFeriadoIT {
 		.then()
 			.statusCode(HttpStatus.OK.value());
 	}
+
 	
 	/**** TESTES COM REQUISIÇÃ0 TIPO DELETE ****/
 	

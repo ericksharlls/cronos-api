@@ -55,6 +55,7 @@ public class CadastroFuncionarioIT {
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final int FUNCIONARIO_ID_INEXISTENTE = 81;
 	private static final Long TIPO_FUNCIONARIO_ID_INEXISTENTE = 100L;
+	private static final String RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE = "Recurso não encontrado";
 
 	@BeforeEach
 	public void setup() {
@@ -243,6 +244,22 @@ public class CadastroFuncionarioIT {
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE))
 			.body("validations.name", hasItems("nome"));    
+	}
+	@Test
+	public void deveRetornarStatus404_QuandoAtualizarFuncionarioInexistente(){
+		Funcionario novoFuncionarioDomainObject = criaNovoFuncionarioObjectDomain();
+		settaFuncionarioInputComDadosAtualizados(novoFuncionarioDomainObject);
+
+		given()
+			.pathParam("idFuncionario", FUNCIONARIO_ID_INEXISTENTE)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(funcionarioInput)
+		.when()
+			.put("{idFuncionario}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value())
+			.body("title",equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
 	}
 
 	/**** TESTES COM REQUISIÇÃ0 TIPO GET ****/

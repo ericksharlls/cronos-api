@@ -56,7 +56,8 @@ public class CadastroPeriodoIT {
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final String ENTIDADE_EM_USO_PROBLEM_TYPE = "Entidade em uso";
 	private static final int PERIODO_ID_INEXISTENTE = 81;
-	
+	private static final String RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE = "Recurso não encontrado";
+
 	@BeforeEach
 	public void setup () {
 		// para fazer o log do q foi enviado na requisição e recebido na resposta quando o teste falha
@@ -276,6 +277,21 @@ public class CadastroPeriodoIT {
 											   "isPeriodoLetivo",
 											   "ano",
 											   "numero"));
+	}
+	@Test
+	public void deveRetornarStatus404_QuandoAtualizarPeriodoInexistente(){
+			settaPeriodoInputComDadosCorretos();
+
+			given()
+				.pathParam("periodoId", PERIODO_ID_INEXISTENTE)
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(periodoInput)
+			.when()
+				.put("/{periodoId}")
+			.then()
+				.statusCode(HttpStatus.NOT_FOUND.value())
+				.body("title",equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
 	}
 	
 	/**** TESTES COM REQUISIÇÕES DELETE ****/

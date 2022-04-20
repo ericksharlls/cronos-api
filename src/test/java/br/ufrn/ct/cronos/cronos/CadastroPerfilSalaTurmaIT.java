@@ -54,7 +54,8 @@ public class CadastroPerfilSalaTurmaIT {
 	
 	private PerfilSalaTurma perfilTurma;
 	private int quantidadeDePerfisNoBanco;
-	
+	private static final int PERFIL_SALA_TURMA_ID_INEXISTENTE = 100;
+
 	private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
 	private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
 	private static final String ENTIDADE_EM_USO_PROBLEM_TYPE = "Entidade em uso";
@@ -253,6 +254,22 @@ public class CadastroPerfilSalaTurmaIT {
 			.body("validations.name",hasItems("nome","descricao"));
 	}
 	
+	@Test
+	public void deveRetornarStatus404_QuandoAtualizarPerfilSalaTurmaInexistente(){
+		PerfilSalaTurmaInput perfilSalaTurmaInput = retornaPerfilSalaTurmaComOsDadosCorretos();
+		
+		given()
+			.pathParam("perfilSalaTurmaId", PERFIL_SALA_TURMA_ID_INEXISTENTE)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(perfilSalaTurmaInput)
+		.when()
+			.put("/{perfilSalaTurmaId}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value())
+			.body("title", equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
+	}
+
 	/* Testes Com o Get */
 	
 	@Test
