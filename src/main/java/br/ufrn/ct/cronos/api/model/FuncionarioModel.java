@@ -21,7 +21,5 @@ public class FuncionarioModel {
 	
 	private String ramal;
 	
-	private Long idSigaa;
-	
 	private TipoFuncionarioModel tipoFuncionario;
 }

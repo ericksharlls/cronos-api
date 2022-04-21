@@ -105,7 +105,7 @@ public class CadastroFuncionarioIT {
 				.body("cpf", equalTo(funcionarioInput.getCpf())).body("email", equalTo(funcionarioInput.getEmail()))
 				.body("telefone", equalTo(funcionarioInput.getTelefone()))
 				.body("ramal", equalTo(funcionarioInput.getRamal()))
-				.body("idSigaa", equalTo(funcionarioInput.getIdSigaa().intValue())).body("tipoFuncionario", notNullValue())
+				.body("tipoFuncionario", notNullValue())
 				.statusCode(HttpStatus.CREATED.value());
 	}
 
@@ -341,7 +341,6 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setEmail("jorge.silva@gmail.com");
 		funcionarioInput.setTelefone("32136524");
 		funcionarioInput.setRamal("2");
-		funcionarioInput.setIdSigaa(15256L);
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
 	}
 
@@ -358,7 +357,6 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setEmail("joprge.silva@gmail.com");
 		funcionarioInput.setTelefone("32136524");
 		funcionarioInput.setRamal("2");
-		funcionarioInput.setIdSigaa(15256L);
 	}
 
 	private void settaDadosEmFuncionarioInputSemMatriculaECPF() {
@@ -372,7 +370,6 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setEmail("joprge.silva@gmail.com");
 		funcionarioInput.setTelefone("32136524");
 		funcionarioInput.setRamal("2");
-		funcionarioInput.setIdSigaa(15256L);
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
 	}
 
@@ -389,7 +386,6 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setEmail("");
 		funcionarioInput.setTelefone("");
 		funcionarioInput.setRamal("");
-		funcionarioInput.setIdSigaa(15256L);
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
 	}
 
@@ -422,9 +418,7 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setEmail(funcionarioSalvo.getEmail());
 		funcionarioInput.setTelefone(funcionarioSalvo.getTelefone());
 		funcionarioInput.setRamal(funcionarioSalvo.getRamal());
-		funcionarioInput.setIdSigaa(funcionarioSalvo.getIdSigaa());
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
-		
 	}
 
 	private void settaFuncionarioInputSemTipoFuncionario(Funcionario funcionarioSalvo){
@@ -437,8 +431,5 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setEmail(funcionarioSalvo.getEmail());
 		funcionarioInput.setTelefone(funcionarioSalvo.getTelefone());
 		funcionarioInput.setRamal(funcionarioSalvo.getRamal());
-		funcionarioInput.setIdSigaa(funcionarioSalvo.getIdSigaa());
-		
-
 	}
 }

@@ -39,20 +39,43 @@ public class FuncionarioInput {
 	
 	private String ramal;
 	
-	private Long idSigaa;
-	
 	@Valid
 	@NotNull
 	private TipoFuncionarioIdInput tipoFuncionario;
 
 	/*
-	 ** Método para validar se o CPF ou a Matrícula foram informados.
-	 ** O prefixo 'is' foi adicionado, pois apenas a anotação @AssertTrue não foi suficiente para que o método fosse executado.
+	 ** O prefixo 'is' foi adicionado nos métodos de validação a seguir, pois apenas a anotação @AssertTrue não 
+	 ** é suficiente para que os métodos sejam executados.
 	 ** Para o método ser executado, ele precisa seguir a convenção de nomes getter (iniciando com get ou is).
+	*/
+
+	/*
+	 ** Método para validar se o CPF ou a Matrícula foram informados.
 	*/ 
 	@AssertTrue
 	private boolean isCpfOuMatricula() {
 		if(!StringUtils.hasText(cpf) && !StringUtils.hasText(matricula)) {
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 ** A constraint @Email aceita uma String vazia.
+	 ** O método abaixo foi criado para contornar isso e retornar mensagem de erro se a String do e-mail vier vazia.
+	 ** Já se uma String não-vazia for informada, será tratada normalmente pela constraint @Email.
+	*/
+	@AssertTrue
+	private boolean isCampoEmailVazio() {
+		if(email != null && email.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+	@AssertTrue
+	private boolean isMatriculaInvalida() {
+		if(matricula != null && (email.isEmpty() || !matricula.matches("\\d{7,11}"))) {
 			return false;
 		}
 		return true;
