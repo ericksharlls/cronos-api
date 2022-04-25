@@ -118,7 +118,7 @@ public class CadastroFuncionarioIT {
 	}
 
 	@Test
-	public void deveFalhar_QuandoCadastrarFuncionarioTipoFuncionario() {
+	public void deveFalhar_QuandoCadastrarFuncionarioComTipoFuncionarioInexistente() {
 		settaDadosEmFuncionarioInputTipoFuncionarioInexistente();
 
 		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(funcionarioInput).when().post().then()
