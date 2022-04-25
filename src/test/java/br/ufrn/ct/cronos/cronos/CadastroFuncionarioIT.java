@@ -99,14 +99,22 @@ public class CadastroFuncionarioIT {
 	public void deveAtribuirId_QuandoCadastrarFuncionarioComDadosCorretos() {
 		settaDadosCorretosEmFuncionarioInput();
 
-		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(funcionarioInput).when().post().then()
-				.body("id", notNullValue()).body("nome", equalTo(funcionarioInput.getNome()))
-				.body("matricula", equalTo(funcionarioInput.getMatricula()))
-				.body("cpf", equalTo(funcionarioInput.getCpf())).body("email", equalTo(funcionarioInput.getEmail()))
-				.body("telefone", equalTo(funcionarioInput.getTelefone()))
-				.body("ramal", equalTo(funcionarioInput.getRamal()))
-				.body("tipoFuncionario", notNullValue())
-				.statusCode(HttpStatus.CREATED.value());
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body(funcionarioInput)
+		.when()
+			.post()
+		.then()
+			.body("id", notNullValue())
+			.body("nome", equalTo(funcionarioInput.getNome()))
+			.body("matricula", equalTo(funcionarioInput.getMatricula()))
+			.body("cpf", equalTo(funcionarioInput.getCpf()))
+			.body("email", equalTo(funcionarioInput.getEmail()))
+			.body("telefone", equalTo(funcionarioInput.getTelefone()))
+			.body("ramal", equalTo(funcionarioInput.getRamal()))
+			.body("tipoFuncionario", notNullValue())
+			.statusCode(HttpStatus.CREATED.value());
 	}
 
 	@Test

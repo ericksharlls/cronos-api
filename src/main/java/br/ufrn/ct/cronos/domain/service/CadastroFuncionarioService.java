@@ -45,8 +45,6 @@ public class CadastroFuncionarioService {
 		TipoFuncionario tipo = tipoFuncionarioService.buscar(idTipo);
 		
 		funcionario.setTipoFuncionario(tipo);
-
-		tratarValoresDosAtributosAntesDaPersistencia(funcionario);
 		
 		return funcionarioRepository.save(funcionario);
 	}
@@ -60,44 +58,6 @@ public class CadastroFuncionarioService {
 			throw new FeriadoNaoEncontradoException(funcionarioId);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(String.format(MSG_FUNCIONARIO_EM_USO, funcionarioId));
-		}
-	}
-	
-	private void tratarValoresDosAtributosAntesDaPersistencia(Funcionario funcionario) {
-		/*
-		 ** Se o CPF não for informado, ele será definido com uma string vazia.
-		 ** Se o CPF for informado, ele passará normalmente pela validação da Constraint @CPF.
-		*/ 
-		if (funcionario.getCpf() == null) {
-			funcionario.setCpf("");
-		} else {
-			/*
-			 ** Como a Constraint @CPF permite informar os separadores '.' e '-' e tais separadores não são armazenados 
-			 ** no banco de dados, qualquer ocorrência deles é eliminada da String.
-		    */
-			funcionario.setCpf(funcionario.getCpf().replaceAll("[.-]", ""));
-		}
-		/*
-		 ** Se o E-mail não for informado, ele será definido com uma string vazia.
-		 ** Se o E-mail for informado, ele passará normalmente pela validação da Constraint @Email.
-		*/ 
-		if (funcionario.getEmail() == null) {
-			funcionario.setEmail("");
-		}
-		
-		/*
-		 ** Se o valor de cada campo abaixo não tiver sido informado, o valor será definido com uma String vazia.
-		*/
-		if (funcionario.getMatricula() == null) {
-			funcionario.setMatricula("");
-		}
-		 
-		if (funcionario.getTelefone() == null) {
-			funcionario.setTelefone("");
-		}
-		
-		if (funcionario.getRamal() == null) {
-			funcionario.setRamal("");
 		}
 	}
 

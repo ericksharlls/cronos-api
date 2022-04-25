@@ -31,6 +31,7 @@ public class FuncionarioInput {
 	/*
 	 ** Aceita valor nulo.
 	 ** Qualquer String informada será validada, com exceção de uma String vazia.
+	 ** Para tratar uma String vazia, foi criado o método 'isCampoEmailVazio'.
 	*/ 
 	@Email
 	private String email;
@@ -73,6 +74,9 @@ public class FuncionarioInput {
 		return true;
 	}
 
+	/*
+	 ** Esse método valida se a matrícula é uma sequência numérica composta de 7 a 11 dígitos.
+	*/
 	@AssertTrue
 	private boolean isMatriculaInvalida() {
 		if(matricula != null && (email.isEmpty() || !matricula.matches("\\d{7,11}"))) {
