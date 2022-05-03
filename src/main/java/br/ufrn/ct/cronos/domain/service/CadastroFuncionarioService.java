@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.FuncionarioComMatriculaECpfNulosException;
 import br.ufrn.ct.cronos.domain.exception.FuncionarioNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.model.Funcionario;
 import br.ufrn.ct.cronos.domain.model.TipoFuncionario;
 import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;

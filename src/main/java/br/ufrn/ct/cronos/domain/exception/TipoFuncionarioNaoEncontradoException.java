@@ -10,5 +10,5 @@ public class TipoFuncionarioNaoEncontradoException extends EntidadeNaoEncontrada
 	public TipoFuncionarioNaoEncontradoException(Long tipoFuncionarioId) {
 		this(String.format("Não existe um cadastro de tipo funcionario com o id %d",tipoFuncionarioId));
 	}
-
+	
 }

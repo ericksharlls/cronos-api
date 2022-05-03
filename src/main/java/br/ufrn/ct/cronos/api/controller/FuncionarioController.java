@@ -22,6 +22,7 @@ import br.ufrn.ct.cronos.api.assembler.FuncionarioInputDisassembler;
 import br.ufrn.ct.cronos.api.assembler.FuncionarioModelAssembler;
 import br.ufrn.ct.cronos.api.model.FuncionarioModel;
 import br.ufrn.ct.cronos.api.model.input.FuncionarioInput;
+import br.ufrn.ct.cronos.domain.exception.FuncionarioComMatriculaECpfNulosException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.TipoFuncionarioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Funcionario;
@@ -71,7 +72,7 @@ public class FuncionarioController {
 			
 		} catch (TipoFuncionarioNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
-		}
+		} 
 	}
 	
 	@PutMapping("/{idFuncionario}")
