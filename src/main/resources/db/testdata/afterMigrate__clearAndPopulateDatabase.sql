@@ -24,7 +24,14 @@ INSERT INTO perfil_sala_turma (nome_perfil_sala_turma, descricao_perfil_sala_tur
 
 INSERT INTO sala (nome_sala, descricao_sala, capacidade_sala, tipo_quadro_sala, utilizar_distribuicao, utilizar_agendamento, distribuir, id_predio, id_perfil) VALUES 
 ("A1", "Sala A1", 30, "Branco", true, true, true, 1, 1),
-("A2", "Sala A2", 50, "Negro", true, true, true, 1, 1);
+("A2", "Sala A2", 50, "Negro", true, true, true, 1, 1),
+("A3", "Sala A3", 40, "Branco", true, true, true, 2, 2),
+("A10", "Sala A10", 35, "Negro", true, true, true, 3, 3),
+("A4", "Sala A4", 40, "Branco", true, true, true, 3, 3),
+("A5", "Sala A5", 45, "Branco", true, true, true, 3, 3),
+("A6", "Sala A6", 40, "Branco", true, true, true, 1, 1),
+("A7", "Sala A7", 45, "Negro", true, true, true, 2, 1),
+("A8", "Sala A8", 50, "Negro", true, true, true, 1, 2);
 
 INSERT INTO periodo (nome_periodo, descricao_periodo, data_inicio_periodo, data_termino_periodo, is_periodo_letivo, ano_periodo, numero_periodo) VALUES 
 ('RECESSO ACADÊMICO - 2021.2','RECESSO ACADÊMICO - 2021.2','2021-12-15','2022-03-27',0,2021,4),
