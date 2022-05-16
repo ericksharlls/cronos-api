@@ -18,7 +18,7 @@ import br.ufrn.ct.cronos.domain.repository.SalaRepository;
 public class CadastroSalaService {
 
     private static final String MSG_SALA_EM_USO 
-            = "Sala de id %d não pode ser removida, pois está em uso";
+            = "Sala de id %d não pode ser removida, pois está em uso.";
 
     @Autowired
     private SalaRepository salaRepository;

@@ -48,20 +48,16 @@ public class SalaController {
 	private SalaInputDisassembler salaInputDisassembler;
 	
 	@GetMapping
-	public Page<SalaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
-		Page<Sala> salasPage = salaRepository.findAll(pageable);
-        // Criar uma implementação de Page para retorno.. 3 parâmetros são recebidos
-        Page<SalaModel> prediosModelPage = new PageImpl<>(
-                //1 Parâmetro é a lista q vem do banco.. (O método findAll retorna um objeto Page)
+	public Page<SalaModel> listar(String nome, Long predioId, @PageableDefault(size = 10) Pageable pageable) {
+		Page<Sala> salasPage = salaRepository.findByNomeAndPredioId(nome, predioId, pageable);
+    
+        Page<SalaModel> salasModelPage = new PageImpl<>(
                 salaModelAssembler.toCollectionModel(salasPage.getContent()),
-                //prediosPage.getContent(),
-                //2 Parâmetro é um objeto pageable com as informações setadas do cliente (exs: size, page, sort)
                 pageable,
-                //3 Parâmetro: total de elementos da lista
                 salasPage.getTotalElements()
             );
         
-		return prediosModelPage;
+		return salasModelPage;
 	}
 
 	@GetMapping("/{salaId}")
@@ -106,18 +102,5 @@ public class SalaController {
     public void remover(@PathVariable Long salaId) {
         cadastroSala.excluir(salaId);
     }
-
-	@GetMapping("/por-nome")
-	public Page<SalaModel> salasPorNome(String nome, Long predioId, @PageableDefault(size = 10) Pageable pageable) {
-        Page<Sala> salasPage = salaRepository.findByNomeAndPredio(nome, predioId, pageable);
-
-        Page<SalaModel> salasModelPage = new PageImpl<>(
-                salaModelAssembler.toCollectionModel(salasPage.getContent()),
-                pageable,
-                salasPage.getTotalElements()
-            );
-
-		return salasModelPage;
-	}
     
 }

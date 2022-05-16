@@ -22,7 +22,6 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
 
     @PersistenceContext 
     private EntityManager manager;
-
     
 
     @Override

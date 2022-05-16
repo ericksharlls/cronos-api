@@ -13,7 +13,7 @@ import br.ufrn.ct.cronos.domain.model.Sala;
 @Repository
 public interface SalaRepository extends JpaRepository<Sala, Long>, CustomizedSalaRepository {
 
-    @Query("from Sala s WHERE s.nome like %:nome% AND s.predio.id = :predioId")
-	Page<Sala> findByNomeAndPredio(String nome, @Param("predioId") Long predioId, Pageable pageable);
+   // @Query("from Sala s WHERE s.nome like %:nome% AND s.predio.id = :predioId")
+	//Page<Sala> findByNomeAndPredio(String nome, @Param("predioId") Long predioId, Pageable pageable);
 
 }
