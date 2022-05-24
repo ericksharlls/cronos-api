@@ -25,6 +25,7 @@ import br.ufrn.ct.cronos.api.model.input.FuncionarioInput;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.TipoFuncionarioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Funcionario;
+import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
 import br.ufrn.ct.cronos.domain.service.CadastroFuncionarioService;
 
 @RestController
@@ -33,6 +34,9 @@ public class FuncionarioController {
 	
 	@Autowired
 	private CadastroFuncionarioService funcionarioService;
+	
+	@Autowired
+	private FuncionarioRepository funcionarioRepository;
 	
 	@Autowired
 	private FuncionarioInputDisassembler funcionarioInputDisassembler;
@@ -50,7 +54,7 @@ public class FuncionarioController {
 	
 	@GetMapping
 	public Page<FuncionarioModel> buscarFuncionarioPorTipoENome (Long tipoFuncionarioId, String nome, @PageableDefault(size = 10) Pageable pageable) {
-		Page<Funcionario> funcionariosPage = funcionarioService.buscarPorNomeETipo(nome, tipoFuncionarioId, pageable);
+		Page<Funcionario> funcionariosPage = funcionarioRepository.findByNomeAndIdTipoFuncionario(nome, tipoFuncionarioId, pageable);
 		
 		Page<FuncionarioModel> funcionarioModelPage = new PageImpl<>(
 				funcionarioModelAssembler.toCollectionModel(funcionariosPage.getContent()),

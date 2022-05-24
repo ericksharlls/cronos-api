@@ -33,11 +33,6 @@ public class CadastroFuncionarioService {
 	}
 	
 	@Transactional
-	public Page<Funcionario> buscarPorNomeETipo(String nome,Long idTipo,Pageable pageable) {
-		return funcionarioRepository.findByNomeEIdTipo(nome, idTipo, pageable);
-	}
-	
-	@Transactional
 	public Funcionario salvar(Funcionario funcionario) {
 		funcionarioRepository.detach(funcionario);
 		
