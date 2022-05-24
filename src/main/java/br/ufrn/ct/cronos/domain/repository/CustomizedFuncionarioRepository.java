@@ -7,6 +7,6 @@ import br.ufrn.ct.cronos.domain.model.Funcionario;
 
 public interface CustomizedFuncionarioRepository {
 
-    Page<Funcionario> findByNomeEIdTipo(String nome,Long idTipoFuncionario,Pageable pageable);
+    Page<Funcionario> findByNomeAndIdTipoFuncionario(String nome,Long idTipoFuncionario,Pageable pageable);
     
 }

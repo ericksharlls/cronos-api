@@ -25,7 +25,7 @@ public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioReposito
     
 
     @Override
-    public Page<Funcionario> findByNomeEIdTipo(String nome, Long idTipoFuncionario, Pageable pageable) {
+    public Page<Funcionario> findByNomeAndIdTipoFuncionario(String nome, Long idTipoFuncionario, Pageable pageable) {
         
        var jpql = new StringBuilder();
 
