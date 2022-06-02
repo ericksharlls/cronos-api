@@ -34,6 +34,15 @@ local.properties
 .loadpath
 .recommenders
 
+### IntelliJ ###
+.idea/
+.jpb/
+.settings/
+.bin/
+.target/
+.classpath
+.project
+
 # JDT-specific (Eclipse Java Development Tools)     
 **/.classpath
 **/.project
