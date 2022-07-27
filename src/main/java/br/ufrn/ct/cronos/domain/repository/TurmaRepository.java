@@ -1,6 +1,7 @@
 package br.ufrn.ct.cronos.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,9 @@ public interface TurmaRepository extends CustomJpaRepository<Turma, Long> {
 
     Turma findByIdTurmaSIGAA(Long idTurmaSIGAA);
 
-    @Query("from Turma t WHERE  t.codigoDisciplina = :codigo OR t.horario = :horario OR t.numero = :numero OR t.periodo.id = :idPeriodo")
-    List<Turma> buscarTurmaComMesmoParametro(@Param("codigo") String codigo, @Param("horario") String horario, @Param("numero") String numero, @Param("idPeriodo") Long idPeriodo);
+    @Query("from Turma t WHERE  t.codigoDisciplina = :codigo AND t.horario = :horario AND t.numero = :numero AND t.periodo.id = :idPeriodo")
+    Optional<Turma> buscarTurmaComMesmoParametro(@Param("codigo") String codigo, @Param("horario") String horario, @Param("numero") String numero, @Param("idPeriodo") Long idPeriodo);
+
+    @Query("from Turma t WHERE  t.codigoDisciplina = :codigo AND t.horario = :horario AND t.numero = :numero AND t.periodo.id = :idPeriodo AND t.id <> :idTurma")
+    Optional<Turma> buscarTurmaComMesmoParametro(@Param("codigo") String codigo, @Param("horario") String horario, @Param("numero") String numero, @Param("idPeriodo") Long idPeriodo, @Param("idTurma") Long idTurma);
 }

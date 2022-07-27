@@ -54,7 +54,7 @@ public class TurmaController {
 
         turmaInputDisassembler.copyToDomainObject(turmaInput, turmaAtual);
 
-        turmaAtual = cadastroTurma.salvar(turmaAtual);
+        turmaAtual = cadastroTurma.atualizar(turmaAtual);
 
         return turmaModelAssembler.toModel(turmaAtual);
     }

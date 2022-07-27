@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CadastroTurmaService {
@@ -32,15 +33,7 @@ public class CadastroTurmaService {
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
-    private static final String MSG_CODIGO_DO_COMPONENTE_CURRICULAR_JA_EXISTE = "O codigo do componente curricular inserido não pode ser utilizado, pois já está em uso";
-
-    private static final String MSG_HORARIO_JA_EXISTE = "O horario inserido não pode ser utilizado, pois já está em uso";
-
-    private static final String MSG_NUMERO_JA_EXISTE = "O numero da turma inserido não pode ser utilizado, pois já está em uso";
-
-    private static final String MSG_PERIODO_JA_EXISTE = "O periodo inserido não pode ser utilizado, pois já está em uso";
-
-    private static final String MSG_TURMA_NAO_EXISTE = "A turma informada não existe";
+    private static final String MSG_TURMA_JA_EXISTE = "Já existe turma com mesmos parâmetros: Código do Componente Curricular da Turma, Horário  da Turma, Número da Turma e Período.";
 
     private static final String MSG_TURMA_DENTRO_DO_PERIODO_LETIVO = "A turma não pode ser excluida pois encontra-se em periodo letivo";
 
@@ -51,11 +44,20 @@ public class CadastroTurmaService {
 
     @Transactional
     public Turma salvar (Turma turma) {
+        turma = preparaObjectDomain(turma);
+
+        validaTurmaNoCadastro(turma);
+
+        return turmaRepository.save(turma);
+    }
+
+    @Transactional
+    public Turma atualizar (Turma turma) {
         turmaRepository.detach(turma);
 
         turma = preparaObjectDomain(turma);
 
-        validaTurma(turma);
+        validaTurmaNaAtualizacao(turma);
 
         return turmaRepository.save(turma);
     }
@@ -90,31 +92,21 @@ public class CadastroTurmaService {
         turma.setPeriodo(periodo);
         turma.setDepartamento(departamento);
 
-        // Trecho que deve ser removido ou tratado quando a informação for consumida da API
-        turma.setIdTurmaSIGAA(15L);
-
         return turma;
     }
-    private void validaTurma(Turma turma) {
-        List<Turma> resultadosDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
+    private void validaTurmaNoCadastro(Turma turma) {
+       Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
 
-        if (!Objects.isNull(resultadosDaBusca)) {
+        if (resultadoDaBusca.isPresent()) {
+            throw new NegocioException(MSG_TURMA_JA_EXISTE);
+        }
+    }
 
-            for (Turma turmaResultadoDaBusca: resultadosDaBusca) {
-                if (turmaResultadoDaBusca.getCodigoDisciplina().equals(turma.getCodigoDisciplina()) && turmaResultadoDaBusca.getId() != turma.getId()) {
-                    throw new NegocioException(MSG_CODIGO_DO_COMPONENTE_CURRICULAR_JA_EXISTE);
+    private void validaTurmaNaAtualizacao(Turma turma) {
+        Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId(), turma.getId());
 
-                } else if (turmaResultadoDaBusca.getHorario().equals(turma.getHorario()) && turmaResultadoDaBusca.getId() != turma.getId()) {
-                    throw new NegocioException(MSG_HORARIO_JA_EXISTE);
-
-                } else if (turmaResultadoDaBusca.getNumero().equals(turma.getNumero()) && turmaResultadoDaBusca.getId() != turma.getId()) {
-                    throw new NegocioException(MSG_NUMERO_JA_EXISTE);
-
-                } else if (turmaResultadoDaBusca.getPeriodo().getId().equals(turma.getPeriodo().getId()) && turmaResultadoDaBusca.getId() != turma.getId()) {
-                    throw new NegocioException(MSG_PERIODO_JA_EXISTE);
-
-                }
-            }
+        if (resultadoDaBusca.isPresent()) {
+            throw new NegocioException(MSG_TURMA_JA_EXISTE);
         }
     }
 

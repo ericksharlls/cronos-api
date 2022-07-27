@@ -22,9 +22,6 @@ public class TurmaInput {
     @NotBlankAndSizeForString(max=20)
     private String codigoDisciplina;
 
-    @NotBlankAndSizeForString(max=30)
-    private String local;
-
     @NotNull
     private Integer capacidade;
 
