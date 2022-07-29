@@ -1,27 +1,30 @@
 package br.ufrn.ct.cronos.api.controller;
 
-import br.ufrn.ct.cronos.api.assembler.SalaInputDisassembler;
 import br.ufrn.ct.cronos.api.assembler.TurmaInputDisassembler;
 import br.ufrn.ct.cronos.api.assembler.TurmaModelAssembler;
 import br.ufrn.ct.cronos.api.model.TurmaModel;
 import br.ufrn.ct.cronos.api.model.input.TurmaInput;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.core.data.PageableTranslator;
 import br.ufrn.ct.cronos.domain.model.Turma;
-import br.ufrn.ct.cronos.domain.repository.TurmaRepository;
+
 import br.ufrn.ct.cronos.domain.service.CadastroTurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
+import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
+
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/turmas")
 public class TurmaController {
-
-    @Autowired
-    private TurmaRepository turmaRepository;
 
     @Autowired
     private CadastroTurmaService cadastroTurma;
@@ -32,11 +35,32 @@ public class TurmaController {
     @Autowired
     private TurmaModelAssembler turmaModelAssembler;
 
-    // TODO Erick Shalls
     @GetMapping
-    public Page<TurmaModel> listar () {
-        return null;
-    }
+	public Page<TurmaModel> pesquisar(TurmaFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+		pageable = traduzirPageable(pageable);
+		Page<Turma> turmasPage = cadastroTurma.pesquisar(filtro, pageable);
+		
+		Page<TurmaModel> turmasModelPage = new PageImpl<>(
+			//1 Parâmetro é a lista q vem do banco.. (O método findAll retorna um objeto Page)
+			turmaModelAssembler.toCollectionModel(turmasPage.getContent()),
+			//prediosPage.getContent(),
+			//2 Parâmetro é um objeto pageable com as informações setadas do cliente (exs: size, page, sort)
+			pageable,
+			//3 Parâmetro: total de elementos da lista
+			turmasPage.getTotalElements()
+		);
+
+		return turmasModelPage;
+	}
+
+	private Pageable traduzirPageable(Pageable apiPageable) {
+		var mapeamento = Map.of(
+				"codigoDisciplina", "codigoDisciplina",
+				"nomeDisciplina", "nomeDisciplina"
+			);
+		
+		return PageableTranslator.translate(apiPageable, mapeamento);
+	}
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

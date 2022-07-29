@@ -15,4 +15,5 @@ O projeto utiliza as seguintes tecnologias:
 - **JUnit 5**, **Rest Assured**, **Hamcrest** e **Mockito** para realização de testes de integração da API e testes unitários;
 - **Flyway** para controle de versão do Banco de Dados;
 - **Hibernate** como provedor JPA e framework de mapeamento objeto-relacional;
+- **Ehcache** para caching de objetos e consultas com informações provenientes do banco de dados;
 - **MySQL** como SGBD.

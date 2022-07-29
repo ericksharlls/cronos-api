@@ -77,7 +77,7 @@ public class CadastroFuncionarioIT {
 		funcionarioDomainObject.setEmail("joaquim.santos@gmail.com");
 		funcionarioDomainObject.setTelefone("32132465");
 		funcionarioDomainObject.setRamal("1");
-		funcionarioDomainObject.setIdSigaa(12556L);
+		funcionarioDomainObject.setIdSigaaFuncionario(12556L);
 		funcionarioDomainObject.setTipoFuncionario(tipoFuncionarioDomainObject);
 
 		funcionarioRepository.save(funcionarioDomainObject);
