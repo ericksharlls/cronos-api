@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,52 +37,55 @@ public class Turma {
     @Column(name = "nome_docente_turma")
     private String docente;
 
-   @Column(name = "nome_componente_turma")
-   private String nomeDisciplina;
+    @Column(name = "nome_componente_turma")
+    private String nomeDisciplina;
 
-   @Column(name = "codigo_componente_turma")
-   private String codigoDisciplina;
+    @Column(name = "codigo_componente_turma")
+    private String codigoDisciplina;
 
-   @Column(name = "local")
-   private String local;
+    @Column(name = "local")
+    private String local;
 
-   @Column(name = "capacidade_turma")
-   private Integer capacidade;
+    @Transient
+    private String sala;
 
-   @Column(name = "numero_turma")
-   private String numero;
+    @Column(name = "capacidade_turma")
+    private Integer capacidade;
 
-   @Column(name = "alunos_matriculados_turma")
-   private Integer alunosMatriculados;
+    @Column(name = "numero_turma")
+    private String numero;
 
-   @Column(name = "distribuir")
-   private Boolean distribuir;
+    @Column(name = "alunos_matriculados_turma")
+    private Integer alunosMatriculados;
 
-   @ManyToOne
-   @JoinColumn(name = "id_perfil")
-   private PerfilSalaTurma perfil;
+    @Column(name = "distribuir")
+    private Boolean distribuir;
 
-   @ManyToOne
-   @JoinColumn(name="id_predio")
-   private Predio predio;
+    @ManyToOne
+    @JoinColumn(name = "id_perfil")
+    private PerfilSalaTurma perfil;
 
-   @ManyToOne
-   @JoinColumn(name="id_periodo")
-   private Periodo periodo;
+    @ManyToOne
+    @JoinColumn(name="id_predio")
+    private Predio predio;
 
-   @ManyToOne
-   @JoinColumn(name="id_departamento")
-   private Departamento departamento;
+    @ManyToOne
+    @JoinColumn(name="id_periodo")
+    private Periodo periodo;
 
-   @Column(name = "id_sala_temp")
-   private Long idSalaTemp;
+    @ManyToOne
+    @JoinColumn(name="id_departamento")
+    private Departamento departamento;
 
-   @Column(name = "id_turma_sigaa")
-   private Long idTurmaSIGAA;
+    @Column(name = "id_sala_temp")
+    private Long idSalaTemp;
+
+    @Column(name = "id_turma_sigaa")
+    private Long idTurmaSIGAA;
    
-   @ManyToMany(cascade = {
-       CascadeType.PERSIST,
-       CascadeType.MERGE
+    @ManyToMany(cascade = {
+        CascadeType.PERSIST,
+        CascadeType.MERGE
     })
     @JoinTable(name = "turma_docente",
         joinColumns = @JoinColumn(name = "id_turma"),

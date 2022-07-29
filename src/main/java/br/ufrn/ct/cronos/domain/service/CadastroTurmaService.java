@@ -12,17 +12,31 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+
+import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
+import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
+import br.ufrn.ct.cronos.infrastructure.repository.spec.TurmaSpecs;
 
 @Service
 public class CadastroTurmaService {
+    
     @Autowired
     private TurmaRepository turmaRepository;
 
     @Autowired
+    private SalaRepository salaRepository;
+
+    @Autowired
     private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
+
+    @Autowired
+    private CadastroHorarioService horarioService;
 
     @Autowired
     private PredioRepository predioRepository;
@@ -33,14 +47,68 @@ public class CadastroTurmaService {
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
+    @Autowired
+    private ManipuladorHorarioTurma manipuladorHorarioTurma;
+
     private static final String MSG_TURMA_JA_EXISTE = "Já existe turma com mesmos parâmetros: Código do Componente Curricular da Turma, Horário  da Turma, Número da Turma e Período.";
 
     private static final String MSG_TURMA_DENTRO_DO_PERIODO_LETIVO = "A turma não pode ser excluida pois encontra-se em periodo letivo";
 
-    // TODO Erick Shalls
-    public void buscar () {
+    public Page<Turma> pesquisar(TurmaFilter filtro, Pageable pageable) {
+        //List<Turma> turmas = turmaRepository.findAll(TurmaSpecs.usandoFiltro(filtro), pageable);
+        Page<Turma> turmasPage = turmaRepository.findAll(TurmaSpecs.usandoFiltro(filtro), pageable);
 
-    }
+        for (Turma turma : turmasPage.getContent()) {
+            List<Sala> salas = this.salaRepository.findByTurma(turma.getId());
+            if (salas.size() > 0) {
+                Sala[] arraySalas = (Sala[]) salas.toArray(new Sala[salas.size()]);
+                turma.setSala("");
+                for (int i = 0; i < arraySalas.length; i++) {
+                    turma.setSala(turma.getSala() + arraySalas[i].getNome());
+                    for (int h = 0; h < manipuladorHorarioTurma.contadorDeGruposComSabado(turma.getHorario()); h++) {
+                        String grupo = manipuladorHorarioTurma.retornaGrupoComSabado(turma.getHorario(), h);
+                        String turno = manipuladorHorarioTurma.retornaTurno(grupo);
+                        String[] horariosDoGrupo = manipuladorHorarioTurma.retornaArrayHorarios(grupo);
+                        String[] diasDoGrupo = manipuladorHorarioTurma.retornaArrayDias(grupo);
+
+                        List<String> stringsDias = new ArrayList<String>(0);
+     	                for (int z = 0; z < diasDoGrupo.length; z++) {
+     	                     stringsDias.add(diasDoGrupo[z]);
+     	                }
+     	                List<Long> idsHorarios = new ArrayList<Long>(0);
+     	                for (int z = 0; z < horariosDoGrupo.length; z++) {
+     	                    idsHorarios.add(this.horarioService.findByTurnoAndHorario(turno, Integer.parseInt(horariosDoGrupo[z])).getId());
+     	                }
+     	                List<String> horarios =
+     	                     this.turmaRepository.getHorariosPorTurmaESala(turma, arraySalas[i], turno, idsHorarios, stringsDias);
+     	                String hs = "";
+     	                String dias = "";
+                        for (int r = 0; r < horarios.size(); r++) {
+                            if (!manipuladorHorarioTurma.jaExisteHorario(hs, manipuladorHorarioTurma.retornaHorario(horarios.get(r)))) {
+                               hs += manipuladorHorarioTurma.retornaHorario(horarios.get(r));
+                            }
+                            if (r == horarios.size() - 1) {
+                               String dia = manipuladorHorarioTurma.retornaDia(horarios.get(r));
+                               if (!manipuladorHorarioTurma.jaExisteDia(dias, dia)) {
+                                  dias += dia;
+                               }
+                               turma.setSala(turma.getSala() + " (" + dias + manipuladorHorarioTurma.retornaTurno(horarios.get(r)) + hs + ") ");
+                            } else {
+                               String dia = manipuladorHorarioTurma.retornaDia(horarios.get(r));
+                               if (!manipuladorHorarioTurma.jaExisteDia(dias, dia)) {
+                                  dias += dia;
+                               }
+                            }
+                        }
+                    }
+                }
+            } else {
+                turma.setSala("INDEFINIDO");
+            }
+        }
+        
+		return turmasPage;
+	}
 
     @Transactional
     public Turma salvar (Turma turma) {
