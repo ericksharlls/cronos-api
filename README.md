@@ -17,3 +17,11 @@ O projeto utiliza as seguintes tecnologias:
 - **Hibernate** como provedor JPA e framework de mapeamento objeto-relacional;
 - **Ehcache** para caching de objetos e consultas com informações provenientes do banco de dados;
 - **MySQL** como SGBD.
+
+## Testes de integração
+
+O comando abaixo deve ser executado para rodar os testes de integração do projeto:
+
+`./mvnw verify -D DATASOURCE_USERNAME=${USER} -D DATASOURCE_PASSWORD=${PASSWORD}`
+
+***${USER}*** e  ***${PASSWORD}*** devem ser substituídos, respectivamente, pelos usuário e senha de conexão com seu banco de dados local.
