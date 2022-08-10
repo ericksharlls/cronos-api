@@ -32,6 +32,6 @@ Logo abaixo, o comando para rodar um método de testes específico de uma classe
 
 `mvn -Dit.test=ClassName#methodName verify -D DATASOURCE_USERNAME=${USER} -D DATASOURCE_PASSWORD=${PASSWORD}`
 
-***ClassName*** é o nome da classe sem a entensão ***.java***
-***methodName*** é o nome de um método específico de uma classe de testes
+***ClassName*** é o nome da classe sem a entensão ***.java***  
+***methodName*** é o nome de um método específico de uma classe de testes  
 ***${USER}*** e  ***${PASSWORD}*** devem ser substituídos, respectivamente, pelos usuário e senha de conexão com seu banco de dados local.
