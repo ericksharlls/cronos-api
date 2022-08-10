@@ -20,8 +20,18 @@ O projeto utiliza as seguintes tecnologias:
 
 ## Testes de integração
 
-O comando abaixo deve ser executado para rodar os testes de integração do projeto:
+O comando abaixo deve ser executado para rodar todos os testes de integração do projeto:
 
 `./mvnw verify -D DATASOURCE_USERNAME=${USER} -D DATASOURCE_PASSWORD=${PASSWORD}`
 
+A seguir, o comando para rodar todos os testes de integração de uma classe específica do projeto:
+
+`mvn -Dit.test=ClassName verify -D DATASOURCE_USERNAME=${USER} -D DATASOURCE_PASSWORD=${PASSWORD}`
+
+Logo abaixo, o comando para rodar um método de testes específico de uma classe do projeto:
+
+`mvn -Dit.test=ClassName#methodName verify -D DATASOURCE_USERNAME=${USER} -D DATASOURCE_PASSWORD=${PASSWORD}`
+
+***ClassName*** é o nome da classe sem a entensão ***.java***
+***methodName*** é o nome de um método específico de uma classe de testes
 ***${USER}*** e  ***${PASSWORD}*** devem ser substituídos, respectivamente, pelos usuário e senha de conexão com seu banco de dados local.
