@@ -65,10 +65,10 @@ public class ImportarTurmasService {
     }
 
     @Transactional
-    public void agendarImportacoes(Set<String> siglasNivelEnsino, Set<Long> idsUnidades, Long periodoId) {
+    public void agendarImportacoes(Set<String> siglasNivelEnsino, Set<Long> idsUnidades, Long periodoIdParameter) {
         validarNivelEnsinoTurma(siglasNivelEnsino);
         validarIdsDepartamentos(idsUnidades);
-        validarIdPeriodo(periodoId);
+        validarIdPeriodo(periodoIdParameter);
         idsUnidades.forEach(idDepartamentoSigaa -> {
             ImportacaoTurmas importacao = new ImportacaoTurmas();
             StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.CRIADA_AGUARDANDO_EXECUCAO.name());
@@ -144,13 +144,13 @@ public class ImportarTurmasService {
         }
     }
 
-    private void validarIdPeriodo(Long periodoId) {
+    private void validarIdPeriodo(Long periodoIdParameter) {
         try {
-            Periodo periodo = cadastroPeriodoService.buscar(periodoId);
+            Periodo periodo = cadastroPeriodoService.buscar(periodoIdParameter);
             this.idPeriodo = periodo.getId();    
         } catch (PeriodoNaoEncontradoException e) {
             limparDados();
-            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, idPeriodo));
+            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, periodoIdParameter));
         }
     }
 
