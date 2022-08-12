@@ -35,18 +35,21 @@ public class ImportarTurmasService {
 
     private static final String ID_PERIODO_NAO_ENCONTRADO 
         = "Não existe Período com id %d.";
-    
-    @Autowired
-    private CadastroDepartamentoService departamentoService;
 
-    @Autowired
-    private ImportarTurmasPorUnidadeService importarTurmasPorUnidadeService;
+    private static final String STATUS_NAO_APTO_PARA_REEXECUCAO
+        = "A importação de id %d não pode ser reexecutada, pois sua última execução foi realizada com sucesso.";
 
     @Autowired
     private ImportacaoTurmasRepository importacaoTurmasRepository;
     
     @Autowired
     private HistoricoImportacaoTurmasRepository historicoImportacaoTurmasRepository;
+
+    @Autowired
+    private CadastroDepartamentoService departamentoService;
+
+    @Autowired
+    private ImportarTurmasPorUnidadeService importarTurmasPorUnidadeService;
 
     @Autowired
     private CadastroStatusImportacaoTurmasService statusImportacaoTurmasService;
@@ -95,6 +98,16 @@ public class ImportarTurmasService {
 		return importacaoTurmas;
 	}
 
+    public void agendarImportacaoPorId(Long idImportacaoTurmas, Set<String> siglasNivelEnsino, Long periodoIdParameter) {
+        ImportacaoTurmas importacaoTurmas = importacaoTurmasRepository.findById(idImportacaoTurmas)
+			        .orElseThrow(() -> new ImportacaoTurmasNaoEncontradaException(idImportacaoTurmas));
+        if (importacaoTurmas.getStatus().getIdentificador().equals(StatusImportacaoTurmasEnum.EXECUTADA_COM_SUCESSO.toString())) {
+            throw new NegocioException(String.format(STATUS_NAO_APTO_PARA_REEXECUCAO, idImportacaoTurmas));
+        }
+        validarNivelEnsinoTurma(siglasNivelEnsino);
+        validarIdPeriodo(periodoIdParameter);
+	}
+
     @Async
     public void executarAssincronamenteImportacoes() {
         this.importacoes.forEach(importacao -> {
@@ -121,6 +134,32 @@ public class ImportarTurmasService {
         });
         limparDados();
         System.out.println("#### Terminou o SERVICE ####");
+    }
+
+    @Async
+    public void reexecutarAssincronamenteImportacao(Long idImportacaoTurmas) {
+        ImportacaoTurmas importacao = importacaoTurmasRepository.findById(idImportacaoTurmas).get();
+        try {
+            importarTurmasPorUnidadeService
+                .importarTurmas(listaSiglasNivelEnsino, importacao, idPeriodo);
+            System.out.println("### SUCESSO com o Departamento: " + importacao.getDepartamento().getNome());
+        } catch (Exception e) {
+            System.out.println("### Erro ao importar turmas do Departamento: " + importacao.getDepartamento().getNome());
+            e.printStackTrace();
+            StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.ERRO_NA_EXECUCAO.name());
+            // Atualizando o status da importacao para ERRO_NA_EXECUCAO
+            importacao.setStatus(status);
+            importacao.setHorarioUltimaOperacao(LocalDateTime.now());
+            importacaoTurmasRepository.save(importacao);
+
+            // Registrando na tabela de Historico a atualizacao no Status da Importacao
+            HistoricoImportacaoTurmas historico = new HistoricoImportacaoTurmas();
+
+            historico.setImportacaoTurmas(importacao);
+            historico.setRegistradoEm(LocalDateTime.now());
+            historico.setStatus(status);
+            historicoImportacaoTurmasRepository.save(historico);
+        }
     }
 
     private void validarNivelEnsinoTurma(Set<String> siglasNivelEnsino) {
