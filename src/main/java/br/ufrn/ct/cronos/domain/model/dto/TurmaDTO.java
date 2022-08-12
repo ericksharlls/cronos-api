@@ -1,10 +1,10 @@
 package br.ufrn.ct.cronos.domain.model.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

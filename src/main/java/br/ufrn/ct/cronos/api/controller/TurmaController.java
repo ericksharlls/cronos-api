@@ -5,19 +5,16 @@ import br.ufrn.ct.cronos.api.assembler.TurmaModelAssembler;
 import br.ufrn.ct.cronos.api.model.TurmaModel;
 import br.ufrn.ct.cronos.api.model.input.TurmaInput;
 import br.ufrn.ct.cronos.core.data.PageableTranslator;
+import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.domain.model.Turma;
-
 import br.ufrn.ct.cronos.domain.service.CadastroTurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-
-import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;

@@ -1,9 +1,9 @@
 package br.ufrn.ct.cronos.domain.repository;
 
+import br.ufrn.ct.cronos.domain.model.Periodo;
+
 import java.time.LocalDate;
 import java.util.List;
-
-import br.ufrn.ct.cronos.domain.model.Periodo;
 
 //Interface que contem as assinaturas de metodos customizados.
 

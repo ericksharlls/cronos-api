@@ -1,12 +1,11 @@
 package br.ufrn.ct.cronos.api.assembler;
 
-import org.springframework.stereotype.Component;
-
 import br.ufrn.ct.cronos.api.assembler.generic.ObjectInputDisassembler;
 import br.ufrn.ct.cronos.api.model.input.SalaInput;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.model.Sala;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SalaInputDisassembler extends ObjectInputDisassembler<SalaInput, Sala> {

@@ -1,13 +1,12 @@
 package br.ufrn.ct.cronos.api.exceptionhandler;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import br.ufrn.ct.cronos.core.validations.ValidacaoException;
+import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
+import br.ufrn.ct.cronos.domain.exception.EntidadeNaoEncontradaException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,10 +24,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import br.ufrn.ct.cronos.core.validations.ValidacaoException;
-import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.EntidadeNaoEncontradaException;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {

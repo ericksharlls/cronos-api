@@ -1,16 +1,14 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
-import java.time.LocalDate;
-import java.util.List;
+import br.ufrn.ct.cronos.domain.model.Periodo;
+import br.ufrn.ct.cronos.domain.repository.CustomizedPeriodoRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-
-import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.repository.CustomizedPeriodoRepository;
+import java.time.LocalDate;
+import java.util.List;
 
 // classe que implementa a interface dos metodos que devem ser customizados
 

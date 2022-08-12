@@ -1,16 +1,15 @@
 package br.ufrn.ct.cronos.api.model.input;
 
+import br.ufrn.ct.cronos.core.validations.NotBlankAndSizeForString;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.util.StringUtils;
+
 import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.util.StringUtils;
-
-import br.ufrn.ct.cronos.core.validations.NotBlankAndSizeForString;
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Setter

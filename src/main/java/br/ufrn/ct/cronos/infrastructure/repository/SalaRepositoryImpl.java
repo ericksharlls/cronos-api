@@ -1,16 +1,7 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import br.ufrn.ct.cronos.domain.model.Sala;
+import br.ufrn.ct.cronos.domain.repository.CustomizedSalaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,8 +9,11 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import br.ufrn.ct.cronos.domain.model.Sala;
-import br.ufrn.ct.cronos.domain.repository.CustomizedSalaRepository;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class SalaRepositoryImpl implements CustomizedSalaRepository {

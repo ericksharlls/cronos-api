@@ -1,13 +1,12 @@
 package br.ufrn.ct.cronos.domain.conversor;
 
-import org.json.JSONObject;
-
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.model.Turma;
 import br.ufrn.ct.cronos.domain.model.dto.DocenteDTO;
 import br.ufrn.ct.cronos.domain.model.dto.ServidorDTO;
 import br.ufrn.ct.cronos.domain.model.dto.TurmaDTO;
+import org.json.JSONObject;
 
 public class Conversor {
     

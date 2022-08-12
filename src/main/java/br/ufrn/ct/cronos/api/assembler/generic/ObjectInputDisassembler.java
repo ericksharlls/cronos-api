@@ -1,11 +1,10 @@
 package br.ufrn.ct.cronos.api.assembler.generic;
 
-import java.lang.reflect.ParameterizedType;
-
+import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import lombok.Getter;
+import java.lang.reflect.ParameterizedType;
 
 public abstract class ObjectInputDisassembler<InputApiModel, DomainModel> {
     

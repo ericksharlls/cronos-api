@@ -1,13 +1,13 @@
 package br.ufrn.ct.cronos.cronos;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.hasSize;
-
-import java.time.LocalDate;
-
+import br.ufrn.ct.cronos.api.model.input.FeriadoInput;
+import br.ufrn.ct.cronos.api.model.input.PeriodoIdInput;
+import br.ufrn.ct.cronos.domain.model.Feriado;
+import br.ufrn.ct.cronos.domain.model.Periodo;
+import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
+import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,14 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.ufrn.ct.cronos.api.model.input.FeriadoInput;
-import br.ufrn.ct.cronos.api.model.input.PeriodoIdInput;
-import br.ufrn.ct.cronos.domain.model.Feriado;
-import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
-import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
+import java.time.LocalDate;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 
 //@SpringBootTest //fornece as funcionalidades do Spring Boot nos testes
 @ExtendWith(SpringExtension.class) //faz com q o contexto do Spring seja levantado no momento da execução dos testes

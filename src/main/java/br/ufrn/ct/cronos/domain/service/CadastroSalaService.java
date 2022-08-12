@@ -1,18 +1,16 @@
 package br.ufrn.ct.cronos.domain.service;
 
+import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
+import br.ufrn.ct.cronos.domain.exception.SalaNaoEncontradaException;
+import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
+import br.ufrn.ct.cronos.domain.model.Predio;
+import br.ufrn.ct.cronos.domain.model.Sala;
+import br.ufrn.ct.cronos.domain.repository.SalaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.SalaNaoEncontradaException;
-
-import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
-import br.ufrn.ct.cronos.domain.model.Predio;
-import br.ufrn.ct.cronos.domain.model.Sala;
-import br.ufrn.ct.cronos.domain.repository.SalaRepository;
 
 @Service
 public class CadastroSalaService {

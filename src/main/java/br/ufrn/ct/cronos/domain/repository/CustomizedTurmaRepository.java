@@ -1,9 +1,9 @@
 package br.ufrn.ct.cronos.domain.repository;
 
-import java.util.List;
-
 import br.ufrn.ct.cronos.domain.model.Sala;
 import br.ufrn.ct.cronos.domain.model.Turma;
+
+import java.util.List;
 
 public interface CustomizedTurmaRepository {
 

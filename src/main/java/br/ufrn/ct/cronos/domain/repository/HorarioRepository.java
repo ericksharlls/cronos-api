@@ -1,12 +1,11 @@
 package br.ufrn.ct.cronos.domain.repository;
 
-import java.util.List;
-
+import br.ufrn.ct.cronos.domain.model.Horario;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.ufrn.ct.cronos.domain.model.Horario;
+import java.util.List;
 
 @Repository
 public interface HorarioRepository extends JpaRepository<Horario, Long> {

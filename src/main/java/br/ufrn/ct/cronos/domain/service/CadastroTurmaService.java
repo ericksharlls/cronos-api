@@ -1,27 +1,25 @@
 package br.ufrn.ct.cronos.domain.service;
 
+import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.SalaNaoEncontradaException;
 import br.ufrn.ct.cronos.domain.exception.TurmaNaoEncontradaException;
+import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.domain.model.*;
 import br.ufrn.ct.cronos.domain.repository.*;
+import br.ufrn.ct.cronos.infrastructure.repository.spec.TurmaSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
-import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
-import br.ufrn.ct.cronos.infrastructure.repository.spec.TurmaSpecs;
 
 @Service
 public class CadastroTurmaService {

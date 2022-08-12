@@ -1,15 +1,13 @@
 package br.ufrn.ct.cronos.infrastructure.repository.spec;
 
-import java.util.ArrayList;
-
 import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.domain.model.Turma;
-
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.JoinType;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 
 public class TurmaSpecs {
 

@@ -1,12 +1,11 @@
 package br.ufrn.ct.cronos;
 
-import java.util.TimeZone;
-
+import br.ufrn.ct.cronos.infrastructure.repository.CustomJpaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import br.ufrn.ct.cronos.infrastructure.repository.CustomJpaRepositoryImpl;
+import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)

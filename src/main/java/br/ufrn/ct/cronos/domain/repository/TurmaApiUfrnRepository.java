@@ -1,13 +1,12 @@
 package br.ufrn.ct.cronos.domain.repository;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.stereotype.Repository;
-
 import br.ufrn.ct.cronos.domain.filter.ConsultaUnidadeAPIUFRNFilter;
 import br.ufrn.ct.cronos.domain.model.dto.DepartamentoDTO;
 import br.ufrn.ct.cronos.domain.model.dto.TurmaDTO;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TurmaApiUfrnRepository {

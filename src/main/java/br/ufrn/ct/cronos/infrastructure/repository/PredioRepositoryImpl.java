@@ -1,8 +1,16 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
+import br.ufrn.ct.cronos.domain.model.Predio;
+import br.ufrn.ct.cronos.domain.repository.CustomizedPredioRepository;
+import br.ufrn.ct.cronos.domain.repository.PredioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,19 +19,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.query.QueryUtils;
-
-import br.ufrn.ct.cronos.domain.model.Predio;
-import br.ufrn.ct.cronos.domain.repository.PredioRepository;
-import br.ufrn.ct.cronos.domain.repository.CustomizedPredioRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 // A nomenclatura tem q ter o nome do Repositório e o final "impl" para o Spring entender q se trata 
 // da implementação customizada de um Repositório
