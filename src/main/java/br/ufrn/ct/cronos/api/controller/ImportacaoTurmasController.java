@@ -25,6 +25,7 @@ import br.ufrn.ct.cronos.api.assembler.ImportacaoTurmasResumoModelAssembler;
 import br.ufrn.ct.cronos.api.model.ImportacaoTurmasModel;
 import br.ufrn.ct.cronos.api.model.ImportacaoTurmasResumoModel;
 import br.ufrn.ct.cronos.api.model.input.ImportacaoTurmasInput;
+import br.ufrn.ct.cronos.api.model.input.ReexecucaoImportacaoTurmasInput;
 import br.ufrn.ct.cronos.domain.model.ImportacaoTurmas;
 import br.ufrn.ct.cronos.domain.repository.ImportacaoTurmasRepository;
 import br.ufrn.ct.cronos.domain.service.ImportarTurmasService;
@@ -49,7 +50,9 @@ public class ImportacaoTurmasController {
     @PostMapping("/importacao")
     @ResponseStatus(HttpStatus.CREATED)
 	public void importarTurmas(@RequestBody @Valid ImportacaoTurmasInput importacaoTurmasInput) {
-        importarTurmasService.agendarImportacoes(importacaoTurmasInput.getSiglasNivelEnsino(), importacaoTurmasInput.getIdsUnidades(), importacaoTurmasInput.getIdPeriodo());
+        importarTurmasService
+                    .agendarImportacoes(importacaoTurmasInput.getSiglasNivelEnsino(), importacaoTurmasInput.getIdsUnidades(), 
+                        importacaoTurmasInput.getIdPeriodo());
         importarTurmasService.executarAssincronamenteImportacoes();
         System.out.println("#### Fim da execução de ImportacaoTurmasController ####");
 	}
@@ -75,10 +78,12 @@ public class ImportacaoTurmasController {
     }
 
     @PutMapping("/importacao/{idImportacaoTurmas}")
-    public ImportacaoTurmasModel executarImportacao(@PathVariable Long idImportacaoTurmas) {
-        ImportacaoTurmas importacao = importarTurmasService.buscar(idImportacaoTurmas);
-        
-        return importacaoTurmasModelAssembler.toModel(importacao);
+    public void reexecutarImportacao(@PathVariable Long idImportacaoTurmas, 
+                        @RequestBody @Valid ReexecucaoImportacaoTurmasInput reexecucaoImportacaoTurmasInput) {
+        importarTurmasService
+                    .agendarImportacaoPorId(idImportacaoTurmas, reexecucaoImportacaoTurmasInput.getSiglasNivelEnsino(), 
+                                    reexecucaoImportacaoTurmasInput.getIdPeriodo());
+        importarTurmasService.reexecutarAssincronamenteImportacao(idImportacaoTurmas);
     }
     
 }
