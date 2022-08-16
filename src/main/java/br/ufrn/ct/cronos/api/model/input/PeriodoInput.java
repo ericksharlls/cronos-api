@@ -1,16 +1,14 @@
 package br.ufrn.ct.cronos.api.model.input;
 
-import java.time.LocalDate;
-
-import javax.validation.constraints.NotNull;
-
 import br.ufrn.ct.cronos.core.validations.IntervaloEntreDatas;
 import br.ufrn.ct.cronos.core.validations.NotBlankAndSizeForString;
 import br.ufrn.ct.cronos.core.validations.NotNullAndRangeForNumber;
 import br.ufrn.ct.cronos.core.validations.RangeForYear;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @IntervaloEntreDatas(dataInicialField = "dataInicio", dataFinalField = "dataTermino")
 @Setter

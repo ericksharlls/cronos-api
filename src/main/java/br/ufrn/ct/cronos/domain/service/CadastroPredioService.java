@@ -1,19 +1,17 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-
 import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
 import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.exception.PredioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.repository.PredioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class CadastroPredioService {

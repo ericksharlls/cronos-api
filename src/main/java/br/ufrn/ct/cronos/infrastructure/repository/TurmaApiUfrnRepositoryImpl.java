@@ -5,19 +5,17 @@ import br.ufrn.ct.cronos.domain.filter.ConsultaUnidadeAPIUFRNFilter;
 import br.ufrn.ct.cronos.domain.model.dto.DepartamentoDTO;
 import br.ufrn.ct.cronos.domain.model.dto.TurmaDTO;
 import br.ufrn.ct.cronos.domain.repository.TurmaApiUfrnRepository;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class TurmaApiUfrnRepositoryImpl extends ApiUfrnAbstract implements TurmaApiUfrnRepository {

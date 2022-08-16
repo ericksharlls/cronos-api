@@ -1,17 +1,5 @@
 package br.ufrn.ct.cronos.cronos;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.TestPropertySource;
-
 import br.ufrn.ct.cronos.api.model.input.PerfilSalaTurmaInput;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
 import br.ufrn.ct.cronos.domain.model.Predio;
@@ -21,14 +9,20 @@ import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 import br.ufrn.ct.cronos.domain.repository.SalaRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.notNullValue;
-
-import org.flywaydb.core.Flyway;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class) //faz com q o contexto do Spring seja levantado no momento da execução dos testes
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

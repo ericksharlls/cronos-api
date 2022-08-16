@@ -1,11 +1,10 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
-import javax.persistence.EntityManager;
-
+import br.ufrn.ct.cronos.domain.repository.CustomJpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import br.ufrn.ct.cronos.domain.repository.CustomJpaRepository;
+import javax.persistence.EntityManager;
 
 //SimpleJpaRepository: implementação padrão do repositório SpringDataJpa
 public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>

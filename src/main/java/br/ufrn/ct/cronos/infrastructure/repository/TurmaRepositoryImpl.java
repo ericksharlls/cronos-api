@@ -1,18 +1,16 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import br.ufrn.ct.cronos.domain.model.Sala;
+import br.ufrn.ct.cronos.domain.model.Turma;
+import br.ufrn.ct.cronos.domain.repository.CustomizedTurmaRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import org.springframework.stereotype.Repository;
-
-import br.ufrn.ct.cronos.domain.model.Sala;
-import br.ufrn.ct.cronos.domain.model.Turma;
-import br.ufrn.ct.cronos.domain.repository.CustomizedTurmaRepository;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class TurmaRepositoryImpl implements CustomizedTurmaRepository {

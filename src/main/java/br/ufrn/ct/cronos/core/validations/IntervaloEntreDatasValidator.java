@@ -1,12 +1,11 @@
 package br.ufrn.ct.cronos.core.validations;
 
-import java.time.LocalDate;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidationException;
-
-import org.springframework.beans.BeanUtils;
+import java.time.LocalDate;
 
 public class IntervaloEntreDatasValidator implements ConstraintValidator<IntervaloEntreDatas, Object> {
 

@@ -1,11 +1,10 @@
 package br.ufrn.ct.cronos.domain.repository;
 
-import java.util.List;
-
+import br.ufrn.ct.cronos.domain.model.Predio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import br.ufrn.ct.cronos.domain.model.Predio;
+import java.util.List;
 
 // Interface criada para representar queries customizadas do Repositório de Prédio
 // Uma nomenclatura bem utilizada, o nome da classe poderia ser CustomizedPredioRepository

@@ -1,34 +1,21 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import br.ufrn.ct.cronos.domain.conversor.Conversor;
+import br.ufrn.ct.cronos.domain.model.*;
+import br.ufrn.ct.cronos.domain.model.dto.DocenteDTO;
+import br.ufrn.ct.cronos.domain.model.dto.TurmaDTO;
+import br.ufrn.ct.cronos.domain.model.enumeracoes.StatusImportacaoTurmasEnum;
+import br.ufrn.ct.cronos.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.ufrn.ct.cronos.domain.conversor.Conversor;
-import br.ufrn.ct.cronos.domain.model.Departamento;
-import br.ufrn.ct.cronos.domain.model.Funcionario;
-import br.ufrn.ct.cronos.domain.model.HistoricoImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.model.ImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.model.StatusImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.model.TipoFuncionario;
-import br.ufrn.ct.cronos.domain.model.Turma;
-import br.ufrn.ct.cronos.domain.model.dto.DocenteDTO;
-import br.ufrn.ct.cronos.domain.model.dto.TurmaDTO;
-import br.ufrn.ct.cronos.domain.model.enumeracoes.StatusImportacaoTurmasEnum;
-import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
-import br.ufrn.ct.cronos.domain.repository.HistoricoImportacaoTurmasRepository;
-import br.ufrn.ct.cronos.domain.repository.ImportacaoTurmasRepository;
-import br.ufrn.ct.cronos.domain.repository.PeriodoRepository;
-import br.ufrn.ct.cronos.domain.repository.TurmaApiUfrnRepository;
-import br.ufrn.ct.cronos.domain.repository.TurmaRepository;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ImportarTurmasPorUnidadeService {

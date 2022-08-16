@@ -1,28 +1,22 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import br.ufrn.ct.cronos.domain.exception.ImportacaoTurmasNaoEncontradaException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.model.*;
+import br.ufrn.ct.cronos.domain.model.enumeracoes.StatusImportacaoTurmasEnum;
+import br.ufrn.ct.cronos.domain.repository.HistoricoImportacaoTurmasRepository;
+import br.ufrn.ct.cronos.domain.repository.ImportacaoTurmasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.ufrn.ct.cronos.domain.exception.ImportacaoTurmasNaoEncontradaException;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
-import br.ufrn.ct.cronos.domain.model.Departamento;
-import br.ufrn.ct.cronos.domain.model.HistoricoImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.model.ImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.model.NivelEnsinoTurmaEnum;
-import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.model.StatusImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.model.enumeracoes.StatusImportacaoTurmasEnum;
-import br.ufrn.ct.cronos.domain.repository.HistoricoImportacaoTurmasRepository;
-import br.ufrn.ct.cronos.domain.repository.ImportacaoTurmasRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class ImportarTurmasService {

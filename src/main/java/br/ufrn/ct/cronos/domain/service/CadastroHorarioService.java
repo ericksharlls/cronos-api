@@ -1,13 +1,12 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import br.ufrn.ct.cronos.domain.model.Horario;
+import br.ufrn.ct.cronos.domain.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.ufrn.ct.cronos.domain.model.Horario;
-import br.ufrn.ct.cronos.domain.repository.HorarioRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CadastroHorarioService {

@@ -1,11 +1,8 @@
 package br.ufrn.ct.cronos.api.controller;
 
 import br.ufrn.ct.cronos.api.assembler.DepartamentoModelAssembler;
-import br.ufrn.ct.cronos.api.model.FeriadoModel;
-import br.ufrn.ct.cronos.api.model.FuncionarioModel;
 import br.ufrn.ct.cronos.api.model.input.DepartamentoModel;
 import br.ufrn.ct.cronos.domain.model.Departamento;
-import br.ufrn.ct.cronos.domain.model.Feriado;
 import br.ufrn.ct.cronos.domain.repository.DepartamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

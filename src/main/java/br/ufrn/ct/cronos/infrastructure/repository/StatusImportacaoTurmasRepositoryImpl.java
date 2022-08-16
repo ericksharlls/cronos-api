@@ -1,18 +1,16 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
+import br.ufrn.ct.cronos.domain.model.StatusImportacaoTurmas;
+import br.ufrn.ct.cronos.domain.repository.CustomizedStatusImportacaoTurmasRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.stereotype.Repository;
-
-import br.ufrn.ct.cronos.domain.model.StatusImportacaoTurmas;
-import br.ufrn.ct.cronos.domain.repository.CustomizedStatusImportacaoTurmasRepository;
 
 @Repository
 public class StatusImportacaoTurmasRepositoryImpl implements CustomizedStatusImportacaoTurmasRepository {

@@ -1,10 +1,9 @@
 package br.ufrn.ct.cronos.domain.repository;
 
-import java.util.Map;
-
+import br.ufrn.ct.cronos.domain.model.Departamento;
 import org.springframework.cache.annotation.Cacheable;
 
-import br.ufrn.ct.cronos.domain.model.Departamento;
+import java.util.Map;
 
 public interface CustomizedDepartamentoRepository {
     

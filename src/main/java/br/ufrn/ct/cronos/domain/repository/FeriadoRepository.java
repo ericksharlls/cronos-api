@@ -1,15 +1,14 @@
 package br.ufrn.ct.cronos.domain.repository;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
+import br.ufrn.ct.cronos.domain.model.Feriado;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import br.ufrn.ct.cronos.domain.model.Feriado;
+import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface FeriadoRepository extends CustomJpaRepository<Feriado, Long>{

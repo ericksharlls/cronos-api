@@ -1,13 +1,12 @@
 package br.ufrn.ct.cronos.api.model.input;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import br.ufrn.ct.cronos.core.validations.NotBlankAndSizeForString;
 import br.ufrn.ct.cronos.core.validations.NotNullAndRangeForNumber;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter

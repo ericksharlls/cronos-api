@@ -1,9 +1,9 @@
 package br.ufrn.ct.cronos.api.model;
 
-import java.time.LocalDateTime;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Setter
 @Getter

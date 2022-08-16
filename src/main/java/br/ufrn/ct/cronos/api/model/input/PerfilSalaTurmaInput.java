@@ -1,7 +1,6 @@
 package br.ufrn.ct.cronos.api.model.input;
 
 import br.ufrn.ct.cronos.core.validations.NotBlankAndSizeForString;
-
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,11 +1,10 @@
 package br.ufrn.ct.cronos.domain.filter;
 
-import javax.validation.constraints.AssertTrue;
-
-import org.springframework.util.StringUtils;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
+
+import javax.validation.constraints.AssertTrue;
 
 @Getter
 @Setter

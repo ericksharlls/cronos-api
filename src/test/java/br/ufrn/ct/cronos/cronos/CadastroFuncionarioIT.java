@@ -1,10 +1,13 @@
 package br.ufrn.ct.cronos.cronos;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.notNullValue;
-
+import br.ufrn.ct.cronos.api.model.input.FuncionarioInput;
+import br.ufrn.ct.cronos.api.model.input.TipoFuncionarioIdInput;
+import br.ufrn.ct.cronos.domain.model.Funcionario;
+import br.ufrn.ct.cronos.domain.model.TipoFuncionario;
+import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
+import br.ufrn.ct.cronos.domain.repository.TipoFuncionarioRepository;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,15 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import br.ufrn.ct.cronos.api.model.input.FuncionarioInput;
-import br.ufrn.ct.cronos.api.model.input.TipoFuncionarioIdInput;
-import br.ufrn.ct.cronos.domain.model.Funcionario;
-import br.ufrn.ct.cronos.domain.model.TipoFuncionario;
-import br.ufrn.ct.cronos.domain.repository.FuncionarioRepository;
-import br.ufrn.ct.cronos.domain.repository.TipoFuncionarioRepository;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasItem;
 
 //@SpringBootTest //fornece as funcionalidades do Spring Boot nos testes

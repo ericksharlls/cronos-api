@@ -1,8 +1,11 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
+import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
+import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.model.Feriado;
+import br.ufrn.ct.cronos.domain.model.Periodo;
+import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,12 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.FeriadoNaoEncontradoException;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.model.Feriado;
-import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.repository.FeriadoRepository;
+import java.time.LocalDate;
+import java.util.Optional;
 
 
 @Service 

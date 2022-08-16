@@ -1,18 +1,17 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.util.Optional;
-
+import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
+import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
-import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
-import br.ufrn.ct.cronos.domain.repository.PerfilSalaTurmaRepository;
+import java.util.Optional;
 
  
 

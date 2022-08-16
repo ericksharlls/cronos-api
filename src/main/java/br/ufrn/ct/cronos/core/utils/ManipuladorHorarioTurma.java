@@ -1,10 +1,10 @@
 package br.ufrn.ct.cronos.core.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class ManipuladorHorarioTurma {

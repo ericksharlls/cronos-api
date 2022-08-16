@@ -1,21 +1,18 @@
 package br.ufrn.ct.cronos.infrastructure.repository;
 
-import java.util.HashMap;
-import java.util.List;
+import br.ufrn.ct.cronos.domain.model.Funcionario;
+import br.ufrn.ct.cronos.domain.repository.CustomizedFuncionarioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-
-import org.springframework.util.StringUtils;
-import br.ufrn.ct.cronos.domain.model.Funcionario;
-import br.ufrn.ct.cronos.domain.repository.CustomizedFuncionarioRepository;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
+import java.util.HashMap;
+import java.util.List;
 
 @Repository
 public class FuncionarioRepositoryImpl  implements CustomizedFuncionarioRepository{

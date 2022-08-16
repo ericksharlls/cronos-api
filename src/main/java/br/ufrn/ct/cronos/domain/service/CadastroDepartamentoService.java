@@ -1,12 +1,11 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import java.util.Set;
-
+import br.ufrn.ct.cronos.domain.model.Departamento;
+import br.ufrn.ct.cronos.domain.repository.DepartamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.ufrn.ct.cronos.domain.model.Departamento;
-import br.ufrn.ct.cronos.domain.repository.DepartamentoRepository;
+import java.util.Set;
 
 @Service
 public class CadastroDepartamentoService {

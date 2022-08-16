@@ -1,11 +1,11 @@
 package br.ufrn.ct.cronos.api.assembler.generic;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class ObjectModelAssembler<ApiModel, DomainModel> {
 
