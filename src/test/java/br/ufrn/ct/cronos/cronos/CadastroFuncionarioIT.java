@@ -446,15 +446,4 @@ public class CadastroFuncionarioIT {
 		funcionarioInput.setTipoFuncionario(tipoFuncionarioIdInput);
 	}
 
-	private void settaFuncionarioInputSemTipoFuncionario(Funcionario funcionarioSalvo){
-		
-		funcionarioInput = new FuncionarioInput();
-		
-		funcionarioInput.setNome(funcionarioSalvo.getNome());
-		funcionarioInput.setCpf(funcionarioSalvo.getCpf());
-		funcionarioInput.setMatricula(funcionarioSalvo.getMatricula());
-		funcionarioInput.setEmail(funcionarioSalvo.getEmail());
-		funcionarioInput.setTelefone(funcionarioSalvo.getTelefone());
-		funcionarioInput.setRamal(funcionarioSalvo.getRamal());
-	}
 }

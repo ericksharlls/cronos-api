@@ -2,6 +2,8 @@ package br.ufrn.ct.cronos.core.utils;
 
 import org.springframework.stereotype.Component;
 
+import br.ufrn.ct.cronos.domain.model.Turma;
+
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -218,6 +220,80 @@ public class ManipuladorHorarioTurma {
       if (string.contains(numeroHorario)) {
          return true;
       }
+      return false;
+   }
+
+   public boolean saoConsecutivos(Turma turma1, Turma turma2) {
+      int contadorDeT = contadorDeGrupos(turma2.getHorario());
+
+      if (contadorDeT == contadorDeGrupos(turma1.getHorario())) {
+         for (int h = 0; h < contadorDeGrupos(turma1.getHorario()); h++) {
+            String grupo = retornaGrupo(turma1.getHorario(), h);
+            String[] arrayDias = retornaArrayDias(grupo);
+            String turno = retornaTurno(grupo);
+            String[] arrayHorarios = retornaArrayHorarios(grupo);
+
+            String grupoParametro = retornaGrupo(turma2.getHorario(), h);
+            String[] arrayDiasParametro = retornaArrayDias(grupoParametro);
+            String turnoParametro = retornaTurno(grupoParametro);
+            String[] arrayHorariosParametro = retornaArrayHorarios(grupoParametro);
+
+            if (diasIguais(arrayDias, arrayDiasParametro)) {
+               if (turno.equals(turnoParametro)) {
+                  if (!horarioConsecutivosTurnosIguais(arrayHorarios, arrayHorariosParametro)) {
+                     return false;
+                  }
+               } else {
+                  if ((turno.equals("M")) && (turnoParametro.equals("N"))) {
+                     return false;
+                  }
+                  if (!horarioConsecutivosTurnosDiferentes(arrayHorarios, arrayHorariosParametro)) {
+                     return false;
+                  }
+               }
+            }
+            else {
+               return false;
+            }
+         }
+      }
+      else {
+         return false;
+      }
+
+      return true;
+   }
+
+   public boolean diasIguais(String[] array1, String[] array2) {
+      if (array1.length == array2.length) {
+         for (int i = 0; i < array1.length; i++) {
+            if (!array1[i].equals(array2[i]))
+               return false;
+         }
+      }
+      else {
+         return false;
+      }
+      return true;
+   }
+
+   public boolean horarioConsecutivosTurnosIguais(String[] array1, String[] array2) {
+      for (int i = 0; i < array1.length; i++) {
+         if ((i == array1.length - 1) && (Integer.parseInt(array1[i]) == Integer.parseInt(array2[0]) - 1)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   public boolean horarioConsecutivosTurnosDiferentes(String[] array1, String[] array2) {
+      for (int i = 0; i < array1.length; i++) {
+         if ((i == array1.length - 1) && (Integer.parseInt(array1[i]) == 6) && (Integer.parseInt(array2[0]) == 1)) {
+            return true;
+         }
+      }
+
       return false;
    }
 

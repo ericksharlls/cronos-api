@@ -9,5 +9,8 @@ public interface CustomizedTurmaRepository {
 
     public List<String> getHorariosPorTurmaESala(Turma turma, Sala sala, String turno, List<Long> listaIdsHorarios, 
                             List<String> listaStringsDias);
+    public List<Turma> getTurmasPorDocente(String docente, Long idPredio);
+    public List<Turma> getTurmasPorDocente(Long idDocente, Long idPeriodo, Long idPredio);
+    public Turma getTurmaAnteriorSemelhantePorPeriodo(Turma turma, Long idPeriodo);
     
 }

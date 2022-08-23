@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HorarioRepository extends JpaRepository<Horario, Long> {
+public interface HorarioRepository extends JpaRepository<Horario, Long>, CustomizedHorarioRepository {
 
     public Horario findByTurnoAndHorario(String turno, Integer horario);
 

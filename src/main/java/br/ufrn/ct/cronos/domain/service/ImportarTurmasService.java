@@ -27,9 +27,6 @@ public class ImportarTurmasService {
     private static final String ID_DEPARTAMENTO_NAO_ENCONTRADO 
         = "Não existe Departamento na API da UFRN com id %d.";
 
-    private static final String ID_PERIODO_NAO_ENCONTRADO 
-        = "Não existe Período com id %d.";
-
     private static final String STATUS_NAO_APTO_PARA_REEXECUCAO
         = "A importação de id %d não pode ser reexecutada, pois sua última execução foi realizada com sucesso.";
 
@@ -183,7 +180,7 @@ public class ImportarTurmasService {
             this.idPeriodo = periodo.getId();    
         } catch (PeriodoNaoEncontradoException e) {
             limparDados();
-            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, periodoIdParameter));
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 

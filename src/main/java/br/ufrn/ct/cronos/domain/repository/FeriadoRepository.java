@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
-public interface FeriadoRepository extends CustomJpaRepository<Feriado, Long>{
+public interface FeriadoRepository extends CustomJpaRepository<Feriado, Long>, CustomizedFeriadoRepository {
 	
 	@Query(value = "SELECT f FROM Feriado f JOIN FETCH f.periodo" +
 					" WHERE :periodoId IS NULL OR f.periodo.id  = :periodoId",
