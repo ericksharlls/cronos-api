@@ -136,7 +136,7 @@ public class CadastroTurmaIT {
             .statusCode(HttpStatus.CREATED.value());
     }
 
-    // TODO VALIDAR NOME DO TESTE
+    //Teste que verifica se a turma é criada com mesmo código, horário, número e período
     @Test
     public void deveFalhar_QuandoCadastrarTurmaComMesmaPrimaryKey() {
         criaTurmaInputComMesmoCodigoHorarioNumeroEPeriodo();
@@ -155,7 +155,7 @@ public class CadastroTurmaIT {
     /**** TESTE DE REQUISIÇÕES DO TIPO PUT ****/
     @Test
     public void deveRetornarCodigo200_QuandoAtualizarPredioComDadosCorretos(){
-        criaTurmaInputAPartirDoDomainObjectAlterandoOProfessor();
+        criaTurmaInputAPartirDoDomainObjectAlterandoACapacidade();
 
         given()
             .pathParam("turmaId", turmaDomainObject.getId())
@@ -168,7 +168,9 @@ public class CadastroTurmaIT {
             .statusCode(HttpStatus.OK.value());
 
     }
-    // TODO validar nome do teste
+
+    /*Teste que verifica se a turma pode ser atualizada utilizando código, horário, número e período
+    * de uma turma já existente no banco*/
     @Test
     public void deveFalhar_QuandoAtualizarTurmaParaUmaPrimaryKeyJaExistente() {
         Turma turmaDomainObjectAuxiliar = retornaNovoTurmaObjectSalvo();
@@ -349,7 +351,7 @@ public class CadastroTurmaIT {
         turmaInput.setDepartamento(departamentoIdInput);
     }
 
-    private void criaTurmaInputAPartirDoDomainObjectAlterandoOProfessor() {
+    private void criaTurmaInputAPartirDoDomainObjectAlterandoACapacidade() {
         PerfilSalaTurmaIdInput perfilSalaTurmaIdInput = new PerfilSalaTurmaIdInput();
         PredioIdInput predioIdInput = new PredioIdInput();
         PeriodoIdInput periodoIdInput = new PeriodoIdInput();
@@ -361,10 +363,10 @@ public class CadastroTurmaIT {
         departamentoIdInput.setId(departamentoDomainObject.getId());
 
         turmaInput.setHorario(turmaDomainObject.getHorario());
-        turmaInput.setDocente("Samuel Cavalcanti");
+        turmaInput.setDocente(turmaDomainObject.getDocente());
         turmaInput.setNomeDisciplina(turmaDomainObject.getNomeDisciplina());
         turmaInput.setCodigoDisciplina(turmaDomainObject.getCodigoDisciplina());
-        turmaInput.setCapacidade(turmaDomainObject.getCapacidade());
+        turmaInput.setCapacidade(85);
         turmaInput.setNumero(turmaDomainObject.getNumero());
         turmaInput.setAlunosMatriculados(turmaDomainObject.getAlunosMatriculados());
         turmaInput.setDistribuir(turmaDomainObject.getDistribuir());
