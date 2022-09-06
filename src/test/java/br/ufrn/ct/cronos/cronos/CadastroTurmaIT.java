@@ -139,7 +139,7 @@ public class CadastroTurmaIT {
     //Teste que verifica se a turma é criada com mesmo código, horário, número e período
     @Test
     public void deveFalhar_QuandoCadastrarTurmaComMesmaPrimaryKey() {
-        criaTurmaInputComMesmoCodigoHorarioNumeroEPeriodo();
+        criaTurmaInputComMesmoCodigoHorarioNumeroEPeriodo(turmaDomainObject);
 
         given()
             .contentType(ContentType.JSON)
@@ -326,7 +326,7 @@ public class CadastroTurmaIT {
         return turmaInput;
     }
 
-    private void criaTurmaInputComMesmoCodigoHorarioNumeroEPeriodo() {
+    private void criaTurmaInputComMesmoCodigoHorarioNumeroEPeriodo(Turma turma) {
         PerfilSalaTurmaIdInput perfilSalaTurmaIdInput = new PerfilSalaTurmaIdInput();
         PredioIdInput predioIdInput = new PredioIdInput();
         PeriodoIdInput periodoIdInput = new PeriodoIdInput();
@@ -334,15 +334,15 @@ public class CadastroTurmaIT {
 
         perfilSalaTurmaIdInput.setId(perfilSalaTurmaDomainObject.getId());
         predioIdInput.setId(predioDomainObject.getId());
-        periodoIdInput.setId(periodoDomainObject.getId());
+        periodoIdInput.setId(turma.getPeriodo().getId());
         departamentoIdInput.setId(departamentoDomainObject.getId());
 
-        turmaInput.setHorario("24M12");
+        turmaInput.setHorario(turma.getHorario());
         turmaInput.setDocente("Samuel Felix");
         turmaInput.setNomeDisciplina("Programação Concorrente");
-        turmaInput.setCodigoDisciplina("DCA1201");
+        turmaInput.setCodigoDisciplina(turma.getCodigoDisciplina());
         turmaInput.setCapacidade(45);
-        turmaInput.setNumero("001");
+        turmaInput.setNumero(turma.getNumero());
         turmaInput.setAlunosMatriculados(20);
         turmaInput.setDistribuir(false);
         turmaInput.setPerfil(perfilSalaTurmaIdInput);
