@@ -69,10 +69,8 @@ public class CadastroPredioIT {
 		flyway.migrate();
 		prepararDados();
 	}
-	
-	/**
-	 * Testes com o POST
-	 */
+
+	/**** TESTE DE REQUISIÇÕES DO TIPO POST ****/
 	@Test
 	public void deveAtribuirId_QuandoCadastrarPredioComDadosCorretos() {
 		PredioInput predioInput = retornaPredioComDadosCorretos();
@@ -145,9 +143,7 @@ public class CadastroPredioIT {
 			.body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
 	}
 
-	/**
-	 * Testes com o PUT
-	 */
+	/**** TESTE DE REQUISIÇÕES DO TIPO PUT ****/
 	@Test
 	public void deveRetornarCodigo200_QuandoAtualizarPredioComDadosCorretos(){
 		PredioInput predioInput = new PredioInput();
@@ -278,9 +274,7 @@ public class CadastroPredioIT {
 			.body("title", equalTo(RECURSO_NAO_ENCONTRADO_PROBLEM_TYPE));
 	}
 
-	/**
-	 * Testes com o GET
-	 */
+	/**** TESTE DE REQUISIÇÕES DO TIPO GET ****/
 	@Test
 	public void deveRetornarQuantidadeCorretaDePredios_QuandoConsultarPredios() {
 		given()
@@ -314,9 +308,7 @@ public class CadastroPredioIT {
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 
-	/**
-	 * Testes com o DELETE
-	 */
+	/**** TESTE DE REQUISIÇÕES DO TIPO DELETE ****/
 	@Test
 	public void deveRetornarStatus204_QuandoExcluirPredioComSucesso(){
 		given()
