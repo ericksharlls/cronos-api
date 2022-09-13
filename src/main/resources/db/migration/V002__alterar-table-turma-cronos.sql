@@ -5,4 +5,7 @@
 -- Server version	5.5.62
 
 ALTER TABLE  `turma` MODIFY `id_turma_sigaa` int(11) DEFAULT NULL;
-ALTER TABLE  `turma` MODIFY  `local` varchar(30) DEFAULT 'INDEFINIDO';
+
+ALTER TABLE `turma` DROP COLUMN `id_sala_temp`;
+ALTER TABLE `turma` DROP COLUMN `local`;
+ALTER TABLE `turma` DROP COLUMN `nome_docente_turma`;
