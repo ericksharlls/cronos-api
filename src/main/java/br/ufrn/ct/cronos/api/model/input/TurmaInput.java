@@ -49,4 +49,8 @@ public class TurmaInput {
     @Valid
     @NotNull
     private DepartamentoIdInput departamento;
+
+    @Valid
+    @NotNull
+    private FuncionarioIdInput funcionario;
 }

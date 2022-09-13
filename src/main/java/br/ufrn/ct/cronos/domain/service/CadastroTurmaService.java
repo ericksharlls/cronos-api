@@ -1,29 +1,30 @@
 package br.ufrn.ct.cronos.domain.service;
 
-import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
-import br.ufrn.ct.cronos.domain.exception.EntidadeEmUsoException;
-import br.ufrn.ct.cronos.domain.exception.NegocioException;
-import br.ufrn.ct.cronos.domain.exception.SalaNaoEncontradaException;
-import br.ufrn.ct.cronos.domain.exception.TurmaNaoEncontradaException;
-import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
+import br.ufrn.ct.cronos.domain.exception.*;
 import br.ufrn.ct.cronos.domain.model.*;
+import br.ufrn.ct.cronos.domain.model.dto.DocenteDTO;
 import br.ufrn.ct.cronos.domain.repository.*;
-import br.ufrn.ct.cronos.infrastructure.repository.spec.TurmaSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
+import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
+import br.ufrn.ct.cronos.infrastructure.repository.spec.TurmaSpecs;
 
 @Service
 public class CadastroTurmaService {
-    
+
     @Autowired
     private TurmaRepository turmaRepository;
 
@@ -44,6 +45,9 @@ public class CadastroTurmaService {
 
     @Autowired
     private DepartamentoRepository departamentoRepository;
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
 
     @Autowired
     private ManipuladorHorarioTurma manipuladorHorarioTurma;
@@ -70,32 +74,32 @@ public class CadastroTurmaService {
                         String[] diasDoGrupo = manipuladorHorarioTurma.retornaArrayDias(grupo);
 
                         List<String> stringsDias = new ArrayList<String>(0);
-     	                for (int z = 0; z < diasDoGrupo.length; z++) {
-     	                     stringsDias.add(diasDoGrupo[z]);
-     	                }
-     	                List<Long> idsHorarios = new ArrayList<Long>(0);
-     	                for (int z = 0; z < horariosDoGrupo.length; z++) {
-     	                    idsHorarios.add(this.horarioService.findByTurnoAndHorario(turno, Integer.parseInt(horariosDoGrupo[z])).getId());
-     	                }
-     	                List<String> horarios =
-     	                     this.turmaRepository.getHorariosPorTurmaESala(turma, arraySalas[i], turno, idsHorarios, stringsDias);
-     	                String hs = "";
-     	                String dias = "";
+                        for (int z = 0; z < diasDoGrupo.length; z++) {
+                            stringsDias.add(diasDoGrupo[z]);
+                        }
+                        List<Long> idsHorarios = new ArrayList<Long>(0);
+                        for (int z = 0; z < horariosDoGrupo.length; z++) {
+                            idsHorarios.add(this.horarioService.findByTurnoAndHorario(turno, Integer.parseInt(horariosDoGrupo[z])).getId());
+                        }
+                        List<String> horarios =
+                                this.turmaRepository.getHorariosPorTurmaESala(turma, arraySalas[i], turno, idsHorarios, stringsDias);
+                        String hs = "";
+                        String dias = "";
                         for (int r = 0; r < horarios.size(); r++) {
                             if (!manipuladorHorarioTurma.jaExisteHorario(hs, manipuladorHorarioTurma.retornaHorario(horarios.get(r)))) {
-                               hs += manipuladorHorarioTurma.retornaHorario(horarios.get(r));
+                                hs += manipuladorHorarioTurma.retornaHorario(horarios.get(r));
                             }
                             if (r == horarios.size() - 1) {
-                               String dia = manipuladorHorarioTurma.retornaDia(horarios.get(r));
-                               if (!manipuladorHorarioTurma.jaExisteDia(dias, dia)) {
-                                  dias += dia;
-                               }
-                               turma.setSala(turma.getSala() + " (" + dias + manipuladorHorarioTurma.retornaTurno(horarios.get(r)) + hs + ") ");
+                                String dia = manipuladorHorarioTurma.retornaDia(horarios.get(r));
+                                if (!manipuladorHorarioTurma.jaExisteDia(dias, dia)) {
+                                    dias += dia;
+                                }
+                                turma.setSala(turma.getSala() + " (" + dias + manipuladorHorarioTurma.retornaTurno(horarios.get(r)) + hs + ") ");
                             } else {
-                               String dia = manipuladorHorarioTurma.retornaDia(horarios.get(r));
-                               if (!manipuladorHorarioTurma.jaExisteDia(dias, dia)) {
-                                  dias += dia;
-                               }
+                                String dia = manipuladorHorarioTurma.retornaDia(horarios.get(r));
+                                if (!manipuladorHorarioTurma.jaExisteDia(dias, dia)) {
+                                    dias += dia;
+                                }
                             }
                         }
                     }
@@ -104,9 +108,9 @@ public class CadastroTurmaService {
                 turma.setSala("INDEFINIDO");
             }
         }
-        
-		return turmasPage;
-	}
+
+        return turmasPage;
+    }
 
     @Transactional
     public Turma salvar (Turma turma) {
@@ -161,10 +165,17 @@ public class CadastroTurmaService {
         return turma;
     }
     private void validaTurmaNoCadastro(Turma turma) {
-       Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
+        Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
 
         if (resultadoDaBusca.isPresent()) {
             throw new NegocioException(MSG_TURMA_JA_EXISTE);
+        }
+        Set<Funcionario> docentesList = turma.getDocentes();
+        turma.getDocentes().clear();
+        for (Funcionario funcionario : docentesList) {
+            Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
+
+            turma.addDocente(docente);
         }
     }
 
