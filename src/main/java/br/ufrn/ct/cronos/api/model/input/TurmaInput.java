@@ -6,15 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 @Getter
 @Setter
 public class TurmaInput {
     @NotBlankAndSizeForString(max=50)
     private String horario;
-
-    @NotBlankAndSizeForString(max=80)
-    private String docente;
 
     @NotBlankAndSizeForString(max=100)
     private String nomeDisciplina;
@@ -52,5 +50,5 @@ public class TurmaInput {
 
     @Valid
     @NotNull
-    private FuncionarioIdInput funcionario;
+    private Set<FuncionarioIdInput> funcionario;
 }

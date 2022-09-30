@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
@@ -116,7 +113,7 @@ public class CadastroTurmaService {
     public Turma salvar (Turma turma) {
         turma = preparaObjectDomain(turma);
 
-        validaTurmaNoCadastro(turma);
+        validaTurma(turma);
 
         return turmaRepository.save(turma);
     }
@@ -127,13 +124,15 @@ public class CadastroTurmaService {
 
         turma = preparaObjectDomain(turma);
 
-        validaTurmaNaAtualizacao(turma);
+        validaTurma(turma);
 
         return turmaRepository.save(turma);
     }
 
     @Transactional
     public void excluir(Long turmaid) {
+        removerDocentesVinculadosATurma(turmaid);
+
         try {
             turmaRepository.deleteById(turmaid);
             turmaRepository.flush();
@@ -143,6 +142,19 @@ public class CadastroTurmaService {
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_TURMA_DENTRO_DO_PERIODO_LETIVO, turmaid));
+        }
+    }
+
+    private void removerDocentesVinculadosATurma(Long turmaid) {
+        Turma turma = turmaRepository.findByIdTurma(turmaid);
+
+        Set<Funcionario> docentesList = turma.getDocentes();
+        turma.getDocentes().clear();
+
+        for (Funcionario funcionario : docentesList) {
+            Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
+
+            turma.removeDocente(docente);
         }
     }
 
@@ -162,28 +174,33 @@ public class CadastroTurmaService {
         turma.setPeriodo(periodo);
         turma.setDepartamento(departamento);
 
+        if (!Objects.isNull(turma.getDocentes())) {
+            turma.setDocentes(turma.getDocentes());
+        }
+
         return turma;
     }
-    private void validaTurmaNoCadastro(Turma turma) {
-        Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
+    private void validaTurma(Turma turma) {
+        Optional<Turma> resultadoDaBusca;
+
+        if (Objects.isNull(turma.getId())) {
+            resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
+
+        } else {
+            resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId(), turma.getId());
+        }
 
         if (resultadoDaBusca.isPresent()) {
             throw new NegocioException(MSG_TURMA_JA_EXISTE);
         }
+
         Set<Funcionario> docentesList = turma.getDocentes();
         turma.getDocentes().clear();
+
         for (Funcionario funcionario : docentesList) {
             Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
 
             turma.addDocente(docente);
-        }
-    }
-
-    private void validaTurmaNaAtualizacao(Turma turma) {
-        Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId(), turma.getId());
-
-        if (resultadoDaBusca.isPresent()) {
-            throw new NegocioException(MSG_TURMA_JA_EXISTE);
         }
     }
 

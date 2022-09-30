@@ -99,7 +99,6 @@ public class Conversor {
         turmaParaCadastro.setNomeDisciplina(turmaDTO.getNomeComponente());
         turmaParaCadastro.setNumero(turmaDTO.getCodigo());
 		turmaParaCadastro.setIdTurmaSIGAA(turmaDTO.getId().longValue());
-        turmaParaCadastro.setLocal("INDEFINIDO");
 		
 		return turmaParaCadastro;
 	}

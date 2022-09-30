@@ -43,10 +43,6 @@ public class TurmaSpecs {
 				predicates.add(builder.like(root.get("codigoDisciplina"), "%" + filtro.getCodigoComponenteCurricular() + "%"));
 			}
 
-            if (StringUtils.hasText(filtro.getNomeDocente())) {
-				predicates.add(builder.like(root.join("docentes").get("nome"), "%" + filtro.getNomeDocente() + "%"));
-			}
-
             if (StringUtils.hasText(filtro.getNomeComponenteCurricular())) {
 				predicates.add(builder.like(root.get("nomeDisciplina"), "%" + filtro.getNomeComponenteCurricular() + "%"));
 			}

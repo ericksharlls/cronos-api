@@ -5,6 +5,8 @@ import br.ufrn.ct.cronos.api.assembler.TurmaModelAssembler;
 import br.ufrn.ct.cronos.api.model.TurmaModel;
 import br.ufrn.ct.cronos.api.model.input.TurmaInput;
 import br.ufrn.ct.cronos.core.data.PageableTranslator;
+import br.ufrn.ct.cronos.domain.exception.FuncionarioNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
 import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.domain.model.Turma;
 import br.ufrn.ct.cronos.domain.service.CadastroTurmaService;
@@ -64,9 +66,14 @@ public class TurmaController {
     public TurmaModel cadastrar(@RequestBody @Valid TurmaInput turmaInput) {
             Turma turma = turmaInputDisassembler.toDomainObject(turmaInput);
 
+        try {
             turma = cadastroTurma.salvar(turma);
 
             return turmaModelAssembler.toModel(turma);
+
+        } catch (FuncionarioNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping("/{turmaId}")
