@@ -1,6 +1,6 @@
 package br.ufrn.ct.cronos.api.model.input;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,5 +9,5 @@ import lombok.Setter;
 public class PerfilSalaTurmaIdInput {
 
     @NotNull
-    Long id;
+    private Long id;
 }

@@ -10,5 +10,5 @@ import javax.validation.constraints.NotNull;
 public class FuncionarioIdInput {
 
     @NotNull
-    Long id;
+    private Long id;
 }

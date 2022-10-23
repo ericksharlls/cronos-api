@@ -7,6 +7,6 @@ public class TurmaNaoEncontradaException extends EntidadeNaoEncontradaException 
     }
 
     public TurmaNaoEncontradaException(Long turmaId) {
-        this(String.format("Não existe um cadastro de turma com o id %d",turmaId));
+        this(String.format("Não existe um cadastro de Turma com o id %d",turmaId));
     }
 }

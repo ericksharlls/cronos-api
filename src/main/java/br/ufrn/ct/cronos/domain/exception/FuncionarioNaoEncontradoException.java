@@ -8,6 +8,6 @@ public class FuncionarioNaoEncontradoException extends EntidadeNaoEncontradaExce
 	}
 	
 	public FuncionarioNaoEncontradoException(Long funcionarioId) {
-		this(String.format("Não existe um cadastro de funcionario com o id %d", funcionarioId));
+		this(String.format("Não existe um cadastro de Funcionário com o id %d", funcionarioId));
 	}
 }

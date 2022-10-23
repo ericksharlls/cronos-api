@@ -1,5 +1,6 @@
 package br.ufrn.ct.cronos.domain.service;
 
+import br.ufrn.ct.cronos.domain.exception.DepartamentoNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.model.Departamento;
 import br.ufrn.ct.cronos.domain.repository.DepartamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,10 @@ public class CadastroDepartamentoService {
     public Departamento getByIdSigaa(Long idSigaa){
         return departamentoRepository.getMapAllWithIdSigaaKey().get(idSigaa);
     }
+
+    public Departamento buscar(Long departamentoId) {
+		return departamentoRepository.findById(departamentoId)
+			.orElseThrow(() -> new DepartamentoNaoEncontradoException(departamentoId));
+	}
     
 }
