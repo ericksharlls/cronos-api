@@ -349,7 +349,6 @@ public class CadastroTurmaIT {
         turmaInput.setPredio(predioIdInput);
         turmaInput.setPeriodo(periodoIdInput);
         turmaInput.setDepartamento(departamentoIdInput);
-        //turmaInput.setFuncionario(funcionarioIdInput);
 
         return turmaInput;
     }
@@ -406,7 +405,6 @@ public class CadastroTurmaIT {
         turmaInput.setPredio(predioIdInput);
         turmaInput.setPeriodo(periodoIdInput);
         turmaInput.setDepartamento(departamentoIdInput);
-        //turmaInput.setFuncionario(funcionarioIdInput);
 
     }
 

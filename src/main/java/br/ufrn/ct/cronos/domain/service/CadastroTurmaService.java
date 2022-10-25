@@ -151,14 +151,17 @@ public class CadastroTurmaService {
     private void removerDocentesVinculadosATurma(Long turmaid) {
         Turma turma = turmaRepository.findByIdTurma(turmaid);
 
-        Set<Funcionario> docentesList = turma.getDocentes();
-        turma.getDocentes().clear();
+        if (Objects.nonNull(turma)) {
+            Set<Funcionario> docentesList = turma.getDocentes();
+            turma.getDocentes().clear();
 
-        for (Funcionario funcionario : docentesList) {
-            Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
+            for (Funcionario funcionario : docentesList) {
+                Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
 
-            turma.removeDocente(docente);
+                turma.removeDocente(docente);
+            }
         }
+
     }
 
     private Turma preparaObjectDomain(Turma turma) {
@@ -182,44 +185,20 @@ public class CadastroTurmaService {
         turma.setPeriodo(periodo);
         turma.setDepartamento(departamento);
 
-        /*
-        if (!Objects.isNull(turma.getDocentes())) {
-            turma.setDocentes(turma.getDocentes());
-        }
-         */
         return turma;
     }
     private void validaTurma(Turma turma) {
         Optional<Turma> resultadoDaBusca;
 
         if (Objects.isNull(turma.getId())) {
-            System.out.println("##### ENTROU AQUI NO CADASTRAR");
             resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
         } else {
-            System.out.println("##### ENTROU AQUI NO ATUALIZAR");
             resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId(), turma.getId());
         }
 
         if (resultadoDaBusca.isPresent()) {
             throw new NegocioException(MSG_TURMA_JA_EXISTE);
         }
-
-        /*
-        Set<Funcionario> docentesList = turma.getDocentes();
-        //turma.getDocentes().clear();
-
-        for (Funcionario funcionario : turma.getDocentes()) {
-            Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
-            
-            //turma.addDocente(docente);
-            docentesList.add(docente);
-        }
-
-        turma.getDocentes().clear();
-        for (Funcionario funcionario : docentesList) {
-            turma.addDocente(funcionario);
-        }
-          */
     }
 
     public Turma buscarOuFalhar(Long turmaId) {
