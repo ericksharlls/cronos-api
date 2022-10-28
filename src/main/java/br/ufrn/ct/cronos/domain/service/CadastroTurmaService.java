@@ -53,7 +53,6 @@ public class CadastroTurmaService {
     private static final String MSG_TURMA_DENTRO_DO_PERIODO_LETIVO = "A Turma não pode ser excluída, pois está alocada em uma Sala.";
 
     public Page<Turma> pesquisar(TurmaFilter filtro, Pageable pageable) {
-        //List<Turma> turmas = turmaRepository.findAll(TurmaSpecs.usandoFiltro(filtro), pageable);
         Page<Turma> turmasPage = turmaRepository.findAll(TurmaSpecs.usandoFiltro(filtro), pageable);
 
         for (Turma turma : turmasPage.getContent()) {
