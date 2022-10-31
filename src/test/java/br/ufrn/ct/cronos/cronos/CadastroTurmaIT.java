@@ -48,6 +48,12 @@ public class CadastroTurmaIT {
     @Autowired
     private PredioRepository predioRepository;
 
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private TipoFuncionarioRepository tipoFuncionarioRepository;
+
     private PerfilSalaTurma perfilSalaTurmaDomainObject;
 
     private Departamento departamentoDomainObject;
@@ -56,6 +62,9 @@ public class CadastroTurmaIT {
 
     private Predio predioDomainObject;
 
+    private Funcionario funcionarioDomainObject;
+
+    private TipoFuncionario tipoFuncionarioDomainObject;
     private Turma turmaDomainObject;
 
     TurmaInput turmaInput;
@@ -86,12 +95,11 @@ public class CadastroTurmaIT {
         criarDepartamento();
         criarPeriodo();
         criarPredio();
+        criarFuncionario();
 
         turmaDomainObject.setHorario("24M12");
-        turmaDomainObject.setDocente("Samuel Felix");
         turmaDomainObject.setNomeDisciplina("Programação Concorrente");
         turmaDomainObject.setCodigoDisciplina("DCA1201");
-        turmaDomainObject.setLocal("Bloco A");
         turmaDomainObject.setSala("A1");
         turmaDomainObject.setCapacidade(45);
         turmaDomainObject.setNumero("001");
@@ -122,7 +130,6 @@ public class CadastroTurmaIT {
         .then()
             .body("id", notNullValue())
             .body("horario", equalTo(turmaInput.getHorario()))
-            .body("docente", equalTo(turmaInput.getDocente()))
             .body("nomeDisciplina", equalTo(turmaInput.getNomeDisciplina()))
             .body("codigoDisciplina", equalTo(turmaInput.getCodigoDisciplina()))
             .body("capacidade", equalTo(turmaInput.getCapacidade()))
@@ -238,7 +245,6 @@ public class CadastroTurmaIT {
         departamentoIdInput.setId(departamentoDomainObject.getId());
 
         turmaInput.setHorario(turmaDomainObjectAuxiliar.getHorario());
-        turmaInput.setDocente(turmaDomainObject.getDocente());
         turmaInput.setNomeDisciplina(turmaDomainObject.getNomeDisciplina());
         turmaInput.setCodigoDisciplina(turmaDomainObjectAuxiliar.getCodigoDisciplina());
         turmaInput.setCapacidade(turmaDomainObject.getCapacidade());
@@ -297,21 +303,42 @@ public class CadastroTurmaIT {
         perfilSalaTurmaRepository.save(perfilSalaTurmaDomainObject);
     }
 
+    private void criarFuncionario() {
+        tipoFuncionarioDomainObject = new TipoFuncionario();
+
+        tipoFuncionarioDomainObject.setDescricao("Presta suporte de TI");
+        tipoFuncionarioDomainObject.setNome("Suporte");
+
+        tipoFuncionarioRepository.save(tipoFuncionarioDomainObject);
+
+        funcionarioDomainObject = new Funcionario();
+
+        funcionarioDomainObject.setNome("Joaquim dos Santos Araujo");
+        funcionarioDomainObject.setCpf("30461317044");
+        funcionarioDomainObject.setMatricula("N3042022");
+        funcionarioDomainObject.setEmail("joaquim.santos@gmail.com");
+        funcionarioDomainObject.setTelefone("32132465");
+        funcionarioDomainObject.setRamal("1");
+        funcionarioDomainObject.setIdSigaaFuncionario(12556L);
+        funcionarioDomainObject.setTipoFuncionario(tipoFuncionarioDomainObject);
+
+        funcionarioRepository.save(funcionarioDomainObject);
+    }
+
     private TurmaInput criaTurmaInputComDadosCorretos() {
-
-
         PerfilSalaTurmaIdInput perfilSalaTurmaIdInput = new PerfilSalaTurmaIdInput();
         PredioIdInput predioIdInput = new PredioIdInput();
         PeriodoIdInput periodoIdInput = new PeriodoIdInput();
-        DepartamentoIdInput departamentoIdInput= new DepartamentoIdInput();
+        DepartamentoIdInput departamentoIdInput = new DepartamentoIdInput();
+        FuncionarioIdInput funcionarioIdInput =  new FuncionarioIdInput();
 
         perfilSalaTurmaIdInput.setId(perfilSalaTurmaDomainObject.getId());
         predioIdInput.setId(predioDomainObject.getId());
         periodoIdInput.setId(periodoDomainObject.getId());
         departamentoIdInput.setId(departamentoDomainObject.getId());
+        funcionarioIdInput.setId(funcionarioDomainObject.getId());
 
         turmaInput.setHorario("24M34");
-        turmaInput.setDocente("Diogo Pinheiro");
         turmaInput.setNomeDisciplina("Programação Concorrente");
         turmaInput.setCodigoDisciplina("DCA1301");
         turmaInput.setCapacidade(45);
@@ -330,15 +357,16 @@ public class CadastroTurmaIT {
         PerfilSalaTurmaIdInput perfilSalaTurmaIdInput = new PerfilSalaTurmaIdInput();
         PredioIdInput predioIdInput = new PredioIdInput();
         PeriodoIdInput periodoIdInput = new PeriodoIdInput();
-        DepartamentoIdInput departamentoIdInput= new DepartamentoIdInput();
+        DepartamentoIdInput departamentoIdInput = new DepartamentoIdInput();
+        FuncionarioIdInput funcionarioIdInput =  new FuncionarioIdInput();
 
         perfilSalaTurmaIdInput.setId(perfilSalaTurmaDomainObject.getId());
         predioIdInput.setId(predioDomainObject.getId());
-        periodoIdInput.setId(turma.getPeriodo().getId());
+        periodoIdInput.setId(periodoDomainObject.getId());
         departamentoIdInput.setId(departamentoDomainObject.getId());
+        funcionarioIdInput.setId(funcionarioDomainObject.getId());
 
         turmaInput.setHorario(turma.getHorario());
-        turmaInput.setDocente("Samuel Felix");
         turmaInput.setNomeDisciplina("Programação Concorrente");
         turmaInput.setCodigoDisciplina(turma.getCodigoDisciplina());
         turmaInput.setCapacidade(45);
@@ -349,21 +377,24 @@ public class CadastroTurmaIT {
         turmaInput.setPredio(predioIdInput);
         turmaInput.setPeriodo(periodoIdInput);
         turmaInput.setDepartamento(departamentoIdInput);
+        //turmaInput.setFuncionario(funcionarioIdInput);
+
     }
 
     private void criaTurmaInputAPartirDoDomainObjectAlterandoACapacidade() {
         PerfilSalaTurmaIdInput perfilSalaTurmaIdInput = new PerfilSalaTurmaIdInput();
         PredioIdInput predioIdInput = new PredioIdInput();
         PeriodoIdInput periodoIdInput = new PeriodoIdInput();
-        DepartamentoIdInput departamentoIdInput= new DepartamentoIdInput();
+        DepartamentoIdInput departamentoIdInput = new DepartamentoIdInput();
+        FuncionarioIdInput funcionarioIdInput =  new FuncionarioIdInput();
 
         perfilSalaTurmaIdInput.setId(perfilSalaTurmaDomainObject.getId());
         predioIdInput.setId(predioDomainObject.getId());
         periodoIdInput.setId(periodoDomainObject.getId());
         departamentoIdInput.setId(departamentoDomainObject.getId());
+        funcionarioIdInput.setId(funcionarioDomainObject.getId());
 
         turmaInput.setHorario(turmaDomainObject.getHorario());
-        turmaInput.setDocente(turmaDomainObject.getDocente());
         turmaInput.setNomeDisciplina(turmaDomainObject.getNomeDisciplina());
         turmaInput.setCodigoDisciplina(turmaDomainObject.getCodigoDisciplina());
         turmaInput.setCapacidade(85);
@@ -374,6 +405,7 @@ public class CadastroTurmaIT {
         turmaInput.setPredio(predioIdInput);
         turmaInput.setPeriodo(periodoIdInput);
         turmaInput.setDepartamento(departamentoIdInput);
+
     }
 
     private Turma retornaNovoTurmaObjectSalvo() {
@@ -382,9 +414,7 @@ public class CadastroTurmaIT {
         novaTurmaDomainObject.setHorario("35M12");
         novaTurmaDomainObject.setCodigoDisciplina("DCA1296");
         novaTurmaDomainObject.setNumero("003");
-        novaTurmaDomainObject.setDocente("Samuel Felix");
         novaTurmaDomainObject.setNomeDisciplina("Programação Funcional");
-        novaTurmaDomainObject.setLocal("Bloco A");
         novaTurmaDomainObject.setSala("A1");
         novaTurmaDomainObject.setCapacidade(45);
         novaTurmaDomainObject.setAlunosMatriculados(20);

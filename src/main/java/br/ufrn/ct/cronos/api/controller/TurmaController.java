@@ -5,6 +5,12 @@ import br.ufrn.ct.cronos.api.assembler.TurmaModelAssembler;
 import br.ufrn.ct.cronos.api.model.TurmaModel;
 import br.ufrn.ct.cronos.api.model.input.TurmaInput;
 import br.ufrn.ct.cronos.core.data.PageableTranslator;
+import br.ufrn.ct.cronos.domain.exception.DepartamentoNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.FuncionarioNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.NegocioException;
+import br.ufrn.ct.cronos.domain.exception.PerfilSalaTurmaNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.PeriodoNaoEncontradoException;
+import br.ufrn.ct.cronos.domain.exception.PredioNaoEncontradoException;
 import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.domain.model.Turma;
 import br.ufrn.ct.cronos.domain.service.CadastroTurmaService;
@@ -62,22 +68,46 @@ public class TurmaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TurmaModel cadastrar(@RequestBody @Valid TurmaInput turmaInput) {
-            Turma turma = turmaInputDisassembler.toDomainObject(turmaInput);
-
+        Turma turma = turmaInputDisassembler.toDomainObject(turmaInput);
+        try {
             turma = cadastroTurma.salvar(turma);
 
             return turmaModelAssembler.toModel(turma);
+
+        } catch (FuncionarioNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (PerfilSalaTurmaNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (PredioNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (PeriodoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (DepartamentoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{turmaId}")
     public TurmaModel atualizar (@PathVariable Long turmaId, @RequestBody @Valid TurmaInput turmaInput) {
-        Turma turmaAtual = cadastroTurma.buscarOuFalhar(turmaId);
+        try {
+            Turma turmaAtual = cadastroTurma.buscarOuFalhar(turmaId);
 
-        turmaInputDisassembler.copyToDomainObject(turmaInput, turmaAtual);
-
-        turmaAtual = cadastroTurma.atualizar(turmaAtual);
-
-        return turmaModelAssembler.toModel(turmaAtual);
+            turmaInputDisassembler.copyToDomainObject(turmaInput, turmaAtual);
+    
+            turmaAtual = cadastroTurma.atualizar(turmaAtual);
+    
+            return turmaModelAssembler.toModel(turmaAtual);   
+        } catch (FuncionarioNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (PerfilSalaTurmaNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (PredioNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (PeriodoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        } catch (DepartamentoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @DeleteMapping("/{turmaid}")

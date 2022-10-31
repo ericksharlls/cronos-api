@@ -22,17 +22,11 @@ public class Turma {
     @Column(name = "horario_turma")
     private String horario;
 
-    @Column(name = "nome_docente_turma")
-    private String docente;
-
     @Column(name = "nome_componente_turma")
     private String nomeDisciplina;
 
     @Column(name = "codigo_componente_turma")
     private String codigoDisciplina;
-
-    @Column(name = "local")
-    private String local;
 
     @Transient
     private String sala;
@@ -64,10 +58,6 @@ public class Turma {
     @ManyToOne
     @JoinColumn(name="id_departamento")
     private Departamento departamento;
-
-    @Column(name = "id_sala_temp")
-    private Long idSalaTemp;
-
     @Column(name = "id_turma_sigaa")
     private Long idTurmaSIGAA;
    

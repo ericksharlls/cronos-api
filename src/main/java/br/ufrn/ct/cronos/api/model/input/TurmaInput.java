@@ -1,20 +1,19 @@
 package br.ufrn.ct.cronos.api.model.input;
 
 import br.ufrn.ct.cronos.core.validations.NotBlankAndSizeForString;
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 @Getter
 @Setter
 public class TurmaInput {
+
     @NotBlankAndSizeForString(max=50)
     private String horario;
-
-    @NotBlankAndSizeForString(max=80)
-    private String docente;
 
     @NotBlankAndSizeForString(max=100)
     private String nomeDisciplina;
@@ -28,7 +27,6 @@ public class TurmaInput {
     @NotBlankAndSizeForString(max=5)
     private String numero;
 
-    @NotNull
     private Integer alunosMatriculados;
 
     @NotNull
@@ -51,6 +49,5 @@ public class TurmaInput {
     private DepartamentoIdInput departamento;
 
     @Valid
-    @NotNull
-    private FuncionarioIdInput funcionario;
+    private Set<FuncionarioIdInput> docentes;
 }

@@ -1,11 +1,10 @@
 package br.ufrn.ct.cronos.api.model;
 
-import br.ufrn.ct.cronos.domain.model.Departamento;
-import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;
-import br.ufrn.ct.cronos.domain.model.Periodo;
-import br.ufrn.ct.cronos.domain.model.Predio;
+import br.ufrn.ct.cronos.domain.model.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,13 +14,9 @@ public class TurmaModel {
 
     private String horario;
 
-    private String docente;
-
     private String nomeDisciplina;
 
     private String codigoDisciplina;
-
-    private String local;
 
     private Integer capacidade;
 
@@ -38,4 +33,6 @@ public class TurmaModel {
     private Periodo periodo;
 
     private Departamento departamento;
+
+    private Set<Funcionario> docente;
 }

@@ -2,7 +2,6 @@ package br.ufrn.ct.cronos.domain.service;
 
 import br.ufrn.ct.cronos.domain.exception.*;
 import br.ufrn.ct.cronos.domain.model.*;
-import br.ufrn.ct.cronos.domain.model.dto.DocenteDTO;
 import br.ufrn.ct.cronos.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import br.ufrn.ct.cronos.domain.filter.TurmaFilter;
 import br.ufrn.ct.cronos.core.utils.ManipuladorHorarioTurma;
@@ -32,19 +28,19 @@ public class CadastroTurmaService {
     private SalaRepository salaRepository;
 
     @Autowired
-    private PerfilSalaTurmaRepository perfilSalaTurmaRepository;
+    private CadastroPerfilSalaTurmaService perfilSalaTurmaService;
 
     @Autowired
     private CadastroHorarioService horarioService;
 
     @Autowired
-    private PredioRepository predioRepository;
+    private CadastroPredioService predioService;
 
     @Autowired
-    private PeriodoRepository periodoRepository;
+    private CadastroPeriodoService periodoService;
 
     @Autowired
-    private DepartamentoRepository departamentoRepository;
+    private CadastroDepartamentoService departamentoService;
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
@@ -52,12 +48,11 @@ public class CadastroTurmaService {
     @Autowired
     private ManipuladorHorarioTurma manipuladorHorarioTurma;
 
-    private static final String MSG_TURMA_JA_EXISTE = "Já existe turma com mesmos parâmetros: Código do Componente Curricular da Turma, Horário  da Turma, Número da Turma e Período.";
+    private static final String MSG_TURMA_JA_EXISTE = "Já existe um cadastro de Turma com os mesmos parâmetros informados para os campos: Código do Componente Curricular, Horário, Número e Período.";
 
-    private static final String MSG_TURMA_DENTRO_DO_PERIODO_LETIVO = "A turma não pode ser excluida pois encontra-se em periodo letivo";
+    private static final String MSG_TURMA_DENTRO_DO_PERIODO_LETIVO = "A Turma não pode ser excluída, pois está alocada em uma Sala.";
 
     public Page<Turma> pesquisar(TurmaFilter filtro, Pageable pageable) {
-        //List<Turma> turmas = turmaRepository.findAll(TurmaSpecs.usandoFiltro(filtro), pageable);
         Page<Turma> turmasPage = turmaRepository.findAll(TurmaSpecs.usandoFiltro(filtro), pageable);
 
         for (Turma turma : turmasPage.getContent()) {
@@ -115,10 +110,12 @@ public class CadastroTurmaService {
     @Transactional
     public Turma salvar (Turma turma) {
         turma = preparaObjectDomain(turma);
+        // Validação da Turma
+        validaTurma(turma);
 
-        validaTurmaNoCadastro(turma);
-
-        return turmaRepository.save(turma);
+        salvaOuAtualizaTurmaComSeusDocentes(turma);
+        
+        return turma;
     }
 
     @Transactional
@@ -127,13 +124,17 @@ public class CadastroTurmaService {
 
         turma = preparaObjectDomain(turma);
 
-        validaTurmaNaAtualizacao(turma);
+        validaTurma(turma);
 
-        return turmaRepository.save(turma);
+        salvaOuAtualizaTurmaComSeusDocentes(turma);
+
+        return turma;
     }
 
     @Transactional
     public void excluir(Long turmaid) {
+        removerDocentesVinculadosATurma(turmaid);
+
         try {
             turmaRepository.deleteById(turmaid);
             turmaRepository.flush();
@@ -146,16 +147,37 @@ public class CadastroTurmaService {
         }
     }
 
+    private void removerDocentesVinculadosATurma(Long turmaid) {
+        Turma turma = turmaRepository.findByIdTurma(turmaid);
+
+        if (Objects.nonNull(turma)) {
+            Set<Funcionario> docentesList = turma.getDocentes();
+            turma.getDocentes().clear();
+
+            for (Funcionario funcionario : docentesList) {
+                Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
+
+                turma.removeDocente(docente);
+            }
+        }
+
+    }
+
     private Turma preparaObjectDomain(Turma turma) {
+        Optional<Integer> optionalQuantidadeAlunosMatriculados = Optional.ofNullable(turma.getAlunosMatriculados());
+        if (!optionalQuantidadeAlunosMatriculados.isPresent()) {
+            turma.setAlunosMatriculados(0);
+        }
+
         Long idPerfil = turma.getPerfil().getId();
         Long idPredio = turma.getPredio().getId();
         Long idPeriodo = turma.getPeriodo().getId();
         Long idDeparatamento = turma.getDepartamento().getId();
 
-        PerfilSalaTurma perfil = perfilSalaTurmaRepository.findById(idPerfil).get();
-        Predio predio = predioRepository.findById(idPredio).get();
-        Periodo periodo = periodoRepository.findById(idPeriodo).get();
-        Departamento departamento = departamentoRepository.findById(idDeparatamento).get();
+        PerfilSalaTurma perfil = perfilSalaTurmaService.buscar(idPerfil);
+        Predio predio = predioService.buscar(idPredio);
+        Periodo periodo = periodoService.buscar(idPeriodo);
+        Departamento departamento = departamentoService.buscar(idDeparatamento);
 
         turma.setPerfil(perfil);
         turma.setPredio(predio);
@@ -164,23 +186,14 @@ public class CadastroTurmaService {
 
         return turma;
     }
-    private void validaTurmaNoCadastro(Turma turma) {
-        Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
+    private void validaTurma(Turma turma) {
+        Optional<Turma> resultadoDaBusca;
 
-        if (resultadoDaBusca.isPresent()) {
-            throw new NegocioException(MSG_TURMA_JA_EXISTE);
+        if (Objects.isNull(turma.getId())) {
+            resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId());
+        } else {
+            resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId(), turma.getId());
         }
-        Set<Funcionario> docentesList = turma.getDocentes();
-        turma.getDocentes().clear();
-        for (Funcionario funcionario : docentesList) {
-            Funcionario docente = funcionarioRepository.findById(funcionario.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(funcionario.getId()));
-
-            turma.addDocente(docente);
-        }
-    }
-
-    private void validaTurmaNaAtualizacao(Turma turma) {
-        Optional<Turma> resultadoDaBusca = turmaRepository.buscarTurmaComMesmoParametro(turma.getCodigoDisciplina(), turma.getHorario(), turma.getNumero(), turma.getPeriodo().getId(), turma.getId());
 
         if (resultadoDaBusca.isPresent()) {
             throw new NegocioException(MSG_TURMA_JA_EXISTE);
@@ -189,6 +202,43 @@ public class CadastroTurmaService {
 
     public Turma buscarOuFalhar(Long turmaId) {
         return turmaRepository.findById(turmaId)
-                .orElseThrow(() -> new SalaNaoEncontradaException(turmaId));
+                .orElseThrow(() -> new TurmaNaoEncontradaException(turmaId));
     }
+
+    public void salvaOuAtualizaTurmaComSeusDocentes(Turma turma) {
+        /*
+         * O fluxo (salvar a Turma e relacioná-las com seus docentes) a seguir é divido em 5 passos:
+         * Passo 1: Fazendo uma cópia/backup da lista de Docentes da Turma, antes de limpa-la
+         * Passo 2: Limpando a lista de docentes da Turma
+         * Passo 3: Salvando a Turma
+         * Passo 4: Adicionando os docentes de volta a Turma
+         * passo 5: Atualizando a Turma com seus docentes
+         */
+        
+        // Passo 1
+        Set<Funcionario> docentesList = new HashSet<>();
+        if (Objects.nonNull(turma.getDocentes())) {
+            for (Funcionario docente : turma.getDocentes()) {
+                docentesList.add(docente);
+            }
+        }
+
+        // Passo 2
+        if (Objects.nonNull(turma.getDocentes())) {
+            turma.getDocentes().clear();
+        }
+        
+        // Passo 3
+        turma = turmaRepository.save(turma);
+ 
+        // Passo 4
+        for (Funcionario docente : docentesList) {
+            Funcionario funcionario = funcionarioRepository.findById(docente.getId()).orElseThrow(() -> new FuncionarioNaoEncontradoException(docente.getId()));
+            turma.addDocente(funcionario);
+        }
+        
+        // Passo 5
+        this.turmaRepository.save(turma);
+    }
+
 }

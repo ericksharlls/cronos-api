@@ -12,6 +12,5 @@ public class TurmaFilter {
     private Long idPredio;
     private String codigoComponenteCurricular;
     private String nomeComponenteCurricular;
-    private String nomeDocente;
     
 }
