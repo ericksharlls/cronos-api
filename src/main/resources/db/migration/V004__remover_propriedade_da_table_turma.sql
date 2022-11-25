@@ -4,4 +4,4 @@
 -- ------------------------------------------------------
 -- Server version	5.5.62
 
-ALTER TABLE `turma` MODIFY `id_predio` tinyint(4) DEFAULT NULL;
+ALTER TABLE `turma` ALTER COLUMN `id_predio` DROP DEFAULT;
