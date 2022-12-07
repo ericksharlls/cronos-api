@@ -21,5 +21,7 @@ public class ImportacaoTurmasInput {
     @NotNull
     @Size(min = 1)
     private Set<String> siglasNivelEnsino;
-    
+
+    @NotNull
+    private Long idPredioPadrao;
 }
