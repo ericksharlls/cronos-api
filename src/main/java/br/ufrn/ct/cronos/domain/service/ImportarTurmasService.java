@@ -84,10 +84,12 @@ public class ImportarTurmasService {
             StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.CRIADA_AGUARDANDO_EXECUCAO.name());
             Departamento departamento = departamentoService.getByIdSigaa(idDepartamentoSigaa);
             HistoricoImportacaoTurmas historico = new HistoricoImportacaoTurmas();
+            Predio predioPadrao = cadastroPredioService.buscar(idPredioPadrao);
 
             importacao.setStatus(status);
             importacao.setDepartamento(departamento);
             importacao.setHorarioUltimaOperacao(LocalDateTime.now());
+            importacao.setPredio(predioPadrao);
             importacaoTurmasRepository.save(importacao);
 
             historico.setImportacaoTurmas(importacao);
