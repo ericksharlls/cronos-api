@@ -1,5 +1,6 @@
 package br.ufrn.ct.cronos.api.model;
 
+import br.ufrn.ct.cronos.domain.model.Predio;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,7 @@ public class ImportacaoTurmasModel {
 	private StatusImportacaoTurmasModel status;
 
     private List<HistoricoImportacaoTurmasModel> listaHistorico;
+
+    private Predio predio;
 
 }
