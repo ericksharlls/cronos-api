@@ -10,5 +10,6 @@ public class DepartamentoModel {
     private Long id;
     private String nome;
     private String descricao;
+    private Long idSigaa;
     
 }
