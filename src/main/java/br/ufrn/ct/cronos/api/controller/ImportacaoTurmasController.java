@@ -43,7 +43,7 @@ public class ImportacaoTurmasController {
 	public void importarTurmas(@RequestBody @Valid ImportacaoTurmasInput importacaoTurmasInput) {
         importarTurmasService
                     .agendarImportacoes(importacaoTurmasInput.getSiglasNivelEnsino(), importacaoTurmasInput.getIdsUnidades(), 
-                        importacaoTurmasInput.getIdPeriodo());
+                        importacaoTurmasInput.getIdPeriodo(),importacaoTurmasInput.getIdPredioPadrao());
         importarTurmasService.executarAssincronamenteImportacoes();
         System.out.println("#### Fim da execução de ImportacaoTurmasController ####");
 	}

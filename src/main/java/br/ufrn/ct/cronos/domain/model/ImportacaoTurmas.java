@@ -30,6 +30,10 @@ public class ImportacaoTurmas {
 	@JoinColumn(name = "id_status")
 	private StatusImportacaoTurmas status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_predio_turma")
+    private Predio predio;
+
     /*
      * A lista com todos os registros de histórico da Importação é preenchida apenas pelo método 'buscar' da classe ImportarTurmasService.
      */
