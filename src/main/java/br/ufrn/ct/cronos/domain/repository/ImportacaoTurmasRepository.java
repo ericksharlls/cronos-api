@@ -13,11 +13,11 @@ import java.util.Optional;
 @Repository
 public interface ImportacaoTurmasRepository extends JpaRepository<ImportacaoTurmas, Long> {
 
-    @Query(value = "SELECT i FROM ImportacaoTurmas i JOIN FETCH i.departamento JOIN FETCH i.status ORDER BY i.horarioUltimaOperacao DESC",
-            countQuery = "SELECT COUNT(i.id) FROM ImportacaoTurmas i JOIN i.departamento JOIN i.status")
+    @Query(value = "SELECT i FROM ImportacaoTurmas i JOIN FETCH i.departamento JOIN FETCH i.status JOIN FETCH i.predio ORDER BY i.horarioUltimaOperacao DESC",
+            countQuery = "SELECT COUNT(i.id) FROM ImportacaoTurmas i JOIN i.departamento JOIN i.status JOIN i.predio")
     public Page<ImportacaoTurmas> findAll(Pageable pageable);
 
-    @Query("SELECT i FROM ImportacaoTurmas i JOIN FETCH i.departamento JOIN FETCH i.status WHERE i.id = :idImportacaoTurmas")
+    @Query("SELECT i FROM ImportacaoTurmas i JOIN FETCH i.departamento JOIN FETCH i.status JOIN FETCH i.predio WHERE i.id = :idImportacaoTurmas")
     public Optional<ImportacaoTurmas> findById(@Param("idImportacaoTurmas") Long idImportacaoTurmas);
     
 }

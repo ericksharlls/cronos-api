@@ -34,7 +34,8 @@ INSERT INTO perfil_sala_turma (nome_perfil_sala_turma, descricao_perfil_sala_tur
 ('Prancheta','Perfil para aulas em sala de aula com prancheta');
 
 INSERT INTO periodo (nome_periodo, descricao_periodo, data_inicio_periodo, data_termino_periodo, is_periodo_letivo, ano_periodo, numero_periodo) VALUES 
-('PERÍODO LETIVO - 2022.2','PERÍODO LETIVO de 2022.2','2022-08-22','2022-12-23',1,2022,2);
+('PERÍODO LETIVO - 2022.2','PERÍODO LETIVO de 2022.2','2022-08-22','2022-12-23',1,2022,2),
+('PERÍODO LETIVO - 2023.1','PERÍODO LETIVO de 2023.1','2023-03-06','2023-07-15',1,2023,1);
 
 INSERT INTO sala (nome_sala, descricao_sala, capacidade_sala, tipo_quadro_sala, utilizar_distribuicao, utilizar_agendamento, distribuir, id_predio, id_perfil) VALUES 
 ("A1", "Sala A1", 30, "Branco", true, true, true, 1, 1),

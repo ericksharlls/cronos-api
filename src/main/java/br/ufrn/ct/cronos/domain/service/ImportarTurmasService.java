@@ -36,7 +36,7 @@ public class ImportarTurmasService {
         = "A importação de id %d não pode ser reexecutada, pois sua última execução foi realizada com sucesso.";
 
     private static final String ID_PREDIO_NAO_ENCONTRADO
-        = "Não existe Predio na API da UFRN com id %d.";
+        = "Não existe Prédio com id %d.";
 
     @Autowired
     private ImportacaoTurmasRepository importacaoTurmasRepository;

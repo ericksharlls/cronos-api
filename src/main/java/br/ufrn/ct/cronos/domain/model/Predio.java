@@ -3,13 +3,15 @@ package br.ufrn.ct.cronos.domain.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "predio")
-public class Predio {
+public class Predio implements Serializable {
     
     @EqualsAndHashCode.Include
     @Id
