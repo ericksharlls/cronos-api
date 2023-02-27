@@ -39,6 +39,6 @@ Logo abaixo, o comando para rodar um método de testes específico de uma classe
 
 ## Documentação da API
 
-Após a execução do projeto, a documentação da API deve ser acessada pela URL a seguir:
+Após a execução do projeto, a documentação da API pode ser acessada pela URL a seguir:
 
 `http://localhost:8080/swagger-ui/index.html`
