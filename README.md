@@ -16,7 +16,8 @@ O projeto utiliza as seguintes tecnologias:
 - **Flyway** para controle de versão do Banco de Dados;
 - **Hibernate** como provedor JPA e framework de mapeamento objeto-relacional;
 - **Ehcache** para caching de objetos e consultas com informações provenientes do banco de dados;
-- **MySQL** como SGBD.
+- **MySQL** como SGBD;
+- **SpringDoc** para documentação da API no modelo do Swagger, seguindo a especificação do OpenAPI 3.
 
 ## Testes de integração
 
@@ -35,3 +36,9 @@ Logo abaixo, o comando para rodar um método de testes específico de uma classe
 ***ClassName*** é o nome da classe sem a entensão ***.java***  
 ***methodName*** é o nome de um método específico de uma classe de testes  
 ***${USER}*** e  ***${PASSWORD}*** devem ser substituídos, respectivamente, pelos usuário e senha de conexão com seu banco de dados local.
+
+## Documentação da API
+
+Após a execução do projeto, a documentação da API deve ser acessada pela URL a seguir:
+
+`http://localhost:8080/swagger-ui/index.html`

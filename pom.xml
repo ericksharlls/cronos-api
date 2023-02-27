@@ -19,6 +19,7 @@
 		<java.version>11</java.version>
 		<modelmapper.version>3.0.0</modelmapper.version>
 		<org-json.version>20210307</org-json.version>
+		<springdoc.version>1.6.14</springdoc.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -88,6 +89,12 @@
     		<artifactId>json</artifactId>
     		<version>${org-json.version}</version>
 		</dependency>
+
+		<dependency>
+      		<groupId>org.springdoc</groupId>
+      		<artifactId>springdoc-openapi-ui</artifactId>
+      		<version>${springdoc.version}</version>
+   		</dependency>
 		
 	</dependencies>
 

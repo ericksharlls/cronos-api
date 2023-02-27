@@ -2,6 +2,7 @@ package br.ufrn.ct.cronos.api.controller;
 
 import br.ufrn.ct.cronos.api.assembler.ImportacaoTurmasModelAssembler;
 import br.ufrn.ct.cronos.api.assembler.ImportacaoTurmasResumoModelAssembler;
+import br.ufrn.ct.cronos.api.controller.openapi.ImportacaoTurmasControllerOpenApi;
 import br.ufrn.ct.cronos.api.model.ImportacaoTurmasModel;
 import br.ufrn.ct.cronos.api.model.ImportacaoTurmasResumoModel;
 import br.ufrn.ct.cronos.api.model.input.ImportacaoTurmasInput;
@@ -24,7 +25,7 @@ import javax.validation.Valid;
 @EnableAsync
 @RestController
 @RequestMapping(value = "/api-ufrn/turmas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ImportacaoTurmasController {
+public class ImportacaoTurmasController implements ImportacaoTurmasControllerOpenApi {
 
     @Autowired
     private ImportarTurmasService importarTurmasService;

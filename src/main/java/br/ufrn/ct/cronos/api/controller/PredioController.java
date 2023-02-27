@@ -7,6 +7,8 @@ import br.ufrn.ct.cronos.api.model.input.PredioInput;
 import br.ufrn.ct.cronos.domain.model.Predio;
 import br.ufrn.ct.cronos.domain.repository.PredioRepository;
 import br.ufrn.ct.cronos.domain.service.CadastroPredioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Tag(name = "Prédios", description = "Gerencia os Prédios")
 @RestController
 @RequestMapping(value = "/predios", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PredioController {
