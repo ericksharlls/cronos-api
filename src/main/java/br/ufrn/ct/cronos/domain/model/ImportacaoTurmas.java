@@ -40,4 +40,10 @@ public class ImportacaoTurmas {
     @Transient
     private List<HistoricoImportacaoTurmas> listaHistorico;
 
+    @ManyToOne
+    @JoinColumn(name = "id_periodo")
+    private Periodo periodo;
+
+
+
 }

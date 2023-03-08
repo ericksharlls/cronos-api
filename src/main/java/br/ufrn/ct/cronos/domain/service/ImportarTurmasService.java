@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +63,6 @@ public class ImportarTurmasService {
     private List<ImportacaoTurmas> importacoes;
     private Set<String> listaSiglasNivelEnsino;
     private Long idPeriodo;
-
     private Long idPredioPadrao;
 
     public ImportarTurmasService(){
@@ -85,11 +85,13 @@ public class ImportarTurmasService {
             Departamento departamento = departamentoService.getByIdSigaa(idDepartamentoSigaa);
             HistoricoImportacaoTurmas historico = new HistoricoImportacaoTurmas();
             Predio predioPadrao = cadastroPredioService.buscar(idPredioPadrao);
+            Periodo periodo = cadastroPeriodoService.buscar(periodoIdParameter);
 
             importacao.setStatus(status);
             importacao.setDepartamento(departamento);
             importacao.setHorarioUltimaOperacao(LocalDateTime.now());
             importacao.setPredio(predioPadrao);
+            importacao.setPeriodo(periodo);
             importacaoTurmasRepository.save(importacao);
 
             historico.setImportacaoTurmas(importacao);

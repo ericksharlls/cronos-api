@@ -17,7 +17,7 @@ public interface ImportacaoTurmasRepository extends JpaRepository<ImportacaoTurm
             countQuery = "SELECT COUNT(i.id) FROM ImportacaoTurmas i JOIN i.departamento JOIN i.status JOIN i.predio")
     public Page<ImportacaoTurmas> findAll(Pageable pageable);
 
-    @Query("SELECT i FROM ImportacaoTurmas i JOIN FETCH i.departamento JOIN FETCH i.status JOIN FETCH i.predio WHERE i.id = :idImportacaoTurmas")
+    @Query("SELECT i FROM ImportacaoTurmas i JOIN FETCH i.departamento JOIN FETCH i.status JOIN FETCH i.predio JOIN FETCH i.periodo WHERE i.id = :idImportacaoTurmas")
     public Optional<ImportacaoTurmas> findById(@Param("idImportacaoTurmas") Long idImportacaoTurmas);
     
 }
