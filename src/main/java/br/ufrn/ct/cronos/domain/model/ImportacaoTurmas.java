@@ -44,6 +44,4 @@ public class ImportacaoTurmas {
     @JoinColumn(name = "id_periodo")
     private Periodo periodo;
 
-
-
 }
