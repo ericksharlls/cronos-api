@@ -102,6 +102,46 @@ public class ImportarTurmasService {
         });
     }
 
+    private void validarNivelEnsinoTurma(Set<String> siglasNivelEnsino) {
+        siglasNivelEnsino.forEach(siglaNivelEnsino -> {
+            try {
+                NivelEnsinoTurmaEnum.getBySigla(siglaNivelEnsino);
+                listaSiglasNivelEnsino.add(siglaNivelEnsino);
+            } catch (IllegalArgumentException e) {
+                limparDados();
+                throw new NegocioException(String.format(VALOR_INVALIDO_SIGLA_NIVEL_ENSINO_TURMA, siglaNivelEnsino));
+            }
+        });
+    }
+
+    private void validarIdsDepartamentos(Set<Long> idsDepartamentos) {
+        for (Long idDepartamento : idsDepartamentos) {
+            if(!departamentoService.getAllIdsSigaa().contains(idDepartamento)) {
+                limparDados();
+                throw new NegocioException(String.format(ID_DEPARTAMENTO_NAO_ENCONTRADO, idDepartamento));
+            }
+        }
+    }
+
+    private void validarIdPeriodo(Long periodoIdParameter) {
+        try {
+            Periodo periodo = cadastroPeriodoService.buscar(periodoIdParameter);
+            this.idPeriodo = periodo.getId();
+        } catch (PeriodoNaoEncontradoException e) {
+            limparDados();
+            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, periodoIdParameter));
+        }
+    }
+
+    private void validarIdPredioPadrao(Long idPredioPadrao) {
+        try {
+            this.idPredioPadrao = cadastroPredioService.buscar(idPredioPadrao).getId();
+
+        } catch (PredioNaoEncontradoException e){
+            throw new NegocioException(String.format(ID_PREDIO_NAO_ENCONTRADO, idPredioPadrao));
+
+        }
+    }
 
     public ImportacaoTurmas buscar(Long idImportacaoTurmas) {
         ImportacaoTurmas importacaoTurmas = importacaoTurmasRepository.findById(idImportacaoTurmas)
@@ -173,47 +213,4 @@ public class ImportarTurmasService {
             tratamentoDeErroParaFalhaNaImportacao(importacao);
         }
     }
-
-    private void validarNivelEnsinoTurma(Set<String> siglasNivelEnsino) {
-        siglasNivelEnsino.forEach(siglaNivelEnsino -> {
-            try {
-                NivelEnsinoTurmaEnum.getBySigla(siglaNivelEnsino);
-                listaSiglasNivelEnsino.add(siglaNivelEnsino);
-            } catch (IllegalArgumentException e) {
-                limparDados();
-                throw new NegocioException(String.format(VALOR_INVALIDO_SIGLA_NIVEL_ENSINO_TURMA, siglaNivelEnsino));
-            }
-        });
-    }
-
-    private void validarIdsDepartamentos(Set<Long> idsDepartamentos) {
-        for (Long idDepartamento : idsDepartamentos) {
-            if(!departamentoService.getAllIdsSigaa().contains(idDepartamento)) {
-                limparDados();
-                throw new NegocioException(String.format(ID_DEPARTAMENTO_NAO_ENCONTRADO, idDepartamento));
-            }   
-        }
-    }
-
-    private void validarIdPeriodo(Long periodoIdParameter) {
-        try {
-            Periodo periodo = cadastroPeriodoService.buscar(periodoIdParameter);
-            this.idPeriodo = periodo.getId();    
-        } catch (PeriodoNaoEncontradoException e) {
-            limparDados();
-            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, periodoIdParameter));
-        }
-    }
-
-    private void validarIdPredioPadrao(Long idPredioPadrao) {
-        try {
-            this.idPredioPadrao = cadastroPredioService.buscar(idPredioPadrao).getId();
-
-        } catch (PredioNaoEncontradoException e){
-            throw new NegocioException(String.format(ID_PREDIO_NAO_ENCONTRADO, idPredioPadrao));
-
-        }
-
-    }
-
 }
