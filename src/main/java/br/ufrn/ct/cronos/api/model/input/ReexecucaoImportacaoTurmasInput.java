@@ -18,9 +18,17 @@ public class ReexecucaoImportacaoTurmasInput {
     @NotNull
     private Long idPeriodo;
 
+    @Schema(example = "[1000, 1001, 1002]")
+    @NotNull
+    @Size(min = 1)
+    private Set<Long> idsUnidades;
+
     @Schema(example = "['G', 'L', 'S', 'D', 'E']")
     @NotNull
     @Size(min = 1)
     private Set<String> siglasNivelEnsino;
-    
+
+    @Schema(example = "1")
+    @NotNull
+    private Long idPredioPadrao;
 }

@@ -102,6 +102,46 @@ public class ImportarTurmasService {
         });
     }
 
+    private void validarNivelEnsinoTurma(Set<String> siglasNivelEnsino) {
+        siglasNivelEnsino.forEach(siglaNivelEnsino -> {
+            try {
+                NivelEnsinoTurmaEnum.getBySigla(siglaNivelEnsino);
+                listaSiglasNivelEnsino.add(siglaNivelEnsino);
+            } catch (IllegalArgumentException e) {
+                limparDados();
+                throw new NegocioException(String.format(VALOR_INVALIDO_SIGLA_NIVEL_ENSINO_TURMA, siglaNivelEnsino));
+            }
+        });
+    }
+
+    private void validarIdsDepartamentos(Set<Long> idsDepartamentos) {
+        for (Long idDepartamento : idsDepartamentos) {
+            if(!departamentoService.getAllIdsSigaa().contains(idDepartamento)) {
+                limparDados();
+                throw new NegocioException(String.format(ID_DEPARTAMENTO_NAO_ENCONTRADO, idDepartamento));
+            }
+        }
+    }
+
+    private void validarIdPeriodo(Long periodoIdParameter) {
+        try {
+            Periodo periodo = cadastroPeriodoService.buscar(periodoIdParameter);
+            this.idPeriodo = periodo.getId();
+        } catch (PeriodoNaoEncontradoException e) {
+            limparDados();
+            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, periodoIdParameter));
+        }
+    }
+
+    private void validarIdPredioPadrao(Long idPredioPadrao) {
+        try {
+            this.idPredioPadrao = cadastroPredioService.buscar(idPredioPadrao).getId();
+
+        } catch (PredioNaoEncontradoException e){
+            throw new NegocioException(String.format(ID_PREDIO_NAO_ENCONTRADO, idPredioPadrao));
+
+        }
+    }
 
     public ImportacaoTurmas buscar(Long idImportacaoTurmas) {
         ImportacaoTurmas importacaoTurmas = importacaoTurmasRepository.findById(idImportacaoTurmas)
@@ -129,23 +169,34 @@ public class ImportarTurmasService {
             } catch (Exception e) {
                 System.out.println("### Erro ao importar turmas do Departamento: " + importacao.getDepartamento().getNome());
                 e.printStackTrace();
-                StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.ERRO_NA_EXECUCAO.name());
-                // Atualizando o status da importacao para ERRO_NA_EXECUCAO
-                importacao.setStatus(status);
-                importacao.setHorarioUltimaOperacao(LocalDateTime.now());
-                importacaoTurmasRepository.save(importacao);
 
-                // Registrando na tabela de Historico a atualizacao no Status da Importacao
-                HistoricoImportacaoTurmas historico = new HistoricoImportacaoTurmas();
-
-                historico.setImportacaoTurmas(importacao);
-                historico.setRegistradoEm(LocalDateTime.now());
-                historico.setStatus(status);
-                historicoImportacaoTurmasRepository.save(historico);
+                tratamentoDeErroParaFalhaNaImportacao(importacao);
             }
         });
+
         limparDados();
         System.out.println("#### Terminou o SERVICE ####");
+    }
+    private void tratamentoDeErroParaFalhaNaImportacao(ImportacaoTurmas importacao) {
+        StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.ERRO_NA_EXECUCAO.name());
+        // Atualizando o status da importacao para ERRO_NA_EXECUCAO
+        importacao.setStatus(status);
+        importacao.setHorarioUltimaOperacao(LocalDateTime.now());
+        importacaoTurmasRepository.save(importacao);
+
+        // Registrando na tabela de Historico a atualizacao no Status da Importacao
+        HistoricoImportacaoTurmas historico = new HistoricoImportacaoTurmas();
+
+        historico.setImportacaoTurmas(importacao);
+        historico.setRegistradoEm(LocalDateTime.now());
+        historico.setStatus(status);
+        historicoImportacaoTurmasRepository.save(historico);
+    }
+
+    private void limparDados() {
+        this.importacoes = new ArrayList<>(0);
+        this.listaSiglasNivelEnsino = new HashSet<>();
+        this.idPeriodo = Long.valueOf(0);
     }
 
     @Async
@@ -158,68 +209,8 @@ public class ImportarTurmasService {
         } catch (Exception e) {
             System.out.println("### Erro ao importar turmas do Departamento: " + importacao.getDepartamento().getNome());
             e.printStackTrace();
-            StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.ERRO_NA_EXECUCAO.name());
-            // Atualizando o status da importacao para ERRO_NA_EXECUCAO
-            importacao.setStatus(status);
-            importacao.setHorarioUltimaOperacao(LocalDateTime.now());
-            importacaoTurmasRepository.save(importacao);
 
-            // Registrando na tabela de Historico a atualizacao no Status da Importacao
-            HistoricoImportacaoTurmas historico = new HistoricoImportacaoTurmas();
-
-            historico.setImportacaoTurmas(importacao);
-            historico.setRegistradoEm(LocalDateTime.now());
-            historico.setStatus(status);
-            historicoImportacaoTurmasRepository.save(historico);
+            tratamentoDeErroParaFalhaNaImportacao(importacao);
         }
     }
-
-    private void validarNivelEnsinoTurma(Set<String> siglasNivelEnsino) {
-        siglasNivelEnsino.forEach(siglaNivelEnsino -> {
-            try {
-                NivelEnsinoTurmaEnum.getBySigla(siglaNivelEnsino);
-                listaSiglasNivelEnsino.add(siglaNivelEnsino);
-            } catch (IllegalArgumentException e) {
-                limparDados();
-                throw new NegocioException(String.format(VALOR_INVALIDO_SIGLA_NIVEL_ENSINO_TURMA, siglaNivelEnsino));
-            }
-        });
-    }
-
-    private void validarIdsDepartamentos(Set<Long> idsDepartamentos) {
-        for (Long idDepartamento : idsDepartamentos) {
-            if(!departamentoService.getAllIdsSigaa().contains(idDepartamento)) {
-                limparDados();
-                throw new NegocioException(String.format(ID_DEPARTAMENTO_NAO_ENCONTRADO, idDepartamento));
-            }   
-        }
-    }
-
-    private void validarIdPeriodo(Long periodoIdParameter) {
-        try {
-            Periodo periodo = cadastroPeriodoService.buscar(periodoIdParameter);
-            this.idPeriodo = periodo.getId();    
-        } catch (PeriodoNaoEncontradoException e) {
-            limparDados();
-            throw new NegocioException(String.format(ID_PERIODO_NAO_ENCONTRADO, periodoIdParameter));
-        }
-    }
-
-    private void validarIdPredioPadrao(Long idPredioPadrao) {
-        try {
-            this.idPredioPadrao = cadastroPredioService.buscar(idPredioPadrao).getId();
-
-        } catch (PredioNaoEncontradoException e){
-            throw new NegocioException(String.format(ID_PREDIO_NAO_ENCONTRADO, idPredioPadrao));
-
-        }
-
-    }
-
-    private void limparDados() {
-        this.importacoes = new ArrayList<>(0);
-        this.listaSiglasNivelEnsino = new HashSet<>();
-        this.idPeriodo = Long.valueOf(0);
-    }
-
 }
