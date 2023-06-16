@@ -8,7 +8,7 @@ Trata-se da API do sistema Cronos: Um sistema para gerenciamento de alocações 
 
 O projeto utiliza as seguintes tecnologias:
 
-- Linguagem de Programação Java, versão 11;
+- Linguagem de Programação Java, versão 17;
 - Projetos do Ecossistema Spring como **Spring Boot**, **Spring Data JPA**, **Spring Web**, **Spring Web MVC**, **Spring Core**;
 - **Lombok** para geração de código boilerplate;
 - **Hibernate Validator** para validação dos dados de entrada da API;

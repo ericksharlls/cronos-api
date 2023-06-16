@@ -5,7 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.3</version>
+		<!--  <version>2.6.3</version> --> 
+		<version>2.7.12</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.ufrn.ct.cronos</groupId>
@@ -16,7 +17,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
+		<!-- <java.version>11</java.version>  -->
+		<java.version>17</java.version>
 		<modelmapper.version>3.0.0</modelmapper.version>
 		<org-json.version>20210307</org-json.version>
 		<springdoc.version>1.6.14</springdoc.version>
@@ -32,10 +34,19 @@
 		</dependency>
 
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+			<!--  <groupId>mysql</groupId> -->
+			<!--  <artifactId>mysql-connector-java</artifactId> -->
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!--  Depedencia para suporte do Flyway ao MySQL 8 -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
