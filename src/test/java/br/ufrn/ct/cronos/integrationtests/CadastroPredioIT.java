@@ -1,5 +1,5 @@
 
-package br.ufrn.ct.cronos.cronos;
+package br.ufrn.ct.cronos.integrationtests;
 
 import br.ufrn.ct.cronos.api.model.input.PredioInput;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;

@@ -24,7 +24,7 @@ public class UnidadeAPIUFRNController {
     private UnidadeAPIUFRNAssembler unidadeAPIUFRNAssembler;
 
     @GetMapping
-	public List<UnidadeAPIUFRNModel> importarTurmas(@Valid ConsultaUnidadeAPIUFRNFilter consultaUnidadeAPIUFRNFilter) {
+	public List<UnidadeAPIUFRNModel> consultarUnidadesApiUrn(@Valid ConsultaUnidadeAPIUFRNFilter consultaUnidadeAPIUFRNFilter) {
         return unidadeAPIUFRNAssembler
                 .toCollectionModel(turmaApiUfrnRepository.retornaUnidadesPorNomeCentro(consultaUnidadeAPIUFRNFilter));
     }

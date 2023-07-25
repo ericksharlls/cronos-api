@@ -1,4 +1,4 @@
-package br.ufrn.ct.cronos.cronos;
+package br.ufrn.ct.cronos.integrationtests;
 
 import br.ufrn.ct.cronos.api.model.input.PerfilSalaTurmaInput;
 import br.ufrn.ct.cronos.domain.model.PerfilSalaTurma;

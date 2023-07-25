@@ -37,6 +37,11 @@ Logo abaixo, o comando para rodar um método de testes específico de uma classe
 ***methodName*** é o nome de um método específico de uma classe de testes  
 ***${USER}*** e  ***${PASSWORD}*** devem ser substituídos, respectivamente, pelos usuário e senha de conexão com seu banco de dados local.
 
+## Testes de unidade
+O comando abaixo deve ser executado para rodar todos os testes de unidade do projeto:
+
+`mvn test`
+
 ## Documentação da API
 
 Após a execução do projeto, a documentação da API pode ser acessada pela URL a seguir:

@@ -5,6 +5,8 @@ import br.ufrn.ct.cronos.domain.filter.ConsultaUnidadeAPIUFRNFilter;
 import br.ufrn.ct.cronos.domain.model.dto.DepartamentoDTO;
 import br.ufrn.ct.cronos.domain.model.dto.TurmaDTO;
 import br.ufrn.ct.cronos.domain.repository.TurmaApiUfrnRepository;
+import lombok.extern.slf4j.Slf4j;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Repository
 public class TurmaApiUfrnRepositoryImpl extends ApiUfrnAbstract implements TurmaApiUfrnRepository {
 
@@ -114,7 +117,6 @@ public class TurmaApiUfrnRepositoryImpl extends ApiUfrnAbstract implements Turma
 
     @Override
     public List<DepartamentoDTO> retornaUnidadesPorNomeCentro(ConsultaUnidadeAPIUFRNFilter filtro) {
-        System.out.println("#### Classe/Método (TurmaApiUfrnRepositoryImpl.retornaUnidadesPorNomeCentro) ####");
             var urlRequestPaginado = new StringBuilder(getUrlBaseSistemas() + "unidade/"+ getVersao() +"/unidades?");
             if (StringUtils.hasText(filtro.getNome())) {
                 urlRequestPaginado.append("nome-unidade="+filtro.getNome()+"&");
@@ -127,7 +129,7 @@ public class TurmaApiUfrnRepositoryImpl extends ApiUfrnAbstract implements Turma
             } else {
                 urlRequestPaginado.append("id-tipo-unidade=1,2,3,4,5,6,7,8,9,10");
             }
-            System.out.println("#### URL (Passo 1): " + urlRequestPaginado.toString());
+            log.info("URL de Consulta de Unidades a API UFRN (Passo 1): " + urlRequestPaginado.toString());
 		   	ResponseEntity<String> resposta = getRespostaJSONPaginado(urlRequestPaginado.toString());
 			HttpHeaders httpHeadersTurmas = resposta.getHeaders();
 			// Obtendo o total de departamentos
@@ -146,7 +148,7 @@ public class TurmaApiUfrnRepositoryImpl extends ApiUfrnAbstract implements Turma
 			
 			List<DepartamentoDTO> retorno = new ArrayList<DepartamentoDTO>(0);
 			var urlRequest = new StringBuilder(urlRequestPaginado.toString());
-            System.out.println("#### URL (Passo 2): " + urlRequest.toString());
+            log.info("URL de Consulta de Unidades a API UFRN (Passo 2): " + urlRequest.toString());
 			for (int i = 0; i < inteiroLacos; i++) {
                 urlRequest.append("&limit=100&offset="+offSetDepartamentos);
 				resposta = getRespostaJSON(urlRequest.toString());

@@ -1,4 +1,4 @@
-package br.ufrn.ct.cronos.cronos;
+package br.ufrn.ct.cronos.integrationtests;
 
 import br.ufrn.ct.cronos.domain.model.Departamento;
 import br.ufrn.ct.cronos.domain.repository.DepartamentoRepository;
@@ -78,7 +78,7 @@ public class CadastroDepartamentoIT {
     @Test
     public void deveRetornaPaginacaoCorreta_QuandoRealizarBusca () {
             given()
-                .queryParam("size", "2")
+                .queryParam("size", "1")
                 .queryParam("page", "2")
                 .accept(ContentType.JSON)
             .when()
