@@ -10,6 +10,8 @@ import br.ufrn.ct.cronos.api.model.input.ReexecucaoImportacaoTurmasInput;
 import br.ufrn.ct.cronos.domain.model.ImportacaoTurmas;
 import br.ufrn.ct.cronos.domain.repository.ImportacaoTurmasRepository;
 import br.ufrn.ct.cronos.domain.service.ImportarTurmasService;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @EnableAsync
 @RestController
 @RequestMapping(value = "/api-ufrn/turmas", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +49,7 @@ public class ImportacaoTurmasController implements ImportacaoTurmasControllerOpe
                     .agendarImportacoes(importacaoTurmasInput.getSiglasNivelEnsino(), importacaoTurmasInput.getIdsUnidades(), 
                         importacaoTurmasInput.getIdPeriodo(),importacaoTurmasInput.getIdPredioPadrao());
         importarTurmasService.executarAssincronamenteImportacoes();
-        System.out.println("#### Fim da execução de ImportacaoTurmasController ####");
+        log.info("#### Fim da execução do Controller. Agora a Camada de Serviço atuará de forma assíncrona na importação.");
 	}
 
     @GetMapping("/importacao")

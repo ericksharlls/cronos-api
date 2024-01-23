@@ -8,19 +8,20 @@ import br.ufrn.ct.cronos.domain.model.*;
 import br.ufrn.ct.cronos.domain.model.enumeracoes.StatusImportacaoTurmasEnum;
 import br.ufrn.ct.cronos.domain.repository.HistoricoImportacaoTurmasRepository;
 import br.ufrn.ct.cronos.domain.repository.ImportacaoTurmasRepository;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class ImportarTurmasService {
     
@@ -165,9 +166,9 @@ public class ImportarTurmasService {
         this.importacoes.forEach(importacao -> {
             try {
                 importarTurmasPorUnidadeService.importarTurmas(listaSiglasNivelEnsino, importacao, idPeriodo);
-                System.out.println("### SUCESSO com o Departamento: " + importacao.getDepartamento().getNome());
+                log.info("SUCESSO com o Departamento:" + importacao.getDepartamento().getNome() );
             } catch (Exception e) {
-                System.out.println("### Erro ao importar turmas do Departamento: " + importacao.getDepartamento().getNome());
+                log.error("### Erro ao importar turmas do Departamento: " + importacao.getDepartamento().getNome());
                 e.printStackTrace();
 
                 tratamentoDeErroParaFalhaNaImportacao(importacao);
@@ -175,7 +176,7 @@ public class ImportarTurmasService {
         });
 
         limparDados();
-        System.out.println("#### Terminou o SERVICE ####");
+        log.info("FIM da execução da Importação das Turmas");
     }
     private void tratamentoDeErroParaFalhaNaImportacao(ImportacaoTurmas importacao) {
         StatusImportacaoTurmas status = statusImportacaoTurmasService.getByIdentificador(StatusImportacaoTurmasEnum.ERRO_NA_EXECUCAO.name());
